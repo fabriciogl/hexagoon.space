@@ -1,6 +1,6 @@
 #  Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 import requests
-from typing import Dict, Union
+from typing import Dict, Union, Any
 
 
 class ConectorRequest:
@@ -16,21 +16,23 @@ class ConectorRequest:
             header (boolean) informa se deseja sobrescrever o header
             proxies: (dict)  dicionário de schemas para a proxy
             timeout: (int)   valor para ser passado como timeout da requisição
+            session: (None|Session)  sessao a ser criada pelo método específico
         """
 
         self.proxy = proxy
         self.header = header
         self.timeout = timeout
+        self.session = None
 
         # Criação das credenciais da API de proxy
-        proxy_host = "proxy.crawlera.com"
-        proxy_port = "8010"
+        proxy_host = "proxy.zyte.com"
+        proxy_port = "8011"
         proxy_auth = "42be2ce98d844343bbe9a0a397edbd48:"  # Make sure to include ':' at the end
-        proxies = {"https": "https://{}@{}:{}/".format(proxy_auth, proxy_host, proxy_port),
+        proxies = {"https": "http://{}@{}:{}/".format(proxy_auth, proxy_host, proxy_port),
                    "http": "http://{}@{}:{}/".format(proxy_auth, proxy_host, proxy_port)}
 
         self.proxies = proxies
-        self.verify = 'Certificados/crawlera-ca.crt'
+        self.verify = 'Certificados/zyte-proxy-ca.crt'
 
     def request_get(self, url: str) -> requests.Response:
         """
@@ -50,26 +52,27 @@ class ConectorRequest:
 
         if self.proxy and self.header:
 
-            return requests.get(url, proxies=self.proxies, headers=headers, verify=False, timeout=self.timeout)
+            return requests.get(url, proxies=self.proxies, headers=headers, verify=self.verify, timeout=self.timeout)
 
         elif self.proxy:
 
-            return requests.get(url, proxies=self.proxies, verify=False, timeout=self.timeout)
+            return requests.get(url, proxies=self.proxies, verify=self.verify, timeout=self.timeout)
 
         elif self.header:
 
-            return requests.get(url, headers=headers, verify=False, timeout=self.timeout)
+            return requests.get(url, headers=headers, verify=self.verify, timeout=self.timeout)
 
         else:
 
             return requests.get(url)
 
-    def request_post(self, url: str, formulario: Dict[str, Union[str, None, int]]) -> requests.Response:
+    def request_post(self, url: str, formulario: Dict[str, Union[str, None, int]], **kwargs) -> requests.Response:
         """
 
         Args:
             url:        (string)              Endereço para ser consultado
             formulario: (dicionário)          Formulário contendo os parametros post
+            kwargs: (dicionário)              Outros parâmetros definidos pelo requests
 
         Returns:        (request)             Resultado da consulta a url
 
@@ -83,16 +86,33 @@ class ConectorRequest:
 
         if self.proxy and self.header:
 
-            return requests.post(url, data=formulario, proxies=self.proxies, headers=headers, verify=False, timeout=self.timeout)
+            return requests.post(url,
+                                 data=formulario,
+                                 proxies=self.proxies,
+                                 headers=headers,
+                                 verify=True,
+                                 timeout=self.timeout,
+                                 **kwargs)
 
         elif self.proxy:
+            return requests.post(url,
+                                 data=formulario,
+                                 proxies=self.proxies,
+                                 verify=True,
+                                 timeout=self.timeout,
+                                 **kwargs)
 
-            return requests.post(url, data=formulario, proxies=self.proxies, verify=False, timeout=self.timeout)
 
         elif self.header:
 
-            return requests.post(url, data=formulario, headers=headers, verify=False, timeout=self.timeout)
+            return requests.post(url,
+                                 data=formulario,
+                                 headers=headers,
+                                 verify=True,
+                                 timeout=self.timeout,
+                                 **kwargs
+                                 )
 
         else:
 
-            return requests.post(url, data=formulario, timeout=self.timeout)
+            return requests.post(url, data=formulario, timeout=self.timeout, **kwargs)
