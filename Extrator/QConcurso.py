@@ -8,6 +8,10 @@ import bs4
 import random
 import datetime
 import pandas as pd
+import requests
+import typing
+import attr
+
 from Conexoes.Internet.Proxy import ConectorRequest
 
 
@@ -83,9 +87,16 @@ class QConcurso:
         url = f'https://www.qconcursos.com/api/questions/{questao.replace("Q", "")}/answer?'
         data = {"answer": f"{random.choice(['C', 'E'])}"}
         cookie = {
-            "remember_user_token": "W1sxMjE4MDkyXSwiQzZLWlBqVWc2WXVOQWlVMkZaMTQiLCIxNjI0Mjk0NDcxLjI2MjQxMzUiXQ%3D%3D--ddad0c5251ff9eddc8b7f7c84374d46946c3ecf5"}
+            "remember_user_token": "W1sxMjE4MDkyXSwiQzZLWlBqVWc2WXVOQWlVMkZaMTQiLCIxNjI0NDU3MDI2LjQ1ODEyNzMiXQ%3D%3D--e09ef249fabea299ca0a5b229673234343e79604"}
 
-        r = self.connector.request_post(url=url, formulario=data, cookies=cookie)
+        try:
+            r = self.connector.request_post(url=url, formulario=data, cookies=cookie)
+        except requests.exceptions.ConnectTimeout:
+            print(f'{questao}-timedout')
+            return 'timeout'
+        except Exception as e:
+            print(f'{questao}-{e}')
+            return 'ERROR'
 
         if r.status_code == 200:
             r_json = json.loads(r.text).get('resolve')
@@ -115,8 +126,47 @@ class QConcurso:
 
         arquivo_df_reduzido['respostas'] = arquivo_df_reduzido['id'].map(self.request_url)
 
-        arquivo_df_reduzido.reset_index().to_feather(f'Documentos/WebPages/respotas-({inicio}-{fim})')
+        arquivo_df_reduzido.reset_index().to_feather(f'Documentos/WebPages/respostas-({inicio}-{fim})')
+
+    def crawler_erros(self):
+        """
+        Função para extrair as repostas das questões diretamente do site
+        """
+
+        arquivo_df = pd.read_feather('Documentos/WebPages/respostas-todas')
+
+        arquivo_df.loc[arquivo_df['respostas'] == 'ERROR']['respostas'] = \
+        arquivo_df.loc[arquivo_df['respostas'] == 'ERROR']['id'].map(self.request_url)
+
+        arquivo_df.reset_index().to_feather(f'Documentos/WebPages/respostas-corrigidas')
 
 
 # qconcurso = QConcurso()
-# qconcurso.crawler_resposta(inicio=1697, fim=2500)
+# qconcurso.crawler_resposta(inicio=3483, fim=3500)
+
+
+async def teste(nome: str) -> str:
+    return 'string'
+
+
+async def executa() -> str:
+    # se retirar o await a IDE reclama do tipo de retorno
+    return await teste('oi')
+
+@attr.s(auto_attribs=True)
+class SomeClass:
+    a_number: int = 42
+    list_of_numbers: typing.List[int] = attr.Factory(list)
+
+
+from typing import Protocol, runtime_checkable
+
+@runtime_checkable
+class Reader(Protocol):
+    def read(self) -> str: ...
+
+class FooReader:
+    def read(self) -> str:
+        return "foo"
+
+assert isinstance(FooReader(), Reader)

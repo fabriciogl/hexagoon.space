@@ -3,6 +3,8 @@
 import pymongo #type: ignore
 import os
 
+#TODO migrar para MOTOR para usar asyncio com mongoDB
+
 if not os.environ.get("MONGO_URL"):
     os.environ["MONGO_URL"] = 'localhost'
 
