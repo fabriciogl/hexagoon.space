@@ -18,10 +18,18 @@ class MongoBasico:
         Returns:
             Task.result()
         """
+        # identifica o nome da classa do objeto
+        # para identificar a coleção para salvar
+        object_name = self.__repr_name__().lower()
 
-        return db[self.__name__.lower()].update_one({'id': self.__dict__['id']},
-                                       {'$set': self.__dict__},
-                                       upsert=True)
+        # recupera o id do objeto e exclui do objeto
+        id = dict(self).get('id')
+        self.__dict__.pop('id')
+
+        # salva em banco
+        return db[object_name].update_one({'_id': id},
+                                          {'$set': self.__dict__},
+                                          upsert=True)
 
         # Funciona com loop.run_until_complete()
         # return await db['dev'].update_one({'id': self.__dict__['id']},
@@ -37,4 +45,12 @@ class MongoBasico:
             Task.result()
         """
 
-        return db[self.__name__.lower()].delete_one({'id': self.__dict__['id']})
+        # identifica o nome da classa do objeto
+        # para identificar a coleção para salvar
+        object_name = self.__repr_name__().lower()
+
+        # recupera o id do objeto e exclui do objeto
+        id = dict(self).get('id')
+
+        # salva em banco
+        return db[object_name].delete_one({'_id': id})

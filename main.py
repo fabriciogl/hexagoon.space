@@ -5,7 +5,8 @@ from functools import lru_cache
 
 import uvicorn
 from fastapi import FastAPI
-from Repositorio.Mongo.MongoSetup import MongoSetup
+from Repositorio.Mongo.MongoSetupAssincrono import MongoSetupAssincrono
+from Repositorio.Mongo.MongoSetupSincrono import MongoSetupSincrono
 
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 
@@ -17,8 +18,9 @@ class ModelName(str, Enum):
 
 
 app = FastAPI()
-app.add_event_handler("startup", MongoSetup.connect_db)
-app.add_event_handler("shutdown", MongoSetup.close_db)
+app.add_event_handler("startup", MongoSetupAssincrono.connect_db)
+app.add_event_handler("startup", MongoSetupSincrono.connect_db)
+app.add_event_handler("shutdown", MongoSetupAssincrono.close_db)
 
 
 @app.get("/")
@@ -42,9 +44,15 @@ async def get_model(model_name: ModelName):
     return {"model_name": model_name, "message": "Have some residuals"}
 
 
-@app.get("/questao/{questao_id}")
+@app.get("/questao_a/{questao_id}")
 async def read_item(questao_id: str):
-    resultado = await QuestaoRepository.procura_um(_id=questao_id)
+    resultado = await QuestaoRepository.aprocura_um(_id=questao_id)
+
+    return {"item_id": resultado.__dict__}
+
+@app.get("/questao_s/{questao_id}")
+async def read_item(questao_id: str):
+    resultado = QuestaoRepository.sprocura_um(_id=questao_id)
     return {"item_id": resultado}
 
 
