@@ -3,15 +3,15 @@ import re
 
 
 class ConstrutorRegras:
-    """ classe que contém o construtor das classes do tipo Regra"""
+    """ classe que contém o construtor das classes do tipo Acao"""
 
     def __init__(self, obj: object, acao: str):
         """
-        contrutor a ser herdado por toda classe do tipo Regra
+        contrutor a ser herdado por toda classe do tipo Acao
         
         Args:
-            obj: O objeto que será validado pela classe regra 
-            regra: string de filtragem da regra desejada
+            obj: O objeto que será validado pela classe acao
+            acao: string de filtragem da acao desejada
         """
 
         for method in inspect.getmembers(self, predicate=inspect.isfunction):

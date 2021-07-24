@@ -1,18 +1,18 @@
-#  Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+# Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos
+# reservados.
+from datetime import datetime
+
+from pydantic.dataclasses import dataclass
+
+from Repositorio.Mongo.MongoBasico import MongoBasico
 
 
-# TODO inciar a modelagem da Questao
-class Questao:
+@dataclass
+class Questao(MongoBasico):
 
-    atributo1 = 1
-    atributo2 = 2
-    atributo3 = 3
-
-    def __init__(self, atributos):
-        """
-        Construtor da classe Questao
-        Args:
-            atributos:
-        """
-
-        pass
+    id: str
+    banca: str
+    data: datetime
+    conteudo_texto: str
+    conteudo_imagem: str
+    resposta: str

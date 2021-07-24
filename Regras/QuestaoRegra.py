@@ -8,6 +8,7 @@ class QuestaoRegra(ConstrutorRegras):
     def regra_1(self, objeto: Questao):
         """
         uso : [create]
+
         Args:
             objeto: objeto a ser validado
 
