@@ -8,9 +8,12 @@ import bs4
 import random
 import datetime
 import pandas as pd
+import pymongo.collection
 import requests
 import typing
 import attr
+from numpy import base_repr
+from pymongo import MongoClient
 
 from Conexoes.Internet.Proxy import ConectorRequest
 
@@ -140,33 +143,34 @@ class QConcurso:
 
         arquivo_df.reset_index().to_feather(f'Documentos/WebPages/respostas-corrigidas')
 
+    @staticmethod
+    def migra_mongo():
+        """
+        Função para migrar os dados do arquivo feather para o banco em mongo
+        """
 
-# qconcurso = QConcurso()
-# qconcurso.crawler_resposta(inicio=3483, fim=3500)
+        arquivo = pd.read_feather('Estaticos/Feather/respostas-todas-sem_erros')
 
+        ## tranforma o conteúdo da coluna id em base64
+        arquivo.drop(['level_0', 'index'], axis=1, inplace=True)
+        arquivo['id'] = arquivo['id'].apply(lambda x: base_repr((int(x.replace('Q', ''))), 36))
+        arquivo.rename(columns={'id': '_id'}, inplace=True)
 
-async def teste(nome: str) -> str:
-    return 'string'
+        # drop colunas com id duplicado
+        arquivo.drop_duplicates(subset=['_id'], inplace=True)
 
+        # converte coluna assunto para lista de assuntos
+        arquivo['assuntos'] = arquivo['assuntos'].apply(lambda x: [y.strip() for y in x.strip().split(',')])
 
-async def executa() -> str:
-    # se retirar o await a IDE reclama do tipo de retorno
-    return await teste('oi')
+        # abre conexão com o banco
+        cliente = MongoClient('localhost', 27017)
+        collection: pymongo.collection.Collection = cliente.quickTest.questao
 
-@attr.s(auto_attribs=True)
-class SomeClass:
-    a_number: int = 42
-    list_of_numbers: typing.List[int] = attr.Factory(list)
+        # converte para dicionário
+        arquivo_dicionario = arquivo.to_dict(orient='records')
 
+        # insere no banco de dados
+        collection.insert_many(arquivo_dicionario)
 
-from typing import Protocol, runtime_checkable
-
-@runtime_checkable
-class Reader(Protocol):
-    def read(self) -> str: ...
-
-class FooReader:
-    def read(self) -> str:
-        return "foo"
-
-assert isinstance(FooReader(), Reader)
+        # fecha conexão com o banco
+        cliente.close()

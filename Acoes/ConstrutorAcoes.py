@@ -1,5 +1,6 @@
 import inspect
 import re
+from re import Match
 
 
 class ConstrutorRegras:
@@ -15,5 +16,6 @@ class ConstrutorRegras:
         """
 
         for method in inspect.getmembers(self, predicate=inspect.isfunction):
-            if acao in re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', method[1].__doc__, flags=re.IGNORECASE):
+            uso_casos: Match = re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', method[1].__doc__, flags=re.IGNORECASE)
+            if acao in uso_casos.group():
                 method[1](obj)

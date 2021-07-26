@@ -1,6 +1,6 @@
 from Model.Questao import Questao
-from Repositorio.Mongo.MongoSetupAssincrono import MongoSetupAssincrono
-from Repositorio.Mongo.MongoSetupSincrono import MongoSetupSincrono
+from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
+from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 class QuestaoRepository:
 

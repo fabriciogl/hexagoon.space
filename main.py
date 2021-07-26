@@ -1,14 +1,12 @@
 # Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os
 # direitos reservados.
 from enum import Enum
-from functools import lru_cache
 
 import uvicorn
 from fastapi import FastAPI
-from Repositorio.Mongo.MongoSetupAssincrono import MongoSetupAssincrono
-from Repositorio.Mongo.MongoSetupSincrono import MongoSetupSincrono
-
-from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
+from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
+from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
+from Rotas import QuestoesRotas, UsuarioRotas
 
 
 class ModelName(str, Enum):
@@ -18,6 +16,10 @@ class ModelName(str, Enum):
 
 
 app = FastAPI()
+
+app.include_router(QuestoesRotas.router)
+app.include_router(UsuarioRotas.router)
+
 app.add_event_handler("startup", MongoSetupAssincrono.connect_db)
 app.add_event_handler("startup", MongoSetupSincrono.connect_db)
 app.add_event_handler("shutdown", MongoSetupAssincrono.close_db)
@@ -42,18 +44,6 @@ async def get_model(model_name: ModelName):
         return {"model_name": model_name, "message": "LeCNN all the images"}
 
     return {"model_name": model_name, "message": "Have some residuals"}
-
-
-@app.get("/questao_a/{questao_id}")
-async def read_item(questao_id: str):
-    resultado = await QuestaoRepository.aprocura_um(_id=questao_id)
-
-    return {"item_id": resultado.__dict__}
-
-@app.get("/questao_s/{questao_id}")
-async def read_item(questao_id: str):
-    resultado = QuestaoRepository.sprocura_um(_id=questao_id)
-    return {"item_id": resultado}
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ from pydantic import Field, BaseModel
 
 from Model.Questao import Questao
 from Model.Usuario import Usuario
-from Repositorio.Mongo.MongoBasico import MongoBasico
+from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
 
 
 # Não se usa dataclass e Base.Model ao mesmo tempo

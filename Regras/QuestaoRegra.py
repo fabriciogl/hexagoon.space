@@ -5,7 +5,8 @@ from Regras.ConstrutorRegras import ConstrutorRegras
 class QuestaoRegra(ConstrutorRegras):
     """ Regras para sempre aplicadas ao objeto questao """
 
-    def regra_1(self, objeto: Questao):
+    @staticmethod
+    def regra_1(objeto: Questao):
         """
         uso : [create]
 

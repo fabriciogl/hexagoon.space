@@ -2,7 +2,7 @@
 # reservados.
 from datetime import datetime
 from pydantic import BaseModel, Field
-from Repositorio.Mongo.MongoBasico import MongoBasico
+from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
 
 
 class Questao(BaseModel, MongoBasico):
