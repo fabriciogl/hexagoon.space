@@ -11,6 +11,7 @@ router = APIRouter(
     responses={404: {"Descrição": "Não Encontrado"}},
 )
 
+
 @router.get("/{usuario_id}")
 async def busca_usuario(usuario_id: str):
     # verificar posteriormente a possibilidade de criar e  validar um Usuário somente com id
@@ -33,5 +34,5 @@ async def salva_usuario(usuario: Usuario):
     resultado = MongoBasico.comitar()
 
     if resultado is None:
-        raise HTTPException(status_code=404, detail="Questão não encontrada")
+        raise HTTPException(status_code=404, detail="Erro ao salvar o objeto.")
     return {"resultado": resultado[0].bulk_api_result}

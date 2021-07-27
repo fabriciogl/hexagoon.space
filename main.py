@@ -1,5 +1,6 @@
 # Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os
 # direitos reservados.
+import time
 from enum import Enum
 
 import uvicorn

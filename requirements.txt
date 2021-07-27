@@ -9,3 +9,4 @@ pandas
 pyarrow
 motor
 attrs
+pydantic[email]
