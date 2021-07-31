@@ -8,7 +8,7 @@ from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 class MongoBasico:
     # atributo da classe que armazena as operações a serem comitadas
-    _operacoes_a_comitar: defaultdict = defaultdict(list)
+    _operacoes_a_comitar: dict = {}
 
     def salvar(self: BaseModel) -> None:
         """
@@ -20,12 +20,13 @@ class MongoBasico:
         """
         # identifica o nome da classa do objeto
         # para identificar a coleção para salvar
-        #TODO ver como pegar o nome da class com algum método do Pydantic
+        # TODO ver como pegar o nome da class com algum método do Pydantic
         collection_name = self.__repr_name__().lower()
 
         # adiciona a operação à lista a ser comitada
         MongoBasico \
-            ._operacoes_a_comitar[collection_name] \
+            ._operacoes_a_comitar \
+            .setdefault(collection_name, []) \
             .append(UpdateOne({'_id': self.id},
                               {'$set': self.dict(by_alias=True)},  # salva no banco com _id ao invés de id
                               upsert=True))
@@ -48,7 +49,8 @@ class MongoBasico:
 
         # adiciona a operação à lista a ser comitada
         MongoBasico \
-            ._operacoes_a_comitar[collection_name] \
+            ._operacoes_a_comitar \
+            .setdefault(collection_name, []) \
             .append(DeleteOne({'_id': _id}))
 
     @staticmethod
@@ -60,6 +62,6 @@ class MongoBasico:
         for collection, operacoes in MongoBasico._operacoes_a_comitar.items():
             resultado.append(MongoSetupSincrono.db_client[collection].bulk_write(operacoes))
 
-        MongoBasico._operacoes_a_comitar = defaultdict(list)
+        MongoBasico._operacoes_a_comitar = []
 
         return resultado

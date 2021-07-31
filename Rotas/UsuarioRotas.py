@@ -1,9 +1,8 @@
+from fastapi import APIRouter, HTTPException
+
 from Acoes.UsuarioAcoes import UsuarioAcoes
 from Model.Usuario import Usuario
 from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
-from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
-from fastapi import APIRouter, HTTPException
-
 from Repositorio.Mongo.UsuarioRepository import UsuarioRepository
 
 router = APIRouter(

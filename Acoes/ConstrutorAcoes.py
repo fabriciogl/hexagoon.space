@@ -1,9 +1,10 @@
 import inspect
 import re
+from abc import ABC
 from re import Match
 
 
-class ConstrutorRegras:
+class ConstrutorRegras(ABC):
     """ classe que contém o construtor das classes do tipo Acao"""
 
     def __init__(self, obj: object, acao: str):
