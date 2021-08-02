@@ -62,6 +62,6 @@ class MongoBasico:
         for collection, operacoes in MongoBasico._operacoes_a_comitar.items():
             resultado.append(MongoSetupSincrono.db_client[collection].bulk_write(operacoes))
 
-        MongoBasico._operacoes_a_comitar = []
+        MongoBasico._operacoes_a_comitar = {}
 
         return resultado

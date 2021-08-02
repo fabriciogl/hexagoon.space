@@ -1,8 +1,8 @@
 from Model.Questao import Questao
-from Regras.ConstrutorRegras import ConstrutorRegras
+from Regras.Handler.RegrasHandler import RegrasHandler
 
 
-class QuestaoRegra(ConstrutorRegras):
+class QuestaoRegra(RegrasHandler):
     """ Regras para sempre aplicadas ao objeto questao """
 
     @staticmethod
