@@ -18,7 +18,7 @@ class MongoBasico:
         Returns:
             Task.result()
         """
-        # identifica o nome da classa do objeto
+        # identifica o nome da classe do objeto
         # para identificar a coleção para salvar
         # TODO ver como pegar o nome da class com algum método do Pydantic
         collection_name = self.__repr_name__().lower()
@@ -58,9 +58,9 @@ class MongoBasico:
         """ Metodo EXCLUSIVO da classe, não chamar diretamento do objeto. """
         if self:
             return
-        resultado = []
+        resultado = {}
         for collection, operacoes in MongoBasico._operacoes_a_comitar.items():
-            resultado.append(MongoSetupSincrono.db_client[collection].bulk_write(operacoes))
+            resultado = MongoSetupSincrono.db_client[collection].bulk_write(operacoes)
 
         MongoBasico._operacoes_a_comitar = {}
 

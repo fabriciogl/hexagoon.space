@@ -2,7 +2,10 @@
 # reservados.
 from typing import Optional
 
+from fastapi import HTTPException
 from pydantic import BaseModel, Field
+
+from Excecoes.MongoExceptions import MongoFindException
 
 
 class ResponseHandler():
@@ -23,8 +26,11 @@ class ResponseHandler():
 
     @excecao.setter
     def excecao(self, excecao: Optional[Exception]):
-        self._excecao = {excecao.__class__.__name__: excecao.__str__()}
+        self._excecao = excecao
 
     @property
     def resultado(self):
-        return self._excecao if self._excecao else self._resposta
+        if self._excecao:
+            raise self._excecao
+        elif self._resposta:
+            return self._resposta
