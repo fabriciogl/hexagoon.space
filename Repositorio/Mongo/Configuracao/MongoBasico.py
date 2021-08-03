@@ -8,9 +8,10 @@ from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 class MongoBasico:
     # atributo da classe que armazena as operações a serem comitadas
-    _operacoes_a_comitar: dict = {}
+    def __init__(self):
+        self._operacoes_a_comitar: dict = {}
 
-    def salvar(self: BaseModel) -> None:
+    def salvar(self, objeto: BaseModel) -> None:
         """
           método do OBJETO para salvar a instância em banco.
         Args:
@@ -21,17 +22,17 @@ class MongoBasico:
         # identifica o nome da classe do objeto
         # para identificar a coleção para salvar
         # TODO ver como pegar o nome da class com algum método do Pydantic
-        collection_name = self.__repr_name__().lower()
+        collection_name = objeto.__repr_name__().lower()
 
         # adiciona a operação à lista a ser comitada
-        MongoBasico \
+        self \
             ._operacoes_a_comitar \
             .setdefault(collection_name, []) \
-            .append(UpdateOne({'_id': self.id},
-                              {'$set': self.dict(by_alias=True)},  # salva no banco com _id ao invés de id
+            .append(UpdateOne({'_id': objeto.id},
+                              {'$set': objeto.dict(by_alias=True)},  # salva no banco com _id ao invés de id
                               upsert=True))
 
-    def deletar(self) -> None:
+    def deletar(self, objeto: BaseModel) -> None:
         """
           método do OBJETO para deletar a instância em banco.
         Args:
@@ -42,26 +43,22 @@ class MongoBasico:
 
         # identifica o nome da classa do objeto
         # para identificar a coleção para salvar
-        collection_name = self.__repr_name__().lower()
-
-        # recupera o id do objeto e exclui do objeto
-        _id = dict(self).get('id')
+        collection_name = objeto.__repr_name__().lower()
 
         # adiciona a operação à lista a ser comitada
-        MongoBasico \
+        self \
             ._operacoes_a_comitar \
             .setdefault(collection_name, []) \
-            .append(DeleteOne({'_id': _id}))
+            .append(DeleteOne({'_id': objeto.id}))
 
-    @staticmethod
-    def comitar(self=None):
+    def comitar(self):
         """ Metodo EXCLUSIVO da classe, não chamar diretamento do objeto. """
-        if self:
-            return
-        resultado = {}
-        for collection, operacoes in MongoBasico._operacoes_a_comitar.items():
-            resultado = MongoSetupSincrono.db_client[collection].bulk_write(operacoes)
 
-        MongoBasico._operacoes_a_comitar = {}
+        resultado = {}
+        for collection, operacoes in self._operacoes_a_comitar.items():
+            resultado[collection] = \
+                MongoSetupSincrono \
+                .db_client[collection] \
+                .bulk_write(operacoes)
 
         return resultado

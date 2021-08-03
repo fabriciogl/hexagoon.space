@@ -38,7 +38,7 @@ class MongoUpsertedException(HTTPException):
             model_name: string do nome do objeto
             i:  identificação do objeto
         """
-        super().__init__(422, f'{model_name} sob id {i} já existe.')
+        super().__init__(200, f'{model_name} sob id {i} já existe.')
 
 class MongoUpdateException(HTTPException):
     pass
@@ -47,4 +47,4 @@ class MongoOperationException(HTTPException):
     """Exceção a ser utilizada quando ocorre erro na conexão com o banco"""
 
     def __init__(self):
-        super().__init__(422, f'Falha temporária na conexão com o Banco.')
+        super().__init__(200, f'Falha temporária na conexão com o Banco.')

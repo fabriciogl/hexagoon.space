@@ -34,7 +34,7 @@ class UsuarioAcoes(AcoesHandler):
     def create_1(objeto: Usuario, handler: ResponseHandler):
         """ uso : [create] """
         objeto.id = base64.b64encode(objeto.email.encode()).decode()
-        objeto.salvar()
+        handler.operacoes.salvar(objeto)
 
         # for i in range(1000):
         #     usuario = Usuario(_id=str(random.randrange(0, 1000)),
@@ -48,7 +48,7 @@ class UsuarioAcoes(AcoesHandler):
         """ uso : [create] """
         # conclui as operacoes no banco
         try:
-            resultado:BulkWriteResult = MongoBasico.comitar()
+            resultado:BulkWriteResult = handler.operacoes.comitar()[type(objeto).__name__.lower()]
 
             # banco reconheceu a operação
             if resultado.acknowledged:

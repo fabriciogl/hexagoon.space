@@ -1,16 +1,21 @@
 # Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos
 # reservados.
+from dataclasses import dataclass
 from typing import Optional
 
 from fastapi import HTTPException
 from pydantic import BaseModel, Field
 
 from Excecoes.MongoExceptions import MongoFindException
+from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
 
 
-class ResponseHandler():
-    _resposta: Optional[dict] = None
-    _excecao: Optional[dict] = None
+class ResponseHandler:
+
+    def __init__(self):
+        self._resposta: Optional[dict] = None
+        self._excecao: Optional[Exception] = None
+        self._operacoes: MongoBasico = MongoBasico()
 
     @property
     def resposta(self):
@@ -25,8 +30,16 @@ class ResponseHandler():
         return self._excecao
 
     @excecao.setter
-    def excecao(self, excecao: Optional[Exception]):
+    def excecao(self, excecao: Exception):
         self._excecao = excecao
+
+    @property
+    def operacoes(self):
+        return self._operacoes
+
+    @operacoes.setter
+    def operacoes(self, operacoes: MongoBasico):
+        self._operacoes = operacoes
 
     @property
     def resultado(self):
