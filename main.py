@@ -7,7 +7,7 @@ import uvicorn
 from fastapi import FastAPI
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
-from Entrypoints import QuestoesEntrypoints, UsuarioEntrypoints
+from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints
 
 
 class ModelName(str, Enum):
@@ -18,7 +18,7 @@ class ModelName(str, Enum):
 
 app = FastAPI()
 
-app.include_router(QuestoesEntrypoints.router)
+app.include_router(QuestaoEntrypoints.router)
 app.include_router(UsuarioEntrypoints.router)
 
 app.add_event_handler("startup", MongoSetupAssincrono.connect_db)

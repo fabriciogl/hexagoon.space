@@ -16,25 +16,20 @@ router = APIRouter(
 class UsuarioEntrypoints:
 
     @staticmethod
-    @router.get("/{usuario_id}")
-    async def find(usuario_id: str):
+    @router.get("/")
+    async def find(usuario: Usuario):
         handler = ResponseHandler()
         # realiza as acoes necessárias no objeto
-        UsuarioAcoes(usuario_id, handler, 'find')
+        UsuarioAcoes(usuario, handler, 'find')
 
         return handler.resultado
 
     @staticmethod
     @router.post("/")
-    async def create():
+    async def create(usuario: Usuario):
 
         handler = ResponseHandler()
         # valida as regras necessárias no objeto
-
-        usuario = Usuario(_id=str(1),
-                          nome=f'Fabricio',
-                          email=f'fa_gatto7@gmail.com',
-                          senha="fdasdfasdf")
 
         # realiza as acoes necessárias no objeto
         UsuarioAcoes(usuario, handler, 'create')

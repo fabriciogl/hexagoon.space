@@ -3,7 +3,7 @@ import re
 from abc import ABC
 
 
-class RegrasHandler(ABC):
+class RegrasInitiallizer(ABC):
     """ classe que contém o construtor das classes do tipo Regra"""
 
     def __init__(self, obj: object, acao: str):

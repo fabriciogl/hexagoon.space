@@ -153,14 +153,21 @@ class QConcurso:
 
         ## tranforma o conteúdo da coluna id em base64
         arquivo.drop(['level_0', 'index'], axis=1, inplace=True)
-        arquivo['id'] = arquivo['id'].apply(lambda x: base_repr((int(x.replace('Q', ''))), 36))
-        arquivo.rename(columns={'id': '_id'}, inplace=True)
+        arquivo['_id'] = arquivo['id'].apply(lambda x: base_repr((int(x.replace('Q', ''))), 36))
+        arquivo.rename(columns={'id': 'qid'}, inplace=True)
 
         # drop colunas com id duplicado
         arquivo.drop_duplicates(subset=['_id'], inplace=True)
 
         # converte coluna assunto para lista de assuntos
-        arquivo['assuntos'] = arquivo['assuntos'].apply(lambda x: [y.strip() for y in x.strip().split(',')])
+        def lista_limpa(assuntos: str) -> typing.List[str]:
+            lista = [a.strip() for a in assuntos.strip().split(',')]
+            lista = set(lista)
+            if '' in lista:
+                lista.remove('')
+            return list(lista)
+
+        arquivo['assuntos'] = arquivo['assuntos'].apply(lista_limpa)
 
         # abre conexão com o banco
         cliente = MongoClient('localhost', 27017)
@@ -174,3 +181,5 @@ class QConcurso:
 
         # fecha conexão com o banco
         cliente.close()
+
+QConcurso.migra_mongo()

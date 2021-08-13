@@ -5,19 +5,20 @@ from pymongo.results import BulkWriteResult
 from Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
 from Entrypoints.Handler.ResponseHandler import ResponseHandler
 from Excecoes.MongoExceptions import MongoCreateException, MongoOperationException, MongoUpsertedException
-from Model.Usuario import Usuario
+from Model.Questao import Questao
+from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 from Repositorio.Mongo.UsuarioRepository import UsuarioRepository
 
 
-class UsuarioAcoes(AcoesInitiallizer):
+class QuestaoAcoes(AcoesInitiallizer):
     """ Classe do tipo NAMESPACE para aplicar ações ao objeto Usuario """
 
     @staticmethod
-    def find_1(objeto: Usuario, handler: ResponseHandler):
+    def find_1(objeto: Questao, handler: ResponseHandler):
         """ uso : [find] """
 
         try:
-            resultado = UsuarioRepository.find_one(objeto=objeto)
+            resultado = QuestaoRepository.find_one(objeto=objeto)
             handler.resposta = resultado
         except Exception as e:
             handler.excecao = e
@@ -30,9 +31,9 @@ class UsuarioAcoes(AcoesInitiallizer):
         #     usuario.salvar()
 
     @staticmethod
-    def create_1(objeto: Usuario, handler: ResponseHandler):
+    def create_1(objeto: Questao, handler: ResponseHandler):
         """ uso : [create] """
-        objeto.id = base64.b64encode(objeto.email.encode()).decode()
+        objeto.id = base64.b64encode(objeto.qid.encode()).decode()
         handler.operacoes.salvar(objeto)
 
         # for i in range(1000):
@@ -43,15 +44,16 @@ class UsuarioAcoes(AcoesInitiallizer):
         #     usuario.salvar()
 
     @staticmethod
-    def create_2(objeto: Usuario, handler: ResponseHandler):
+    def create_2(objeto: Questao, handler: ResponseHandler):
         """ uso : [create] """
         # conclui as operacoes no banco
         try:
-            resultado:BulkWriteResult = handler.operacoes.comitar()[type(objeto).__name__.lower()]
+            # recupera os resultados específicos do objeto
+            resultado: BulkWriteResult = handler.operacoes.comitar()[type(objeto).__name__.lower()]
 
             # banco reconheceu a operação
             if resultado.acknowledged:
-                ids_criados:dict = resultado.upserted_ids
+                ids_criados: dict = resultado.upserted_ids
 
                 # um objeto novo foi criado
                 if objeto.id not in ids_criados.values() and not resultado.matched_count:

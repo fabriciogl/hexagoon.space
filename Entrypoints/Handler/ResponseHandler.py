@@ -1,12 +1,7 @@
 # Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos
 # reservados.
-from dataclasses import dataclass
 from typing import Optional
 
-from fastapi import HTTPException
-from pydantic import BaseModel, Field
-
-from Excecoes.MongoExceptions import MongoFindException
 from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
 
 

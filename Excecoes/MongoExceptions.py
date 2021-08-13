@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from starlette.exceptions import HTTPException
 
 
-class MongoFindException(HTTPException):
+class MongoFindException1(HTTPException):
     """Exceção a ser utilizada quando ocorre erro na busca de objeto"""
 
     def __init__(self, model_name: str, i: str):
@@ -14,6 +14,18 @@ class MongoFindException(HTTPException):
             i:  identificação do objeto
         """
         super().__init__(404, f'{model_name} sob id {i} não encontrado.')
+
+class MongoFindException2(HTTPException):
+    """Exceção a ser utilizada quando ocorre erro na busca de objeto"""
+
+    def __init__(self, model_name: str, i: str):
+        """
+
+        Args:
+            model_name: string do nome do objeto
+            i:  identificação do objeto
+        """
+        super().__init__(404, f'Não foi possível localizar o objeto com os valores informados, informe id, nome ou email.')
 
 
 class MongoCreateException(HTTPException):
@@ -38,7 +50,7 @@ class MongoUpsertedException(HTTPException):
             model_name: string do nome do objeto
             i:  identificação do objeto
         """
-        super().__init__(200, f'{model_name} sob id {i} já existe.')
+        super().__init__(422, f'{model_name} sob id {i} já existe.')
 
 class MongoUpdateException(HTTPException):
     pass
@@ -47,4 +59,4 @@ class MongoOperationException(HTTPException):
     """Exceção a ser utilizada quando ocorre erro na conexão com o banco"""
 
     def __init__(self):
-        super().__init__(200, f'Falha temporária na conexão com o Banco.')
+        super().__init__(422, f'Falha temporária na conexão com o Banco.')
