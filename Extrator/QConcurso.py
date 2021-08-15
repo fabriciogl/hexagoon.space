@@ -154,7 +154,7 @@ class QConcurso:
         ## tranforma o conteúdo da coluna id em base64
         arquivo.drop(['level_0', 'index'], axis=1, inplace=True)
         arquivo['_id'] = arquivo['id'].apply(lambda x: base_repr((int(x.replace('Q', ''))), 36))
-        arquivo.rename(columns={'id': 'qid'}, inplace=True)
+        arquivo.rename(columns={'id': 'qid', 'respostas': 'resposta'}, inplace=True)
 
         # drop colunas com id duplicado
         arquivo.drop_duplicates(subset=['_id'], inplace=True)

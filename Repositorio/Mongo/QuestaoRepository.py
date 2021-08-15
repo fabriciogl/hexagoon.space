@@ -7,6 +7,7 @@ from Model.Questao import Questao
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 
+
 class QuestaoRepository:
 
     @staticmethod
@@ -23,7 +24,7 @@ class QuestaoRepository:
         return Questao(**resultado_bd)
 
     @staticmethod
-    def find_one(objeto: BaseModel):
+    def find_one(_id: str):
         """
         método para recuperar do banco o objeto especificada
         Args:
@@ -32,21 +33,11 @@ class QuestaoRepository:
         Returns:
             objeto questao
         """
-        #TODO analisar a possibilidade de injection
-        if objeto.id:
-            resultado_bd: dict = MongoSetupSincrono\
-                .db_client[type(objeto).__name__.lower()]\
-                .find_one({'_id': objeto.id})
-        elif objeto.qid:
-            #TODO transformar em id
-            resultado_bd: dict = MongoSetupSincrono \
-                .db_client[type(objeto).__name__.lower()] \
-                .find_one({'qid': objeto.qid})
-        else:
-            raise MongoFindException1("Questao", objeto.id)
-        # Jeito MUUUITO errado de fazer a conexão com o banco
-        # resultado_bd = MongoClient('localhost', 27017).quickTest.usuario.find_one({'_id': _id})
+
+        resultado_bd: dict = MongoSetupSincrono \
+            .db_client['questao'] \
+            .find_one({'_id': _id})
 
         if resultado_bd is None:
-            raise MongoFindException2("Questao", objeto.id)
+            raise MongoFindException2()
         return Questao(**resultado_bd)

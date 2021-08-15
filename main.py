@@ -1,10 +1,16 @@
 # Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os
 # direitos reservados.
+import json
 import time
 from enum import Enum
 
 import uvicorn
 from fastapi import FastAPI
+from pydantic import ValidationError
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+
+from Excecoes.ValidationExceptions import InvalidIdException
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints
@@ -26,26 +32,20 @@ app.add_event_handler("startup", MongoSetupSincrono.connect_db)
 app.add_event_handler("shutdown", MongoSetupAssincrono.close_db)
 
 
+@app.exception_handler(InvalidIdException)
+def _(request: Request,
+      exc: InvalidIdException):
+    try:
+        print(f'IP {request.client.host} - Port {request.client.port} - {request.headers.values()} - {request.path_params}')
+    except json.decoder.JSONDecodeError:
+        # Request had invalid or no body
+        pass
+
+    return JSONResponse({"detail": exc.detail}, status_code=404)
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
-
-
-@app.get("/models/{model_name}")
-async def get_model(model_name: ModelName):
-    if model_name == ModelName.alexnet:
-        return {"model_name": model_name, "message": "Deep Learning FTW!"}
-
-    if model_name.value == "lenet":
-        return {"model_name": model_name, "message": "LeCNN all the images"}
-
-    return {"model_name": model_name, "message": "Have some residuals"}
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

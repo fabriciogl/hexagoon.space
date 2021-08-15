@@ -1,11 +1,9 @@
-import gc
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from Acoes.UsuarioAcoes import UsuarioAcoes
 from Entrypoints.Handler.ResponseHandler import ResponseHandler
 from Model.Usuario import Usuario
-from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
+from Validations.CustomValidations import constr
 
 router = APIRouter(
     prefix="/usuarios",
@@ -16,16 +14,16 @@ router = APIRouter(
 class UsuarioEntrypoints:
 
     @staticmethod
-    @router.get("/")
-    async def find(usuario: Usuario):
+    @router.get("/{usuario_id}")
+    async def find(usuario_id: constr(regex=r'^[\w\D]{3,400}$')):
         handler = ResponseHandler()
         # realiza as acoes necessárias no objeto
-        UsuarioAcoes(usuario, handler, 'find')
+        UsuarioAcoes(usuario_id, handler, 'find')
 
         return handler.resultado
 
     @staticmethod
-    @router.post("/")
+    @router.post("")
     async def create(usuario: Usuario):
 
         handler = ResponseHandler()

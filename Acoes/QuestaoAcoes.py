@@ -1,6 +1,9 @@
 import base64
 
+from pydantic.types import constr
 from pymongo.results import BulkWriteResult
+from starlette import status
+from starlette.responses import JSONResponse
 
 from Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
 from Entrypoints.Handler.ResponseHandler import ResponseHandler
@@ -14,34 +17,20 @@ class QuestaoAcoes(AcoesInitiallizer):
     """ Classe do tipo NAMESPACE para aplicar ações ao objeto Usuario """
 
     @staticmethod
-    def find_1(objeto: Questao, handler: ResponseHandler):
+    def find_1(_id: constr(regex=r'[\w\D]{5,9}Q'), handler: ResponseHandler):
         """ uso : [find] """
 
         try:
-            resultado = QuestaoRepository.find_one(objeto=objeto)
+            resultado = QuestaoRepository.find_one(_id=_id)
             handler.resposta = resultado
         except Exception as e:
             handler.excecao = e
 
-        # for i in range(1000):
-        #     usuario = Usuario(_id=str(random.randrange(0, 1000)),
-        #                       nome=f'Fabricio {i}',
-        #                       email=f'fa_gatto{i}@gmail.com',
-        #                       senha="fdasdfasdf")
-        #     usuario.salvar()
-
     @staticmethod
     def create_1(objeto: Questao, handler: ResponseHandler):
         """ uso : [create] """
-        objeto.id = base64.b64encode(objeto.qid.encode()).decode()
+        objeto.id = base64.b64encode(objeto.qid.replace('Q', '').encode()).decode()
         handler.operacoes.salvar(objeto)
-
-        # for i in range(1000):
-        #     usuario = Usuario(_id=str(random.randrange(0, 1000)),
-        #                       nome=f'Fabricio {i}',
-        #                       email=f'fa_gatto{i}@gmail.com',
-        #                       senha="fdasdfasdf")
-        #     usuario.salvar()
 
     @staticmethod
     def create_2(objeto: Questao, handler: ResponseHandler):
@@ -57,12 +46,12 @@ class QuestaoAcoes(AcoesInitiallizer):
 
                 # um objeto novo foi criado
                 if objeto.id not in ids_criados.values() and not resultado.matched_count:
-                    raise MongoCreateException('Usuário', objeto.id)
+                    raise MongoCreateException(objeto)
                 elif resultado.matched_count:
-                    raise MongoUpsertedException('Usuário', objeto.id)
+                    raise MongoUpsertedException(objeto)
                 # resposta de sucesso
                 else:
-                    handler.resposta = {'created': objeto.dict()}
+                    handler.resposta = JSONResponse(status_code=status.HTTP_201_CREATED, content=objeto.dict())
             else:
                 raise MongoOperationException()
         except Exception as e:

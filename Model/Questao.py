@@ -9,10 +9,10 @@ from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
 
 class Questao(BaseModel):
     banca: Optional[str]
-    data: Optional[datetime] = Field(None, alias='ano')
-    conteudo_texto: Optional[str] = Field(None, alias='conteudo')
+    ano: Optional[str]
+    conteudo: Optional[str]
     conteudo_imagem: Optional[str]
-    resposta: Optional[str] = Field(None, alias='respostas')
+    resposta: Optional[str]
     qid: Optional[str]
     id: str = Field(None, alias='_id')  #alias, pois o Pydantic esconde campos privados
 

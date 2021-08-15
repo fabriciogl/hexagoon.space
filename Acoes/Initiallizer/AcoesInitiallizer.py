@@ -29,11 +29,20 @@ class AcoesInitiallizer(ABC):
             uso_casos: re.Match = re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', metodo.__doc__, flags=re.IGNORECASE)
             if handler.resultado:
                 break
-            elif (metodo.__qualname__.startswith(type(self).__name__))\
-                and (acao in uso_casos.group()):
+            elif uso_casos and acao in uso_casos.group():
                 metodo(obj, handler)
             else:
                 continue
+
+    @staticmethod
+    def find_one_1(objeto: BaseModel, handler: ResponseHandler):
+        """ uso : [find] """
+
+        try:
+            resultado = UsuarioRepository.find_one(objeto=objeto)
+            handler.resposta = resultado
+        except Exception as e:
+            handler.excecao = e
 
 
 
