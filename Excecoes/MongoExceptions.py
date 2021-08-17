@@ -4,43 +4,56 @@ from starlette.exceptions import HTTPException
 
 
 class MongoFindException1(HTTPException):
-    """Exceção a ser utilizada quando ocorre erro na busca de objeto"""
+    """Exceção a ser utilizada quando ocorre erro na busca de model"""
 
     def __init__(self, model_name: str, i: str):
         """
 
         Args:
-            model_name: string do nome do objeto
-            i:  identificação do objeto
+            model_name: string do nome do model
+            i:  identificação do model
         """
         super().__init__(404, f'{model_name} sob id {i} não encontrado.')
 
 class MongoFindException2(HTTPException):
-    """Exceção a ser utilizada quando ocorre erro na busca de objeto"""
+    """Exceção a ser utilizada quando ocorre erro na busca de model"""
 
     def __init__(self):
         """
 
         Args:
-            model_name: string do nome do objeto
-            i:  identificação do objeto
+            model_name: string do nome do model
+            i:  identificação do model
         """
         super().__init__(404, f'Busca sem resultado.')
 
 
 class MongoCreateException(HTTPException):
-    """Exceção a ser utilizada quando ocorre erro na criação de objeto"""
+    """Exceção a ser utilizada quando ocorre erro na criação de model"""
 
-    def __init__(self, objeto: BaseModel):
+    def __init__(self, model: BaseModel, msg: str = None):
         """
 
         Args:
-            objeto: "Model sob acao"
+            model: "Model sob acao"
         """
-        super().__init__(422, f'{type(objeto).__name__} sob id {objeto.id} não foi criado.')
+        #TODO logar a mensagem de erro
+        print(msg)
+        super().__init__(422, f'{type(model).__name__} sob id {model.id} não foi criado.')
+
+class MongoUpdateException(HTTPException):
+    """Exceção a ser utilizada quando ocorre erro no update do model"""
+
+    def __init__(self, _id: str):
+        """
+
+        Args:
+            model: "Model sob acao"
+        """
+        super().__init__(422, f'Objeto sob id {_id} não foi alterado.')
 
 class MongoUpsertedException(HTTPException):
-    """Exceção a ser utilizada quando ocorre upsert na criação de objeto"""
+    """Exceção a ser utilizada quando ocorre upsert na criação de model"""
 
     def __init__(self, objeto: BaseModel):
         """
@@ -49,9 +62,6 @@ class MongoUpsertedException(HTTPException):
             objeto: "Model sob acao"
         """
         super().__init__(422, f'{type(objeto).__name__} sob id {objeto.id} já existe.')
-
-class MongoUpdateException(HTTPException):
-    pass
 
 class MongoOperationException(HTTPException):
     """Exceção a ser utilizada quando ocorre erro na conexão com o banco"""

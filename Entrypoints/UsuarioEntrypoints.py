@@ -17,7 +17,7 @@ class UsuarioEntrypoints:
     @router.get("/{usuario_id}")
     async def find(usuario_id: constr(regex=r'^[\w\D]{3,400}$')):
         handler = ResponseHandler()
-        # realiza as acoes necessárias no objeto
+        # realiza as acoes necessárias no model
         UsuarioAcoes(usuario_id, handler, 'find')
 
         return handler.resultado
@@ -27,9 +27,9 @@ class UsuarioEntrypoints:
     async def create(usuario: Usuario):
 
         handler = ResponseHandler()
-        # valida as regras necessárias no objeto
+        # valida as regras necessárias no model
 
-        # realiza as acoes necessárias no objeto
-        UsuarioAcoes(usuario, handler, 'create')
+        # realiza as acoes necessárias no model
+        UsuarioAcoes(model=usuario, handler=handler, acao='create')
 
         return handler.resultado

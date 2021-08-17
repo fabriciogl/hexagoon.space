@@ -1,64 +1,49 @@
 import base64
 
+import libscrc
+from fastapi.responses import JSONResponse
+from pymongo.errors import BulkWriteError
 from pymongo.results import BulkWriteResult
 from starlette import status
 
 from Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
-from Entrypoints.Handler.ResponseHandler import ResponseHandler
 from Excecoes.MongoExceptions import MongoCreateException, MongoOperationException, MongoUpsertedException
-from Model.Usuario import Usuario
+from Excecoes.UsuarioExceptions import UsuarioCreateException
 from Repositorio.Mongo.UsuarioRepository import UsuarioRepository
-from fastapi.responses import JSONResponse
 
 
 class UsuarioAcoes(AcoesInitiallizer):
-    """ Classe do tipo NAMESPACE para aplicar ações ao objeto Usuario """
+    """ Classe do tipo NAMESPACE para aplicar ações ao model Usuario """
 
-    @staticmethod
-    def find_1(_id: str, handler: ResponseHandler):
+    def _1_find(self):
         """ uso : [find] """
 
         try:
-            resultado = UsuarioRepository.find_one(_id=_id)
-            handler.resposta = resultado.dict(exclude={'senha'})
+            resultado = UsuarioRepository.find_one(_id=self.model)
+            self.handler.resposta = resultado.dict(exclude={'senha'})
         except Exception as e:
-            handler.excecao = e
+            self.handler.excecao = e
 
-    @staticmethod
-    def create_1(objeto: Usuario, handler: ResponseHandler):
+    def _1_create(self):
         """ uso : [create] """
-        objeto.id = base64.b64encode(objeto.email.encode()).decode()
-        handler.operacoes.salvar(objeto)
+        self.model.id = hex(libscrc.xz64(self.model.email.encode()) % 2**64)[2:]
+        self.handler.operacoes.create(self.model)
 
-        # for i in range(1000):
-        #     usuario = Usuario(_id=str(random.randrange(0, 1000)),
-        #                       nome=f'Fabricio {i}',
-        #                       email=f'fa_gatto{i}@gmail.com',
-        #                       senha="fdasdfasdf")
-        #     usuario.salvar()
-
-    @staticmethod
-    def create_2(objeto: Usuario, handler: ResponseHandler):
+    def _2_create(self):
         """ uso : [create] """
         # conclui as operacoes no banco
         try:
-            resultado:BulkWriteResult = handler.operacoes.comitar()[type(objeto).__name__.lower()]
-
+            resultado:BulkWriteResult = self.handler.operacoes.comitar()[self.model.Config.title]
             # banco reconheceu a operação
-            if resultado.acknowledged:
-                ids_criados:dict = resultado.upserted_ids
-
-                # um objeto novo foi criado
-                if objeto.id not in ids_criados.values() and not resultado.matched_count:
-                    raise MongoCreateException(objeto)
-                elif resultado.matched_count:
-                    raise MongoUpsertedException(objeto)
-                # resposta de sucesso
-                else:
-                    handler.resposta = JSONResponse(status_code=status.HTTP_201_CREATED,
-                                                    content=objeto.dict(exclude={'senha'}))
+            if resultado.inserted_count == 1:
+                self.handler.resposta = JSONResponse(status_code=status.HTTP_201_CREATED,
+                                                     content=self.model.dict(exclude={'senha'}))
             else:
-                raise MongoOperationException()
+                #TODO verificar que tipo de excecao cabe aqui
+                print(resultado)
+        except BulkWriteError as b:
+            self.handler.excecao = UsuarioCreateException(model=self.model,
+                                                          msg=b.details['writeErrors'][0]['errmsg'])
         except Exception as e:
-            handler.excecao = e
+            self.handler.excecao = MongoCreateException(model=self.model)
 

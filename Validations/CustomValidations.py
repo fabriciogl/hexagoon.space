@@ -6,7 +6,7 @@ from typing import Union, Type
 
 from pydantic.types import ConstrainedStr, _registered
 
-from Excecoes.ValidationExceptions import GenericValidationException
+from Excecoes.GenericValidationExceptions import GenericValidationException
 
 
 class CustomIdValidation(ConstrainedStr):

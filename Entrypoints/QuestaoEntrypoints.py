@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from Acoes.QuestaoAcoes import QuestaoAcoes
 from Entrypoints.Handler.ResponseHandler import ResponseHandler
 from Model.Questao import Questao
+from Regras.QuestaoRegras import QuestaoRegras
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 from Validations.CustomValidations import constr
 
@@ -26,21 +27,31 @@ class QuestaoEntrypoints:
     async def find_questao(questao_id: constr(regex=r'^[\w\D]{3,4}$')):
 
         handler = ResponseHandler()
-        # realiza as acoes necessárias no objeto
-        QuestaoAcoes(questao_id, handler, 'find')
+        # realiza as acoes necessárias no model
+        QuestaoAcoes(_id=questao_id, handler=handler, acao='find')
 
         return handler.resultado
 
     @staticmethod
-    @router.put(
-        "",
-        tags=["custom"],
-        responses={403: {"description": "Operation forbidden"}},
-    )
-    async def update_item(questao: Questao):
+    @router.post("")
+    async def create_questao(questao: Questao):
 
         handler = ResponseHandler()
-        # realiza as acoes necessárias no objeto
-        QuestaoAcoes(questao, handler, 'create')
+        # realiza as acoes necessárias no model
+        QuestaoAcoes(model=questao, handler=handler, acao='create')
+
+        return handler.resultado
+
+    @staticmethod
+    @router.put("/{questao_id}")
+    async def update_questao(questao: Questao, questao_id: constr(regex=r'^[\w\D]{3,4}$')):
+
+        handler = ResponseHandler()
+
+        # regras aplicáveis ao model
+        QuestaoRegras(_id=questao_id, model=questao, handler=handler, acao='update')
+
+        # realiza as acoes necessárias no model
+        QuestaoAcoes(_id=questao_id, model=questao, handler=handler, acao='update')
 
         return handler.resultado

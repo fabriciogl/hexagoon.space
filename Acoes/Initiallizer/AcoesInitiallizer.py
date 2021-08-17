@@ -11,38 +11,29 @@ from Entrypoints.Handler.ResponseHandler import ResponseHandler
 class AcoesInitiallizer(ABC):
     """ classe que contém o construtor das classes do tipo Acao"""
 
-    def __init__(self, obj: Union[str, BaseModel], handler: ResponseHandler, acao: str):
+    def __init__(self, model: Union[str, BaseModel], handler: ResponseHandler, acao: str, _id: str = None):
         """
         uso : []
         contrutor a ser herdado por toda classe do tipo Acao
         
         Args:
-            obj: O objeto que será validado pela classe acao
+            _id (str): id do model
+            model: O model que será validado pela classe acao
             acao: string de filtragem da acao desejada
         """
+        self._id = _id
+        self.model = model
+        self.handler = handler
 
-        self.id = None
-        self.model = None
-
-        metodo: Callable[[Union[str, BaseModel], ResponseHandler], None]
-        for name, metodo in inspect.getmembers(self, predicate=inspect.isfunction):
-            uso_casos: re.Match = re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', metodo.__doc__, flags=re.IGNORECASE)
+        method: Callable[[Union[str, BaseModel], ResponseHandler], None]
+        for name, method in inspect.getmembers(self, predicate=inspect.ismethod):
+            use_cases: re.Match = re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', method.__doc__, flags=re.IGNORECASE)
             if handler.resultado:
                 break
-            elif uso_casos and acao in uso_casos.group():
-                metodo(obj, handler)
+            elif use_cases and acao in use_cases.group():
+                method()
             else:
                 continue
-
-    @staticmethod
-    def find_one_1(objeto: BaseModel, handler: ResponseHandler):
-        """ uso : [find] """
-
-        try:
-            resultado = UsuarioRepository.find_one(objeto=objeto)
-            handler.resposta = resultado
-        except Exception as e:
-            handler.excecao = e
 
 
 

@@ -9,4 +9,5 @@ pandas
 pyarrow
 motor
 attrs
-pydantic[email]
+pydantic[all]
+libscrc

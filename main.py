@@ -1,19 +1,17 @@
 # Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os
 # direitos reservados.
 import json
-import time
 from enum import Enum
 
 import uvicorn
 from fastapi import FastAPI
-from pydantic import ValidationError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from Excecoes.ValidationExceptions import InvalidIdException
+from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints
+from Excecoes.GenericValidationExceptions import InvalidIdException
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
-from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints
 
 
 class ModelName(str, Enum):

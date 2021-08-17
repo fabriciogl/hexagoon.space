@@ -11,4 +11,7 @@ class Usuario(BaseModel):
     senha: Optional[str]
     # Pydantic protege os campos iniciados com '_', não permite alterá-los diretamente.
     # É possível usá-los atribuindo a função PrivateAttr(), porém não funciona no modo Debug do Pycharm.
-    id: Optional[str] = Field(None, alias='_id')  # álias permite importar campo com nome diferente do objeto
+    id: Optional[str] = Field(None, alias='_id')  # álias permite importar campo com nome diferente do model
+
+    class Config:
+        title = 'usuario'

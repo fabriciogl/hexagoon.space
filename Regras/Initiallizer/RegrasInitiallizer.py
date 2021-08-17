@@ -1,20 +1,35 @@
 import inspect
 import re
 from abc import ABC
+from typing import Callable, Union
+
+from pydantic.main import BaseModel
+
+from Entrypoints.Handler.ResponseHandler import ResponseHandler
 
 
 class RegrasInitiallizer(ABC):
     """ classe que contém o construtor das classes do tipo Regra"""
 
-    def __init__(self, obj: object, acao: str):
+    def __init__(self, _id: str, model: Union[str, BaseModel], handler: ResponseHandler, acao: str):
         """
         contrutor a ser herdado por toda classe do tipo Regra
-        
         Args:
-            obj: O objeto que será validado pela classe regra 
-            regra: string de filtragem da regra desejada
+            _id:
+            model:
+            handler:
+            acao:
         """
+        self._id = _id
+        self.model = model
+        self.handler = handler
 
-        for method in inspect.getmembers(self, predicate=inspect.isfunction):
-            if acao in re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', method[1].__doc__, flags=re.IGNORECASE):
-                method[1](obj)
+        method: Callable[[Union[str, BaseModel], ResponseHandler], None]
+        for name, method in inspect.getmembers(self, predicate=inspect.ismethod):
+            use_cases: re.Match = re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', method.__doc__, flags=re.IGNORECASE)
+            if handler.resultado:
+                break
+            elif use_cases and acao in use_cases.group():
+                method()
+            else:
+                continue

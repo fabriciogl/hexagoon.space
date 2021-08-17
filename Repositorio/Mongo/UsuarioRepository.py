@@ -12,12 +12,12 @@ class UsuarioRepository:
     @staticmethod
     def find_one(_id: str):
         """
-        método para recuperar do banco o objeto especificada
+        método para recuperar do banco o model especificada
         Args:
             i: string de identificacao
 
         Returns:
-            objeto questao
+            model questao
         """
         resultado_bd: dict = MongoSetupSincrono \
             .db_client['usuario'] \

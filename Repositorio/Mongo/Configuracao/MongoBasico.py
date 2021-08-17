@@ -2,7 +2,7 @@
 from collections import defaultdict
 
 from pydantic import BaseModel
-from pymongo import UpdateOne, DeleteOne
+from pymongo import UpdateOne, DeleteOne, InsertOne
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 
@@ -11,48 +11,61 @@ class MongoBasico:
     def __init__(self):
         self._operacoes_a_comitar: dict = {}
 
-    def salvar(self, objeto: BaseModel) -> None:
+    def create(self, model: BaseModel) -> None:
         """
           método do OBJETO para salvar a instância em banco.
         Args:
-            instância do objeto
+            instância do model
         Returns:
             Task.result()
         """
-        # identifica o nome da classe do objeto
+        # identifica o nome da classe do model
         # para identificar a coleção para salvar
-        # TODO ver como pegar o nome da class com algum método do Pydantic
-        collection_name = objeto.__repr_name__().lower()
+        collection_name = model.Config.title
 
         # adiciona a operação à lista a ser comitada
-        self \
-            ._operacoes_a_comitar \
+        self._operacoes_a_comitar \
             .setdefault(collection_name, []) \
-            .append(UpdateOne({'_id': objeto.id},
-                              {'$set': objeto.dict(by_alias=True)},  # salva no banco com _id ao invés de id
-                              upsert=True))
+            .append(InsertOne(model.dict(by_alias=True))) # salva no banco com _id ao invés de id
 
-    def deletar(self, objeto: BaseModel) -> None:
+    def update(self, _id: str, model: BaseModel) -> None:
+        """
+          método do OBJETO para salvar a instância em banco.
+        Args:
+            instância do model
+        Returns:
+            Task.result()
+        """
+        # identifica o nome da classe do model
+        # para identificar a coleção para salvar
+        collection_name = model.Config.title
+
+        # adiciona a operação à lista a ser comitada
+        self._operacoes_a_comitar \
+            .setdefault(collection_name, []) \
+            .append(UpdateOne({'_id': _id},
+                              {'$set': model.dict(by_alias=True)}))   # salva no banco com _id ao invés de id
+
+    def deletar(self, _id: str, model: BaseModel) -> None:
         """
           método do OBJETO para deletar a instância em banco.
         Args:
-            instância do objeto
+            instância do model
         Returns:
             pymongo.results.DeleteResult
         """
 
-        # identifica o nome da classa do objeto
+        # identifica o nome da classa do model
         # para identificar a coleção para salvar
-        collection_name = objeto.__repr_name__().lower()
+        collection_name = model.Config.title
 
         # adiciona a operação à lista a ser comitada
-        self \
-            ._operacoes_a_comitar \
+        self._operacoes_a_comitar \
             .setdefault(collection_name, []) \
-            .append(DeleteOne({'_id': objeto.id}))
+            .append(DeleteOne({'_id': _id}))
 
     def comitar(self):
-        """ Metodo EXCLUSIVO da classe, não chamar diretamento do objeto. """
+        """ Metodo EXCLUSIVO da classe, não chamar diretamento do model. """
 
         resultado = {}
         for collection, operacoes in self._operacoes_a_comitar.items():

@@ -13,12 +13,12 @@ class QuestaoRepository:
     @staticmethod
     async def aprocura_um(_id: str):
         """
-        método para recuperar do banco objeto do tipo questao
+        método para recuperar do banco model do tipo questao
         Args:
             _id: string de identificacao
 
         Returns:
-            objeto questao
+            model questao
         """
         resultado_bd: dict = await MongoSetupAssincrono.db_client['questao'].find_one({'_id': _id})
         return Questao(**resultado_bd)
@@ -26,12 +26,12 @@ class QuestaoRepository:
     @staticmethod
     def find_one(_id: str):
         """
-        método para recuperar do banco o objeto especificada
+        método para recuperar do banco o model especificada
         Args:
             i: string de identificacao
 
         Returns:
-            objeto questao
+            model questao
         """
 
         resultado_bd: dict = MongoSetupSincrono \

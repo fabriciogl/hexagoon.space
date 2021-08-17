@@ -16,3 +16,6 @@ class Questao(BaseModel):
     qid: Optional[str]
     id: str = Field(None, alias='_id')  #alias, pois o Pydantic esconde campos privados
 
+    class Config:
+        title = 'questao'
+
