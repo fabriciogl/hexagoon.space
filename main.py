@@ -1,49 +1,35 @@
 # Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os
 # direitos reservados.
-import json
-from enum import Enum
 
 import uvicorn
 from fastapi import FastAPI
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
-from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints
+from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints, TesteEntrypoints
+from Excecoes.ExceptionHandlers import invalid_id, not_found
 from Excecoes.GenericValidationExceptions import InvalidIdException
+from Excecoes.MongoExceptions import MongoFindException2
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
-
-
-class ModelName(str, Enum):
-    alexnet = "alexnet"
-    resnet = "resnet"
-    lenet = "lenet"
-
 
 app = FastAPI()
 
 app.include_router(QuestaoEntrypoints.router)
 app.include_router(UsuarioEntrypoints.router)
+app.include_router(TesteEntrypoints.router)
 
 app.add_event_handler("startup", MongoSetupAssincrono.connect_db)
 app.add_event_handler("startup", MongoSetupSincrono.connect_db)
 app.add_event_handler("shutdown", MongoSetupAssincrono.close_db)
 
 
-@app.exception_handler(InvalidIdException)
-def _(request: Request,
-      exc: InvalidIdException):
-    try:
-        print(f'IP {request.client.host} - Port {request.client.port} - {request.headers.values()} - {request.path_params}')
-    except json.decoder.JSONDecodeError:
-        # Request had invalid or no body
-        pass
+app.add_exception_handler(InvalidIdException, invalid_id)
+app.add_exception_handler(MongoFindException2, not_found)
 
-    return JSONResponse({"detail": exc.detail}, status_code=404)
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

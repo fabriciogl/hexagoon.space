@@ -11,7 +11,7 @@ from Entrypoints.Handler.ResponseHandler import ResponseHandler
 class RegrasInitiallizer(ABC):
     """ classe que contém o construtor das classes do tipo Regra"""
 
-    def __init__(self, _id: str, model: Union[str, BaseModel], handler: ResponseHandler, acao: str):
+    def __init__(self, _id: str, handler: ResponseHandler, acao: str, model: Union[str, BaseModel] = None):
         """
         contrutor a ser herdado por toda classe do tipo Regra
         Args:

@@ -2,6 +2,8 @@
 from pydantic import BaseModel
 from starlette.exceptions import HTTPException
 
+from Excecoes.GenericValidationExceptions import InvalidIdException
+
 
 class MongoFindException1(HTTPException):
     """Exceção a ser utilizada quando ocorre erro na busca de model"""

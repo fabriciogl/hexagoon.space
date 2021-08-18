@@ -11,7 +11,7 @@ from Entrypoints.Handler.ResponseHandler import ResponseHandler
 class AcoesInitiallizer(ABC):
     """ classe que contém o construtor das classes do tipo Acao"""
 
-    def __init__(self, model: Union[str, BaseModel], handler: ResponseHandler, acao: str, _id: str = None):
+    def __init__(self, handler: ResponseHandler, acao: str, _id: str = None, model: Union[str, BaseModel] = None):
         """
         uso : []
         contrutor a ser herdado por toda classe do tipo Acao

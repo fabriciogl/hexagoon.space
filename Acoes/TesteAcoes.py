@@ -1,35 +1,40 @@
 import base64
+from datetime import datetime
 
-import libscrc
-from fastapi.responses import JSONResponse
 from pymongo.errors import BulkWriteError
 from pymongo.results import BulkWriteResult
 from starlette import status
+from starlette.responses import JSONResponse
 
 from Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
-from Excecoes.MongoExceptions import MongoCreateException, MongoOperationException, MongoUpsertedException, \
-    MongoUpdateException
+from Excecoes.MongoExceptions import MongoCreateException, MongoUpdateException
 from Excecoes.UsuarioExceptions import UsuarioCreateException
-from Repositorio.Mongo.UsuarioRepository import UsuarioRepository
+from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 
 
-class UsuarioAcoes(AcoesInitiallizer):
-    """ Classe do tipo NAMESPACE para aplicar ações ao model Usuario """
+class TesteAcoes(AcoesInitiallizer):
+    """ Classe do tipo NAMESPACE para aplicar ações ao self.model Teste """
 
     def _1_find(self):
         """ uso : [find] """
 
         try:
-            resultado = UsuarioRepository.find_one(_id=self._id)
-            self.handler.resposta = resultado.dict(exclude={'senha'})
+            resultado = QuestaoRepository.find_one(_id=self._id)
+            self.handler.resposta = resultado
         except Exception as e:
             self.handler.excecao = e
 
     def _1_create(self):
         """ uso : [create] """
-        self.model.id = hex(libscrc.xz64(self.model.email.encode()) % 2**64)[2:]+'U'
+        self.model.id = base64.b64encode(datetime.now().strftime('%Y%m%d%H%M%S').encode()).decode()
         self.handler.operacoes.create(self.model)
 
+    
+    def _1_update(self):
+        """ uso : [update] """
+        self.handler.operacoes.update(_id=self._id, model=self.model)
+
+    
     def _2_create(self):
         """ uso : [create] """
         # conclui as operacoes no banco
@@ -38,20 +43,17 @@ class UsuarioAcoes(AcoesInitiallizer):
             # banco reconheceu a operação
             if resultado.inserted_count == 1:
                 self.handler.resposta = JSONResponse(status_code=status.HTTP_201_CREATED,
-                                                     content=self.model.dict(exclude={'senha'}))
+                                                     content=self.model.dict())
             else:
                 #TODO verificar que tipo de excecao cabe aqui
                 print(resultado)
         except BulkWriteError as b:
-            self.handler.excecao = UsuarioCreateException(model=self.model,
+            self.handler.excecao = MongoCreateException(model=self.model,
                                                           msg=b.details['writeErrors'][0]['errmsg'])
         except Exception as e:
-            self.handler.excecao = MongoCreateException(model=self.model)
+            self.handler.excecao = MongoCreateException(model=self.model, msg=e.args[0])
 
-    def _1_update(self):
-        """ uso : [update] """
-        self.handler.operacoes.update(_id=self._id, model=self.model)
-
+    
     def _2_update(self):
         """ uso : [update] """
         # conclui as operacoes no banco

@@ -13,14 +13,14 @@ class QuestaoRepository:
     @staticmethod
     async def aprocura_um(_id: str):
         """
-        método para recuperar do banco model do tipo questao
+        método para recuperar do banco model do tipo usuario
         Args:
             _id: string de identificacao
 
         Returns:
-            model questao
+            model usuario
         """
-        resultado_bd: dict = await MongoSetupAssincrono.db_client['questao'].find_one({'_id': _id})
+        resultado_bd: dict = await MongoSetupAssincrono.db_client['usuario'].find_one({'_id': _id})
         return Questao(**resultado_bd)
 
     @staticmethod
@@ -31,11 +31,11 @@ class QuestaoRepository:
             i: string de identificacao
 
         Returns:
-            model questao
+            model usuario
         """
 
         resultado_bd: dict = MongoSetupSincrono \
-            .db_client['questao'] \
+            .db_client['teste'] \
             .find_one({'_id': _id})
 
         if resultado_bd is None:

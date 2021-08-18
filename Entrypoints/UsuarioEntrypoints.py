@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from Acoes.UsuarioAcoes import UsuarioAcoes
 from Entrypoints.Handler.ResponseHandler import ResponseHandler
 from Model.Usuario import Usuario
+from Regras.UsuarioRegras import UsuarioRegras
 from Validations.CustomValidations import constr
 
 router = APIRouter(
@@ -15,10 +16,10 @@ class UsuarioEntrypoints:
 
     @staticmethod
     @router.get("/{usuario_id}")
-    async def find(usuario_id: constr(regex=r'^[\w\D]{3,400}$')):
+    async def find(usuario_id: constr(regex=r'^[a-f\d]{16}U$')):
         handler = ResponseHandler()
         # realiza as acoes necessárias no model
-        UsuarioAcoes(usuario_id, handler, 'find')
+        UsuarioAcoes(_id=usuario_id, handler=handler, acao='find')
 
         return handler.resultado
 
@@ -31,5 +32,19 @@ class UsuarioEntrypoints:
 
         # realiza as acoes necessárias no model
         UsuarioAcoes(model=usuario, handler=handler, acao='create')
+
+        return handler.resultado
+
+    @staticmethod
+    @router.put("/{usuario_id}")
+    async def update(usuario: Usuario, usuario_id: constr(regex=r'^[a-f\d]{16}U$')):
+
+        handler = ResponseHandler()
+
+        # regras aplicáveis ao model
+        UsuarioRegras(_id=usuario_id, model=usuario, handler=handler, acao='update')
+
+        # realiza as acoes necessárias no model
+        UsuarioAcoes(_id=usuario_id, model=usuario, handler=handler, acao='update')
 
         return handler.resultado

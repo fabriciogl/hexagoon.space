@@ -12,4 +12,4 @@ class GenericValidationException(InvalidIdException):
     """Exceção de string de identificacao inválida"""
 
     def __init__(self):
-        super().__init__(404, f'Busca sem resultado.')
+        super().__init__(404, f'Objeto não localizado.')

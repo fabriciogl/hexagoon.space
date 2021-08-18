@@ -17,7 +17,7 @@ class UsuarioRepository:
             i: string de identificacao
 
         Returns:
-            model questao
+            model usuario
         """
         resultado_bd: dict = MongoSetupSincrono \
             .db_client['usuario'] \
