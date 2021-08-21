@@ -45,7 +45,7 @@ class MongoBasico:
         self._operacoes_a_comitar \
             .setdefault(collection_name, []) \
             .append(UpdateOne({'_id': _id},
-                              {'$set': model.dict()}))
+                              {'$set': model.dict(exclude_none=True)}))
 
     def deletar(self, _id: str, model: BaseModel) -> None:
         """

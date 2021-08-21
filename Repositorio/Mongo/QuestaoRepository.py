@@ -41,3 +41,22 @@ class QuestaoRepository:
         if resultado_bd is None:
             raise MongoFindException2()
         return Questao(**resultado_bd)
+
+    @staticmethod
+    def make_teste(quantidade: int):
+        """
+        método para recuperar do banco o model especificada
+        Args:
+            i: string de identificacao
+
+        Returns:
+            model usuario
+        """
+
+        resultado_bd: dict = MongoSetupSincrono \
+            .db_client['questao'] \
+            .find(limit=quantidade)
+
+        if resultado_bd is None:
+            raise MongoFindException2()
+        return [Questao(**questao) for questao in resultado_bd]

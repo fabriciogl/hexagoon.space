@@ -21,7 +21,7 @@ class UsuarioEntrypoints:
         # realiza as acoes necessárias no model
         UsuarioAcoes(_id=usuario_id, handler=handler, acao='find')
 
-        return handler.resultado
+        return handler.resultado_json
 
     @staticmethod
     @router.post("")
@@ -33,7 +33,7 @@ class UsuarioEntrypoints:
         # realiza as acoes necessárias no model
         UsuarioAcoes(model=usuario, handler=handler, acao='create')
 
-        return handler.resultado
+        return handler.resultado_json
 
     @staticmethod
     @router.put("/{usuario_id}")
@@ -47,4 +47,4 @@ class UsuarioEntrypoints:
         # realiza as acoes necessárias no model
         UsuarioAcoes(_id=usuario_id, model=usuario, handler=handler, acao='update')
 
-        return handler.resultado
+        return handler.resultado_json

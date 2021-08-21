@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+  -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link href="{{ url_for('Estaticos', path='/css/bootstrap.min.css') }}" rel="stylesheet">
+    <script async src="{{ url_for('Estaticos', path='/js/testeTosco.js') }}"></script>
+    <title>Teste {{ teste.nome }}</title>
+</head>
+<body>
+<h1>Teste {{ teste.nome }}</h1>
+
+<div id="navigation">
+    {% for questao in teste.lista_questoes %}
+        <p>Banca: {{ questao.banca }}</p>
+        <p>Ano: {{ questao.ano }}</p>
+        <p>Conteudo: {{ questao.conteudo }}</p>
+        <form id="form{{ loop.index }}" name="respostasForm" onsubmit="return showResposta('{{ loop.index }}')">
+            <input type="radio" id="certo" name="alternativaRadio" value="C">
+            <label for="certo">Certo</label><br>
+            <input type="radio" id="errado" name="alternativaRadio" value="E">
+            <label for="errado">Errado</label><br>
+            <input type="submit" value="E aí?">
+        </form>
+        <span id="resposta{{ loop.index }}" value="{{ questao.resposta }}"></span>
+        <p id="resultado{{ loop.index }}"></p>
+        </br>
+    {% endfor %}
+</div>
+
+</body>
+</html>

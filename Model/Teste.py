@@ -11,8 +11,9 @@ from Model.Usuario import Usuario
 class Teste(BaseModel):
     nome: str
     usuario_id: str
-    lista_questoes_id: List[str]
+    lista_questoes: Optional[List[Questao]]
     resultado: Optional[str]
+    quantidade_questoes: int
     id: str = Field(None, alias='_id')
 
     class Config:

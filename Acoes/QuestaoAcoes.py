@@ -19,7 +19,7 @@ class QuestaoAcoes(AcoesInitiallizer):
 
         try:
             resultado = QuestaoRepository.find_one(_id=self._id)
-            self.handler.resposta = resultado
+            self.handler.resposta_json = resultado
         except Exception as e:
             self.handler.excecao = e
 
@@ -41,8 +41,8 @@ class QuestaoAcoes(AcoesInitiallizer):
             resultado:BulkWriteResult = self.handler.operacoes.comitar()[self.model.Config.title]
             # banco reconheceu a operação
             if resultado.inserted_count == 1:
-                self.handler.resposta = JSONResponse(status_code=status.HTTP_201_CREATED,
-                                                     content=self.model)
+                self.handler.resposta_json = JSONResponse(status_code=status.HTTP_201_CREATED,
+                                                          content=self.model)
             else:
                 #TODO verificar que tipo de excecao cabe aqui
                 print(resultado)
@@ -63,7 +63,7 @@ class QuestaoAcoes(AcoesInitiallizer):
             # banco reconheceu a operação
             if resultado.modified_count == 1:
                 # um self.model foi alterado
-                self.handler.resposta = JSONResponse(status_code=status.HTTP_202_ACCEPTED, content=self.model.dict())
+                self.handler.resposta_json = JSONResponse(status_code=status.HTTP_202_ACCEPTED, content=self.model.dict())
             # resposta de erro
             else:
                 self.handler.excecao = MongoUpdateException(self._id)

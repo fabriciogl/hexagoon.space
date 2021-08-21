@@ -2,23 +2,35 @@
 # reservados.
 from typing import Optional
 
+from starlette.requests import Request
+
 from Repositorio.Mongo.Configuracao.MongoBasico import MongoBasico
 
 
 class ResponseHandler:
 
-    def __init__(self):
-        self._resposta: Optional[dict] = None
+    def __init__(self, request: Request = None):
+        self._resposta_json: Optional[dict] = None
+        self._resposta_html: Optional[str] = None
         self._excecao: Optional[Exception] = None
         self._operacoes: MongoBasico = MongoBasico()
+        self.request = request
 
     @property
-    def resposta(self):
-        return self._resposta
+    def resposta_json(self):
+        return self._resposta_json
 
-    @resposta.setter
-    def resposta(self, value):
-        self._resposta = value
+    @resposta_json.setter
+    def resposta_json(self, value):
+        self._resposta_json = value
+
+    @property
+    def resposta_html(self):
+        return self._resposta_html
+
+    @resposta_html.setter
+    def resposta_html(self, value):
+        self._resposta_html = value
 
     @property
     def excecao(self):
@@ -37,8 +49,15 @@ class ResponseHandler:
         self._operacoes = operacoes
 
     @property
-    def resultado(self):
+    def resultado_json(self):
         if self._excecao:
             raise self._excecao
-        elif self._resposta:
-            return self._resposta
+        elif self._resposta_json:
+            return self._resposta_json
+
+    @property
+    def resultado_html(self):
+        if self._excecao:
+            raise self._excecao
+        elif self._resposta_html:
+            return self._resposta_html

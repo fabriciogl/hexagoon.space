@@ -15,7 +15,7 @@ router = APIRouter(
 class QuestaoEntrypoints:
 
     @staticmethod
-    @router.get("/a/{teste_id}")
+    @router.get("/a/{questao_id}")
     async def find_questao_assinc(questao_id: str):
         resultado = await QuestaoRepository.aprocura_um(_id=questao_id)
         if resultado is None:
@@ -23,14 +23,14 @@ class QuestaoEntrypoints:
         return {"usuario_id": resultado.__dict__}
 
     @staticmethod
-    @router.get("/{teste_id}")
+    @router.get("/{questao_id}")
     async def find(questao_id: constr(regex=r'^[\w\D]{3,4}$')):
 
         handler = ResponseHandler()
         # realiza as acoes necessárias no model
         QuestaoAcoes(_id=questao_id, handler=handler, acao='find')
 
-        return handler.resultado
+        return handler.resultado_json
 
     @staticmethod
     @router.post("")
@@ -40,10 +40,10 @@ class QuestaoEntrypoints:
         # realiza as acoes necessárias no model
         QuestaoAcoes(model=questao, handler=handler, acao='create')
 
-        return handler.resultado
+        return handler.resultado_json
 
     @staticmethod
-    @router.put("/{teste_id}")
+    @router.put("/{questao_id}")
     async def update(questao: Questao, questao_id: constr(regex=r'^[\w\D]{3,4}$')):
 
         handler = ResponseHandler()
@@ -54,4 +54,4 @@ class QuestaoEntrypoints:
         # realiza as acoes necessárias no model
         QuestaoAcoes(_id=questao_id, model=questao, handler=handler, acao='update')
 
-        return handler.resultado
+        return handler.resultado_json

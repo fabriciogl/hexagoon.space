@@ -1,4 +1,6 @@
 from fastapi import APIRouter, HTTPException
+from starlette.requests import Request
+from starlette.responses import HTMLResponse
 
 from Acoes.QuestaoAcoes import QuestaoAcoes
 from Acoes.TesteAcoes import TesteAcoes
@@ -24,17 +26,17 @@ class TesteEntrypoints:
         # realiza as acoes necessárias no model
         QuestaoAcoes(_id=teste_id, handler=handler, acao='find')
 
-        return handler.resultado
+        return handler.resultado_json
 
     @staticmethod
-    @router.post("")
-    async def create(teste: Teste):
+    @router.post("", response_class=HTMLResponse)
+    async def create(teste: Teste, request: Request):
 
-        handler = ResponseHandler()
+        handler = ResponseHandler(request)
         # realiza as acoes necessárias no model
         TesteAcoes(model=teste, handler=handler, acao='create')
 
-        return handler.resultado
+        return handler.resultado_html
 
     @staticmethod
     @router.put("/{teste_id}")
@@ -48,4 +50,4 @@ class TesteEntrypoints:
         # realiza as acoes necessárias no model
         QuestaoAcoes(_id=teste_id, model=teste, handler=handler, acao='update')
 
-        return handler.resultado
+        return handler.resultado_json

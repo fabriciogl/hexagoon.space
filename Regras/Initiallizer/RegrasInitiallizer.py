@@ -27,7 +27,7 @@ class RegrasInitiallizer(ABC):
         method: Callable[[Union[str, BaseModel], ResponseHandler], None]
         for name, method in inspect.getmembers(self, predicate=inspect.ismethod):
             use_cases: re.Match = re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', method.__doc__, flags=re.IGNORECASE)
-            if handler.resultado:
+            if handler.resultado_json:
                 break
             elif use_cases and acao in use_cases.group():
                 method()

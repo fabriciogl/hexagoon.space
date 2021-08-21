@@ -3,6 +3,7 @@
 
 import uvicorn
 from fastapi import FastAPI
+from starlette.staticfiles import StaticFiles
 
 from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints, TesteEntrypoints
 from Excecoes.ExceptionHandlers import invalid_id, not_found
@@ -12,6 +13,8 @@ from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssinc
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 app = FastAPI()
+
+app.mount("/Estaticos", StaticFiles(directory="Estaticos"), name="Estaticos")
 
 app.include_router(QuestaoEntrypoints.router)
 app.include_router(UsuarioEntrypoints.router)
