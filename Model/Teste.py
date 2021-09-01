@@ -13,7 +13,7 @@ class Teste(BaseModel):
     usuario_id: str
     lista_questoes: Optional[List[Questao]]
     resultado: Optional[str]
-    quantidade_questoes: int
+    quantidade_questoes: Optional[int]
     id: str = Field(None, alias='_id')
 
     class Config:

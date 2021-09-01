@@ -9,11 +9,11 @@ from starlette.templating import Jinja2Templates
 
 from Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
 from Excecoes.MongoExceptions import MongoCreateException, MongoUpdateException
-from Excecoes.UsuarioExceptions import UsuarioCreateException
 from Model.Teste import Teste
+from Repositorio.Mongo.TesteRepository import TesteRepository
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="Templates")
 
 class TesteAcoes(AcoesInitiallizer):
     """ Classe do tipo NAMESPACE para aplicar ações ao self.model Teste """
@@ -22,8 +22,10 @@ class TesteAcoes(AcoesInitiallizer):
         """ uso : [find] """
 
         try:
-            resultado = QuestaoRepository.find_one(_id=self._id)
-            self.handler.resposta_json = resultado
+            resultado = TesteRepository.find_one(_id=self._id)
+            self.handler.resposta_html = templates.TemplateResponse("testeCorreto.html",
+                                                                    {"request": self.handler.request,
+                                                                     "teste": resultado.dict()})
         except Exception as e:
             self.handler.excecao = e
 

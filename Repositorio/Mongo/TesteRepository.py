@@ -4,11 +4,12 @@ from pydantic import BaseModel
 
 from Excecoes.MongoExceptions import MongoFindException1, MongoFindException2
 from Model.Questao import Questao
+from Model.Teste import Teste
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 
-class QuestaoRepository:
+class TesteRepository:
 
     @staticmethod
     async def aprocura_um(_id: str):
@@ -35,28 +36,9 @@ class QuestaoRepository:
         """
 
         resultado_bd: dict = MongoSetupSincrono \
-            .db_client['questao'] \
+            .db_client['teste'] \
             .find_one({'_id': _id})
 
         if resultado_bd is None:
             raise MongoFindException2()
-        return Questao(**resultado_bd)
-
-    @staticmethod
-    def make_teste(quantidade: int):
-        """
-        método para recuperar do banco o model especificada
-        Args:
-            i: string de identificacao
-
-        Returns:
-            model usuario
-        """
-
-        resultado_bd: dict = MongoSetupSincrono \
-            .db_client['questao'] \
-            .find(limit=quantidade)
-
-        if resultado_bd is None:
-            raise MongoFindException2()
-        return [Questao(**questao) for questao in resultado_bd]
+        return Teste(**resultado_bd)

@@ -20,13 +20,13 @@ class TesteEntrypoints:
 
     @staticmethod
     @router.get("/{teste_id}")
-    async def find(teste_id: constr(regex=r'^[\w\D]{3,4}$')):
+    async def find(teste_id: str, request: Request):
 
-        handler = ResponseHandler()
+        handler = ResponseHandler(request)
         # realiza as acoes necessárias no model
-        QuestaoAcoes(_id=teste_id, handler=handler, acao='find')
+        TesteAcoes(_id=teste_id, handler=handler, acao='find')
 
-        return handler.resultado_json
+        return handler.resultado_html
 
     @staticmethod
     @router.post("", response_class=HTMLResponse)

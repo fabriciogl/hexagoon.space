@@ -14,6 +14,7 @@ class Questao(BaseModel):
     conteudo_imagem: Optional[str]
     resposta: Optional[str]
     qid: Optional[str]
+    revisada: Optional[bool]
     id: str = Field(None, alias='_id')  #alias, pois o Pydantic esconde campos privados
 
     class Config:
