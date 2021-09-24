@@ -30,7 +30,7 @@ class TesteAcoes(AcoesInitiallizer):
             self.handler.excecao = e
 
     def _1_create(self):
-        """ uso : [create] """
+        """ uso : [create.1] """
         self.model: Teste
         self.model.id = base64.b64encode(datetime.now().strftime('%Y%m%d%H%M%S').encode()).decode()
 
@@ -39,7 +39,7 @@ class TesteAcoes(AcoesInitiallizer):
         self.handler.operacoes.create(self.model)
     
     def _2_create(self):
-        """ uso : [create] """
+        """ uso : [create.2] """
         # conclui as operacoes no banco
         try:
             resultado:BulkWriteResult = self.handler.operacoes.comitar()[self.model.Config.title]

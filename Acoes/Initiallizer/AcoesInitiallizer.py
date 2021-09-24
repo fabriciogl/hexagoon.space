@@ -11,7 +11,7 @@ from Entrypoints.Handler.ResponseHandler import ResponseHandler
 class AcoesInitiallizer(ABC):
     """ classe que contém o construtor das classes do tipo Acao"""
 
-    def __init__(self, handler: ResponseHandler, acao: str, _id: str = None, model: Union[str, BaseModel] = None):
+    def __init__(self, handler: ResponseHandler, acao: str, _id: str = None, model: BaseModel = None):
         """
         uso : []
         contrutor a ser herdado por toda classe do tipo Acao
@@ -27,10 +27,10 @@ class AcoesInitiallizer(ABC):
 
         method: Callable[[Union[str, BaseModel], ResponseHandler], None]
         for name, method in inspect.getmembers(self, predicate=inspect.ismethod):
-            use_cases: re.Match = re.search(r'uso\s{,4}[:=]{1,2}\s{,4}\[.*]', method.__doc__, flags=re.IGNORECASE)
+            use_cases: re.Match = re.search(r'(?P<use>uso\s{,4}[:=]{1,2}\s{,4}\[.*])', method.__doc__, flags=re.IGNORECASE)
             if handler.resultado_json:
                 break
-            elif use_cases and acao in use_cases.group():
+            elif use_cases and acao in use_cases.group('use'):
                 method()
             else:
                 continue

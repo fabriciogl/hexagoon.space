@@ -8,6 +8,7 @@ from Entrypoints.Handler.ResponseHandler import ResponseHandler
 from Model.Questao import Questao
 from Model.Teste import Teste
 from Regras.QuestaoRegras import QuestaoRegras
+from Regras.TesteRegras import TesteRegras
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 from Validations.CustomValidations import constr
 
@@ -33,6 +34,8 @@ class TesteEntrypoints:
     async def create(teste: Teste, request: Request):
 
         handler = ResponseHandler(request)
+        # regras de validação do teste
+        TesteRegras(model=teste, handler=handler, acao='create')
         # realiza as acoes necessárias no model
         TesteAcoes(model=teste, handler=handler, acao='create')
 
