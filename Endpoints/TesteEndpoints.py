@@ -4,7 +4,7 @@ from starlette.responses import HTMLResponse
 
 from Acoes.QuestaoAcoes import QuestaoAcoes
 from Acoes.TesteAcoes import TesteAcoes
-from Entrypoints.Handler.ResponseHandler import ResponseHandler
+from Endpoints.Handler.ResponseHandler import ResponseHandler
 from Model.Questao import Questao
 from Model.Teste import Teste
 from Regras.QuestaoRegras import QuestaoRegras
@@ -17,7 +17,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-class TesteEntrypoints:
+class TesteEndpoints:
 
     @staticmethod
     @router.get("/{teste_id}")

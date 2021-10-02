@@ -7,15 +7,14 @@ from starlette.responses import JSONResponse
 
 from Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
 from Excecoes.MongoExceptions import MongoCreateException, MongoUpdateException
-from Excecoes.UsuarioExceptions import UsuarioCreateException
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 
 
 class QuestaoAcoes(AcoesInitiallizer):
-    """ Classe do tipo NAMESPACE para aplicar ações ao self.model Usuario """
+    """ Classe do tipo NAMESPACE para aplicar ações ao self.model Questao """
 
-    def _1_find(self):
-        """ uso : [find] """
+    def action_1(self):
+        """ use : [find_1] """
 
         try:
             resultado = QuestaoRepository.find_one(_id=self._id)
@@ -23,19 +22,19 @@ class QuestaoAcoes(AcoesInitiallizer):
         except Exception as e:
             self.handler.excecao = e
 
-    def _1_create(self):
-        """ uso : [create] """
+    def action_2(self):
+        """ use : [create_1] """
         self.model.id = base64.b64encode(self.model.qid.replace('Q', '').encode()).decode()
         self.handler.operacoes.create(self.model)
 
     
-    def _1_update(self):
-        """ uso : [update] """
+    def action_3(self):
+        """ use : [update_1] """
         self.handler.operacoes.update(_id=self._id, model=self.model)
 
     
-    def _2_create(self):
-        """ uso : [create] """
+    def action_4(self):
+        """ use : [create_2] """
         # conclui as operacoes no banco
         try:
             resultado:BulkWriteResult = self.handler.operacoes.comitar()[self.model.Config.title]
@@ -53,8 +52,8 @@ class QuestaoAcoes(AcoesInitiallizer):
             self.handler.excecao = MongoCreateException(model=self.model)
 
     
-    def _2_update(self):
-        """ uso : [update] """
+    def action_5(self):
+        """ use : [update_2] """
         # conclui as operacoes no banco
         try:
             # recupera os resultados específicos do self.model

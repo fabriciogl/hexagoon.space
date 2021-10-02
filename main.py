@@ -5,7 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 
-from Entrypoints import QuestaoEntrypoints, UsuarioEntrypoints, TesteEntrypoints
+from Endpoints import QuestaoEndpoints, UsuarioEndpoints, TesteEndpoints
 from Excecoes.ExceptionHandlers import invalid_id, not_found
 from Excecoes.GenericValidationExceptions import InvalidIdException
 from Excecoes.MongoExceptions import MongoFindException2
@@ -16,9 +16,9 @@ app = FastAPI()
 
 app.mount("/Estaticos", StaticFiles(directory="Estaticos"), name="Estaticos")
 
-app.include_router(QuestaoEntrypoints.router)
-app.include_router(UsuarioEntrypoints.router)
-app.include_router(TesteEntrypoints.router)
+app.include_router(QuestaoEndpoints.router)
+app.include_router(UsuarioEndpoints.router)
+app.include_router(TesteEndpoints.router)
 
 app.add_event_handler("startup", MongoSetupAssincrono.connect_db)
 app.add_event_handler("startup", MongoSetupSincrono.connect_db)

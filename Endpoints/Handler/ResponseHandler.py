@@ -48,6 +48,8 @@ class ResponseHandler:
     def operacoes(self, operacoes: MongoBasico):
         self._operacoes = operacoes
 
+    #TODO verificar uma forma de tornar o resultado uma classe abstrata,
+    # que desconhe o tipo de resposta
     @property
     def resultado_json(self):
         if self._excecao:

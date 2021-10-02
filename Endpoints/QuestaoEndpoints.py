@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 from Acoes.QuestaoAcoes import QuestaoAcoes
-from Entrypoints.Handler.ResponseHandler import ResponseHandler
+from Endpoints.Handler.ResponseHandler import ResponseHandler
 from Model.Questao import Questao
 from Regras.QuestaoRegras import QuestaoRegras
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
@@ -12,7 +12,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-class QuestaoEntrypoints:
+class QuestaoEndpoints:
 
     @staticmethod
     @router.get("/a/{questao_id}")

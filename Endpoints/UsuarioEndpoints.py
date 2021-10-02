@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from Acoes.UsuarioAcoes import UsuarioAcoes
-from Entrypoints.Handler.ResponseHandler import ResponseHandler
+from Endpoints.Handler.ResponseHandler import ResponseHandler
 from Model.Usuario import Usuario
 from Regras.UsuarioRegras import UsuarioRegras
 from Validations.CustomValidations import constr
@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-class UsuarioEntrypoints:
+class UsuarioEndpoints:
 
     @staticmethod
     @router.get("/{usuario_id}")

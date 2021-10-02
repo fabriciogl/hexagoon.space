@@ -5,7 +5,7 @@ from typing import Callable, Union, Optional
 
 from pydantic import BaseModel
 
-from Entrypoints.Handler.ResponseHandler import ResponseHandler
+from Endpoints.Handler.ResponseHandler import ResponseHandler
 
 
 class RegrasInitiallizer(ABC):
