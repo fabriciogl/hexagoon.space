@@ -1,8 +1,4 @@
-from functools import lru_cache
-
-from pydantic import BaseModel
-
-from Excecoes.MongoExceptions import MongoFindException1, MongoFindException2
+from API.V1.Excecoes.MongoExceptions import MongoFindException2
 from Model.Questao import Questao
 from Model.Teste import Teste
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono

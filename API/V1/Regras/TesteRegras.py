@@ -1,6 +1,6 @@
-from Excecoes.TesteExceptions import TesteCreateException
+from API.V1.Excecoes.TesteExceptions import TesteCreateException
 from Model.Teste import Teste
-from Regras.Initiallizer.RegrasInitiallizer import RegrasInitiallizer
+from API.V1.Regras.Initiallizer.RegrasInitiallizer import RegrasInitiallizer
 
 
 class TesteRegras(RegrasInitiallizer):

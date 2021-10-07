@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "hexagoon"
+version = "0.1.0"
+description = "backend app for hexagoon site"
+authors = ["Fabricio Gatto Lourençone <fa_gatto7@yahoo.com.br>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.68.1"
+pymongo = "^3.12.0"
+beautifulsoup4 = "^4.10.0"
+uvicorn = "^0.15.0"
+gunicorn = "^20.1.0"
+passlib = "^1.7.4"
+bcrypt = "^3.2.0"
+PyJWT = {extras = ["crypto"], version = "^2.1.0"}
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

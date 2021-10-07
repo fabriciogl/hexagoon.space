@@ -1,15 +1,14 @@
-#  Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+#  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 import json
 
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from Excecoes.GenericValidationExceptions import InvalidIdException
-from Excecoes.MongoExceptions import MongoFindException2
+from API.V1.Excecoes.GenericValidationExceptions import InvalidIdException
+from API.V1.Excecoes.MongoExceptions import MongoFindException2
 
 
-def invalid_id(request: Request,
-      exc: InvalidIdException):
+def invalid_id(request: Request, exc: InvalidIdException):
     try:
         print(
             f'IP {request.client.host} - Port {request.client.port} - {request.headers.values()} - {request.path_params}')

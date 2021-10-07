@@ -1,16 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
-from Acoes.QuestaoAcoes import QuestaoAcoes
-from Acoes.TesteAcoes import TesteAcoes
-from Endpoints.Handler.ResponseHandler import ResponseHandler
-from Model.Questao import Questao
+from API.V1.Acoes.QuestaoAcoes import QuestaoAcoes
+from API.V1.Acoes.TesteAcoes import TesteAcoes
+from API.V1.Endpoints.Handler.ResponseHandler import ResponseHandler
 from Model.Teste import Teste
-from Regras.QuestaoRegras import QuestaoRegras
-from Regras.TesteRegras import TesteRegras
-from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
-from Validations.CustomValidations import constr
+from API.V1.Regras.QuestaoRegras import QuestaoRegras
+from API.V1.Regras.TesteRegras import TesteRegras
+from Validations.PydanticCustomValidations import constr
 
 router = APIRouter(
     prefix="/teste",

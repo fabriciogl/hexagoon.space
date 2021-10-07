@@ -1,14 +1,14 @@
 from fastapi import APIRouter, HTTPException
 
-from Acoes.QuestaoAcoes import QuestaoAcoes
-from Endpoints.Handler.ResponseHandler import ResponseHandler
+from API.V1.Acoes.QuestaoAcoes import QuestaoAcoes
+from API.V1.Endpoints.Handler.ResponseHandler import ResponseHandler
 from Model.Questao import Questao
-from Regras.QuestaoRegras import QuestaoRegras
+from API.V1.Regras.QuestaoRegras import QuestaoRegras
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
-from Validations.CustomValidations import constr
+from Validations.PydanticCustomValidations import constr
 
 router = APIRouter(
-    prefix="/questoes",
+    prefix="/questao",
     responses={404: {"description": "Not found"}},
 )
 
@@ -23,12 +23,12 @@ class QuestaoEndpoints:
         return {"usuario_id": resultado.__dict__}
 
     @staticmethod
-    @router.get("/{questao_id}")
-    async def find(questao_id: constr(regex=r'^[\w\D]{3,4}$')):
+    @router.get("/{id}")
+    async def find(id: constr(regex=r'^[\w\D]{3,4}$')):
 
         handler = ResponseHandler()
         # realiza as acoes necessárias no model
-        QuestaoAcoes(_id=questao_id, handler=handler, acao='find')
+        QuestaoAcoes(_id=id, handler=handler, acao='find')
 
         return handler.resultado_json
 
@@ -43,15 +43,15 @@ class QuestaoEndpoints:
         return handler.resultado_json
 
     @staticmethod
-    @router.put("/{questao_id}")
-    async def update(questao: Questao, questao_id: constr(regex=r'^[\w\D]{3,4}$')):
+    @router.put("/{id}")
+    async def update(questao: Questao, id: constr(regex=r'^[\w\D]{3,4}$')):
 
         handler = ResponseHandler()
 
         # regras aplicáveis ao model
-        QuestaoRegras(_id=questao_id, model=questao, handler=handler, acao='update')
+        QuestaoRegras(_id=id, model=questao, handler=handler, acao='update')
 
         # realiza as acoes necessárias no model
-        QuestaoAcoes(_id=questao_id, model=questao, handler=handler, acao='update')
+        QuestaoAcoes(_id=id, model=questao, handler=handler, acao='update')
 
         return handler.resultado_json

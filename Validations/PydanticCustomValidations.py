@@ -1,12 +1,9 @@
-#  Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
-
-#  Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+#  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 import re
 from typing import Union, Type
 
 from pydantic.types import ConstrainedStr, _registered
-
-from Excecoes.GenericValidationExceptions import GenericValidationException
+from API.V1.Excecoes.GenericValidationExceptions import GenericValidationException
 
 
 class CustomIdValidation(ConstrainedStr):

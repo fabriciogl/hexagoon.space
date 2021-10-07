@@ -6,7 +6,7 @@ from typing import Callable, Union, re as t_re
 
 from pydantic import BaseModel
 
-from Endpoints.Handler.ResponseHandler import ResponseHandler
+from API.V1.Endpoints.Handler.ResponseHandler import ResponseHandler
 
 
 class AcoesInitiallizer(ABC):
@@ -20,13 +20,14 @@ class AcoesInitiallizer(ABC):
         Args:
             _id (str): id do model
             model: O model que será validado pela classe acao
-            acao: string de filtragem da acao desejada
+            acao: string da acao desejada
         """
         self._id = _id
         self.model = model
         self.handler = handler
 
         # verifica se a lista de acoes do objeto foi inicializada
+        # metodo da classe instaciada
         self.create_list_action()
 
         # Calable usa um conchetes com a primeira posição sendo os parametros, e a segunda o retorno
@@ -43,21 +44,24 @@ class AcoesInitiallizer(ABC):
 
     @classmethod
     def create_list_action(cls):
+        """metodo que cria a lista de acoes de cada classe instaciada de acoes
+           e salva em um dicionario criado na classe instaciada"""
         if not hasattr(cls, 'actions'):
-            # cria um atributo no classe do objeto, chamado 'action'
+            # cria um atributo na classe instaciada, chamado 'action'
             setattr(cls, 'actions', {})
             # caso não tenha, aloca as acoes e metodos de forma ordenada
             for name, method in inspect.getmembers(cls, predicate=inspect.isfunction):
-                doc_string = method.__doc__ if method.__doc__ else ''
+                doc_string = method.__doc__ if method.__doc__ else '' # evita erro de metodo/funcao sem docstring
                 use_cases: t_re.Match = re.search(r'(?P<use>use\s{,4}[:=]{1,2}\s{,4}\[.*])', doc_string, flags=re.IGNORECASE)
                 if use_cases and use_cases.group('use'):
+                    # identifica todas as acoes declaradas na funcao
                     list_uses = re.findall(r'\w*\d', use_cases.group('use'))
                     for use_order in list_uses:
+                        use, order = use_order.split('_')
                         # Adicionei ao dicionario actions uma chave com o nome do metodo e valor
                         # após, uma chave com a ordem e o metodo como valor
-                        use, order = use_order.split('_')
                         cls.actions \
-                            .setdefault(str(use), []) \
+                            .setdefault(use, []) \
                             .append((int(order), method))
 
             # ordena a lista de metodos de cada action

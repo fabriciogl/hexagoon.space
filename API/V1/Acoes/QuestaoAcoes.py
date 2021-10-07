@@ -5,8 +5,8 @@ from pymongo.results import BulkWriteResult
 from starlette import status
 from starlette.responses import JSONResponse
 
-from Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
-from Excecoes.MongoExceptions import MongoCreateException, MongoUpdateException
+from API.V1.Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
+from API.V1.Excecoes.MongoExceptions import MongoCreateException, MongoUpdateException
 from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
 
 

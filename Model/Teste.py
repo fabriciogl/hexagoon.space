@@ -1,10 +1,9 @@
-#  Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+#  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 from typing import List, Optional
 
 from pydantic import Field, BaseModel
 
 from Model.Questao import Questao
-from Model.Usuario import Usuario
 
 
 # Não se usa dataclass e Base.Model ao mesmo tempo

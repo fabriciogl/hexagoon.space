@@ -1,4 +1,4 @@
-# Copyright (c) 2021. QuickTest. App de estudo por questões. Criador: Fabricio Gatto Lourençone. Todos os
+# Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os
 # direitos reservados.
 import json
 import os
