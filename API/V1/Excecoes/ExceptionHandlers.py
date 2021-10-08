@@ -12,9 +12,9 @@ def invalid_id(request: Request, exc: InvalidIdException):
     try:
         print(
             f'IP {request.client.host} - Port {request.client.port} - {request.headers.values()} - {request.path_params}')
-    except json.decoder.JSONDecodeError:
+    except json.decoder.JSONDecodeError as e:
         # Request had invalid or no body
-        pass
+        print(e)
 
     return JSONResponse({"detail": exc.detail}, status_code=404)
 
@@ -24,8 +24,8 @@ def not_found(request: Request,
     try:
         print(
             f'IP {request.client.host} - Port {request.client.port} - {request.headers.values()} - {request.path_params}')
-    except json.decoder.JSONDecodeError:
-        # Request had invalid or no body
-        pass
+    except json.decoder.JSONDecodeError as e:
+    # Request had invalid or no body
+        print(e)
 
     return JSONResponse({"detail": exc.detail}, status_code=404)

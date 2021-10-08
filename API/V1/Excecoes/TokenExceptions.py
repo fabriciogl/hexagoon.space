@@ -16,3 +16,8 @@ class TokenInvalidException(HTTPException):
     def __init__(self):
         super().__init__(401, f'Token inválido.')
 
+class TokenRoleException(HTTPException):
+
+    def __init__(self):
+        super().__init__(401, f'Usuário sem permissão.')
+

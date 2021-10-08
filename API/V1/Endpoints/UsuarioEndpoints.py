@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import jwt
 from fastapi import APIRouter, Depends
+from fastapi.params import Security
 from starlette.requests import Request
 
 from API.V1.Acoes.UsuarioAcoes import UsuarioAcoes
@@ -13,7 +14,7 @@ from API.V1.Regras.UsuarioRegras import UsuarioRegras
 from Repositorio.Mongo.UsuarioRepository import UsuarioRepository
 from Validations.PasswordValidation import check_password
 from Validations.PydanticCustomValidations import constr
-from Validations.TokenValidation import get_token_header
+from Validations.TokenValidation import valida_token, valida_role
 
 router = APIRouter(
     prefix="/usuario",
@@ -28,10 +29,12 @@ class UsuarioEndpoints:
 
     @staticmethod
     @router.get("/{id}",
-                dependencies=[Depends(get_token_header)]
+                dependencies=[Depends(valida_token)]
                 )
-    async def find(id: constr(regex=r'^[a-f\d]{16}U$')):
-        handler = ResponseHandler()
+    async def find(
+            id: constr(regex=r'^[a-f\d]{16}U$'),
+            handler: ResponseHandler = Security(valida_role, scopes=["user"])
+   ):
         # realiza as acoes necessárias no model
         UsuarioAcoes(_id=id, handler=handler, acao='find')
 
@@ -58,11 +61,11 @@ class UsuarioEndpoints:
                 response_model=Usuario,
                 response_model_include={"senha"},
                 status_code=202,
-                dependencies=[Depends(get_token_header)]
+                dependencies=[Depends(valida_token)]
                 )
-    async def update(usuario: Usuario, usuario_id: constr(regex=r'^[a-f\d]{16}U$')):
-
-        handler = ResponseHandler()
+    async def update(usuario: Usuario,
+                     usuario_id: constr(regex=r'^[a-f\d]{16}U$'),
+                     handler: ResponseHandler = Security(valida_role, scopes=["pro"])):
 
         # regras aplicáveis ao model
         UsuarioRegras(_id=usuario_id, model=usuario, handler=handler, acao='update')
@@ -80,7 +83,7 @@ class UsuarioEndpoints:
 
         ip = request.client.host
         expire = datetime.utcnow() + timedelta(minutes=15)
-        data = {"sub": usuario.id, "on": ip, "exp": expire}
+        data = {"sub": usuario.id, "on": ip, "exp": expire, 'roles': usuario.roles}
         encoded_jwt = jwt.encode(payload=data, key=os.getenv('HASH_1'), algorithm=os.getenv('HASH_2'))
 
-        return {"token": encoded_jwt, "exp": expire}
+        return {"token": encoded_jwt, "exp": expire, 'roles': usuario.roles}

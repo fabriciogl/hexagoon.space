@@ -9,8 +9,10 @@ from API.V1.Excecoes.MongoExceptions import MongoFindException2
 from API.V1.Excecoes.TokenExceptions import TokenExpiredException, TokenInvalidException
 from Repositorio.Mongo.UsuarioRepository import UsuarioRepository
 
-
-async def get_token_header(request: Request):
+#TODO construir uma funcao a ser iniciada com o app que varerá as classes endpoints
+# e criará uma lista de classes/metodos e autorizacoes. As autorizacoes serão declaradas nos
+# doc de cada endpoint.
+async def check_roles_authorized(request: Request):
     if request.headers.get('Authorization') is None:
         raise TokenInvalidException()
     try:

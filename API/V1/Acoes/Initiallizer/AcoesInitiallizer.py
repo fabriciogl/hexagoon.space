@@ -69,4 +69,31 @@ class AcoesInitiallizer(ABC):
                 cls.actions[action].sort(key=itemgetter(0))
 
 
+    @classmethod
+    def create_list_roles(cls):
+        """metodo que cria a lista de roles de cada classe instaciada de acoes
+           e salva em um dicionario criado na classe instaciada"""
+        if not hasattr(cls, 'roles'):
+            # cria um atributo na classe instaciada, chamado 'roles'
+            setattr(cls, 'actions', {})
+            # caso não tenha, aloca as acoes e metodos de forma ordenada
+            for name, method in inspect.getmembers(cls, predicate=inspect.isfunction):
+                doc_string = method.__doc__ if method.__doc__ else '' # evita erro de metodo/funcao sem docstring
+                use_cases: t_re.Match = re.search(r'(?P<use>use\s{,4}[:=]{1,2}\s{,4}\[.*])', doc_string, flags=re.IGNORECASE)
+                if use_cases and use_cases.group('use'):
+                    # identifica todas as acoes declaradas na funcao
+                    list_uses = re.findall(r'\w*\d', use_cases.group('use'))
+                    for use_order in list_uses:
+                        use, order = use_order.split('_')
+                        # Adicionei ao dicionario actions uma chave com o nome do metodo e valor
+                        # após, uma chave com a ordem e o metodo como valor
+                        cls.actions \
+                            .setdefault(use, []) \
+                            .append((int(order), method))
+
+            # ordena a lista de metodos de cada action
+            for action in cls.actions:
+                cls.actions[action].sort(key=itemgetter(0))
+
+
 
