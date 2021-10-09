@@ -18,7 +18,7 @@ class UsuarioRepository:
             model usuario
         """
         resultado_bd: dict = MongoSetupSincrono \
-            .db_client['usuario'] \
+            .db_client['Usuario'] \
             .find_one({'_id': _id})
 
         # Jeito MUUUITO errado de fazer a conexão com o banco
@@ -40,7 +40,7 @@ class UsuarioRepository:
         """
         campo, valor = campo_valor
         resultado_bd: dict = MongoSetupSincrono \
-            .db_client['usuario'] \
+            .db_client['Usuario'] \
             .find_one({campo: valor})
 
         # Jeito MUUUITO errado de fazer a conexão com o banco

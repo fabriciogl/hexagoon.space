@@ -10,4 +10,4 @@ class Token(BaseModel):
     roles: Optional[List[str]]
 
     class Config:
-        title = 'token'
+        title = 'Token'

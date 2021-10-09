@@ -13,4 +13,4 @@ class Usuario(BaseModel):
     id: Optional[str] = Field(None, alias='_id')  # álias permite importar campo_valor com nome diferente do model
 
     class Config:
-        title = 'usuario'
+        title = 'Usuario'

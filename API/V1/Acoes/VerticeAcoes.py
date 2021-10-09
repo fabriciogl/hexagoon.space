@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 
 from pymongo.errors import BulkWriteError
 from pymongo.results import BulkWriteResult
@@ -7,24 +8,28 @@ from starlette.responses import JSONResponse
 
 from API.V1.Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
 from API.V1.Excecoes.MongoExceptions import MongoCreateException, MongoUpdateException
-from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
+from Model.Vertice import Vertice
+from Repositorio.Mongo.VerticeRepository import VerticeRepository
 
 
-class QuestaoAcoes(AcoesInitiallizer):
-    """ Classe do tipo NAMESPACE para aplicar ações ao self.model Questao """
+class VerticeAcoes(AcoesInitiallizer):
+    """ Classe do tipo NAMESPACE para aplicar ações ao Model"""
+
+    model: Vertice
 
     def action_1(self):
         """ use : [find_1] """
 
         try:
-            resultado = QuestaoRepository.find_one(_id=self._id)
+            resultado = VerticeRepository.find_one(_id=self._id)
             self.handler.resposta_json = resultado
         except Exception as e:
             self.handler.excecao = e
 
     def action_2(self):
         """ use : [create_1] """
-        self.model.id = base64.b64encode(self.model.qid.replace('Q', '').encode()).decode()
+        self.model.id = base64.b64encode(datetime.now().isoformat(timespec='milliseconds').encode()).decode()
+        self.model.autores.append(self.handler.usuario.id)
         self.handler.operacoes.create(self.model)
 
     
@@ -34,14 +39,13 @@ class QuestaoAcoes(AcoesInitiallizer):
 
     
     def action_4(self):
-        """ use : [create_2] """
+        """ use : [create_3] """
         # conclui as operacoes no banco
         try:
             resultado:BulkWriteResult = self.handler.operacoes.comitar()[self.model.Config.title]
             # banco reconheceu a operação
             if resultado.inserted_count == 1:
-                self.handler.resposta_json = JSONResponse(status_code=status.HTTP_201_CREATED,
-                                                          content=self.model)
+                self.handler.resposta_json = self.model.dict(by_alias=True)
             else:
                 #TODO verificar que tipo de excecao cabe aqui
                 print(resultado)

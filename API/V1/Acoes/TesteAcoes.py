@@ -11,7 +11,7 @@ from API.V1.Acoes.Initiallizer.AcoesInitiallizer import AcoesInitiallizer
 from API.V1.Excecoes.MongoExceptions import MongoCreateException, MongoUpdateException
 from Model.Teste import Teste
 from Repositorio.Mongo.TesteRepository import TesteRepository
-from Repositorio.Mongo.QuestaoRepository import QuestaoRepository
+from Repositorio.Mongo.VerticeRepository import VerticeRepository
 
 templates = Jinja2Templates(directory="Templates")
 
@@ -34,7 +34,7 @@ class TesteAcoes(AcoesInitiallizer):
         self.model: Teste
         self.model.id = base64.b64encode(datetime.now().strftime('%Y%m%d%H%M%S').encode()).decode()
 
-        lista_questoes = QuestaoRepository.make_teste(self.model.quantidade_questoes)
+        lista_questoes = VerticeRepository.make_teste(self.model.quantidade_questoes)
         self.model.lista_questoes = lista_questoes
         self.handler.operacoes.create(self.model)
     

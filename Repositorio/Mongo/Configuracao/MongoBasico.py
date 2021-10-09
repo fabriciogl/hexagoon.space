@@ -14,11 +14,7 @@ class MongoBasico:
 
     def create(self, model: BaseModel) -> None:
         """
-          método do OBJETO para salvar a instância em banco.
-        Args:
-            instância do model
-        Returns:
-            Task.result()
+          método do handler para persistir a instância em memória.
         """
         # identifica o nome da classe do model
         # para identificar a coleção para salvar

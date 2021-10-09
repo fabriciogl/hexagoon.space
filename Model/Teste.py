@@ -3,14 +3,14 @@ from typing import List, Optional
 
 from pydantic import Field, BaseModel
 
-from Model.Questao import Questao
+from Model.Vertice import Vertice
 
 
 # Não se usa dataclass e Base.Model ao mesmo tempo
 class Teste(BaseModel):
     nome: str
     usuario_id: str
-    lista_questoes: Optional[List[Questao]]
+    lista_questoes: Optional[List[Vertice]]
     resultado: Optional[str]
     quantidade_questoes: Optional[int]
     id: str = Field(None, alias='_id')

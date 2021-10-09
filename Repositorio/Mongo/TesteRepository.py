@@ -1,5 +1,5 @@
 from API.V1.Excecoes.MongoExceptions import MongoFindException2
-from Model.Questao import Questao
+from Model.Vertice import Vertice
 from Model.Teste import Teste
 from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
 from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
@@ -18,7 +18,7 @@ class TesteRepository:
             model usuario
         """
         resultado_bd: dict = await MongoSetupAssincrono.db_client['usuario'].find_one({'_id': _id})
-        return Questao(**resultado_bd)
+        return Vertice(**resultado_bd)
 
     @staticmethod
     def find_one(_id: str):

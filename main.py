@@ -5,7 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 
-from API.V1.Endpoints import QuestaoEndpoints, TesteEndpoints, UsuarioEndpoints
+from API.V1.Endpoints import VerticeEndpoints, TesteEndpoints, UsuarioEndpoints
 from API.V1.Excecoes.ExceptionHandlers import invalid_id, not_found
 from API.V1.Excecoes.GenericValidationExceptions import InvalidIdException
 from API.V1.Excecoes.MongoExceptions import MongoFindException2
@@ -16,7 +16,7 @@ app = FastAPI()
 
 app.mount("/Estaticos", StaticFiles(directory="Estaticos"), name="Estaticos")
 
-app.include_router(QuestaoEndpoints.router)
+app.include_router(VerticeEndpoints.router)
 app.include_router(UsuarioEndpoints.router)
 app.include_router(TesteEndpoints.router)
 

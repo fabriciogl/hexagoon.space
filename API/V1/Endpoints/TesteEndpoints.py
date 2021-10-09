@@ -2,11 +2,11 @@ from fastapi import APIRouter
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
-from API.V1.Acoes.QuestaoAcoes import QuestaoAcoes
+from API.V1.Acoes.VerticeAcoes import VerticeAcoes
 from API.V1.Acoes.TesteAcoes import TesteAcoes
 from API.V1.Endpoints.Handler.ResponseHandler import ResponseHandler
 from Model.Teste import Teste
-from API.V1.Regras.QuestaoRegras import QuestaoRegras
+from API.V1.Regras.VerticeRegras import VerticeRegras
 from API.V1.Regras.TesteRegras import TesteRegras
 from Validations.PydanticCustomValidations import constr
 
@@ -46,9 +46,9 @@ class TesteEndpoints:
         handler = ResponseHandler()
 
         # regras aplicáveis ao model
-        QuestaoRegras(_id=teste_id, model=teste, handler=handler, acao='update')
+        VerticeRegras(_id=teste_id, model=teste, handler=handler, acao='update')
 
         # realiza as acoes necessárias no model
-        QuestaoAcoes(_id=teste_id, model=teste, handler=handler, acao='update')
+        VerticeAcoes(_id=teste_id, model=teste, handler=handler, acao='update')
 
         return handler.resultado_json
