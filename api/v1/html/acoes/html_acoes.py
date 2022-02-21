@@ -9,7 +9,7 @@ from api.v1.autenticacao.endpoint.autenticacao_endpoints import AutenticacaoEndp
 from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
 from api.v1.recursos.basic_exceptions.sql_exceptions import SQLException
 from api.v1.usuario.model.usuario_model import UsuarioOut
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario, Artigo
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Artigo
 from templates.Jinja2 import create_templates
 
 templates = create_templates()

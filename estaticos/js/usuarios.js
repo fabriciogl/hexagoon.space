@@ -6,7 +6,7 @@ async function excluirUsuario(id){
 
     const token = localStorage.getItem("jwt");
 
-    const response = await fetch(`http://0.0.0.0:8000/usuario/${id}`, {
+    const response = await fetch(`https://hexagoon-ev3arw55ca-ue.a.run.app/usuario/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

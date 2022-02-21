@@ -11,7 +11,7 @@ from api.v1.html.regras.html_regras import HTMLRegras
 from api.v1.recursos.excecao_model import Message
 from api.v1.recursos.response_handler import ResponseHandler
 from api.v1.recursos.validations.password_validation import check_password
-from banco_dados.sql_alchemy.configuracao.data_schema import SQLSincrono
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import SQLSincrono
 
 router = APIRouter(
     prefix="/hexagoon",

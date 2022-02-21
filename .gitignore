@@ -222,3 +222,5 @@ Documentos/
 
 .secrets.toml
 auth_gcp.json
+
+banco_dados/sql_alchemy/configuracao/oracle/client/*

@@ -7,7 +7,7 @@ from api.v1.as_usuario_role.excecoes.as_usuario_role_exceptions import AsUsuario
 from api.v1.as_usuario_role.model.as_usuario_role_model import AsUsuarioRoleIn
 from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
 from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario, Role, AsUsuarioRole
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Role, AsUsuarioRole
 
 
 class AsUsuarioRoleRegras(RegrasInitiallizer):

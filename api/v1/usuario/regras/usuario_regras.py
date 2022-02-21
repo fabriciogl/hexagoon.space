@@ -7,7 +7,7 @@ from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
 from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.usuario.excecoes.usuario_excecoes import UsuarioCreateException, UsuarioUpdateException
 from api.v1.usuario.model.usuario_model import UsuarioIn
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario
 
 
 class UsuarioRegras(RegrasInitiallizer):

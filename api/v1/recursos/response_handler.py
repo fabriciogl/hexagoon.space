@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 
 from api.v1.usuario.model.usuario_model import UsuarioIn
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario
 
 
 class ResponseHandler:

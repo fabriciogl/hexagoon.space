@@ -13,7 +13,7 @@ from api.v1.recursos.basic_exceptions.generic_validation_exceptions import Inval
 from api.v1.recursos.basic_exceptions.handler_exception import invalid_id
 from api.v1.role.endpoint import role_endpoints
 from api.v1.usuario.endpoint import usuario_endpoints
-from banco_dados.sql_alchemy.configuracao.data_schema import criar_tabelas
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import criar_tabelas
 from logger.gcp_logger import iniciar_gcp_logger
 
 app = FastAPI()

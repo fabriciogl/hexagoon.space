@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, drop_database, create_database
 from starlette.testclient import TestClient
 
-from banco_dados.sql_alchemy.configuracao.data_schema import SQLSincrono, Base, Usuario, Role, AsUsuarioRole, \
+from banco_dados.sql_alchemy.configuracao.data_postgres import SQLSincrono, Base, Usuario, Role, AsUsuarioRole, \
     AsRolePrecedencia, Artigo
 from main import app
 

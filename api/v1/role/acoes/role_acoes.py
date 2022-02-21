@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
 from api.v1.role.model.role_model import RoleInModel
-from banco_dados.sql_alchemy.configuracao.data_schema import Role as RoleData
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Role as RoleData
 
 
 class RoleAcoes(AcoesInitiallizer):

@@ -4,7 +4,7 @@ import logging
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
 
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario
 
 
 class TokenExpiredException(HTTPException):

@@ -5,7 +5,7 @@ from sqlalchemy.exc import NoResultFound
 
 from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
 from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
-from banco_dados.sql_alchemy.configuracao.data_schema import Role
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Role
 
 
 class RoleRegras(RegrasInitiallizer):
