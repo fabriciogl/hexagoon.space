@@ -25,6 +25,7 @@ Jinja2 = "^3.0.2"
 dynaconf = "^3.1.7"
 google-cloud-logging = "^2.7.0"
 pg8000 = "^1.23.0"
+cx-Oracle = "^8.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

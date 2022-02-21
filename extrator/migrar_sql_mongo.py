@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from banco_dados.sql_alchemy.configuracao.data_schema import Artigo
+from banco_dados.sql_alchemy.configuracao.data_postgres import Artigo
 
 engine = create_engine(
     "postgresql://postgres:secret@0.0.0.0:5432/hexagoon",

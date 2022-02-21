@@ -5,7 +5,7 @@ from sqlalchemy import select
 
 from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
 from api.v1.usuario.model.usuario_model import UsuarioIn
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario
 from templates.Jinja2 import create_templates
 
 templates = create_templates()

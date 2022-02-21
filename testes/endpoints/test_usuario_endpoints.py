@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from starlette.testclient import TestClient
 
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario
+from banco_dados.sql_alchemy.configuracao.data_postgres import Usuario
 
 
 class TestUsuarioEndpoint:

@@ -7,7 +7,7 @@ from api.v1.recursos.basic_exceptions.sql_exceptions import SQLException
 from api.v1.recursos.basic_exceptions.token_exceptions import RoleException
 from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.usuario.model.usuario_model import UsuarioIn
-from banco_dados.sql_alchemy.configuracao.data_schema import Usuario, Artigo
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Artigo
 
 
 class HTMLRegras(RegrasInitiallizer):
