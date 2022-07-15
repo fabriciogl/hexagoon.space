@@ -1,7 +1,7 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel, EmailStr
 from pydantic.types import Json
@@ -24,7 +24,7 @@ class ArtigoOut(BaseModel):
         email: EmailStr
     id: Optional[int]
     titulo: Optional[str]
-    corpo: Optional[dict]
+    corpo: Optional[Union[dict, str]]
     criado_em: Optional[datetime]
     criado_por: Optional[UsuarioOutReduzido]
 

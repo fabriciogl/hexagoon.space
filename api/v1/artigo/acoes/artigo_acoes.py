@@ -1,4 +1,5 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+import json
 
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
@@ -29,6 +30,7 @@ class ArtigoAcoes(AcoesInitiallizer):
         """ use : [create_1] """
         self.data = Artigo(**self.model.dict())
         self.data.titulo = self.model.corpo['blocks'][0]['data']['text']
+        self.data.corpo = json.dumps(self.data.corpo)
         self.handler.sessao.add(self.data)
 
 
@@ -43,6 +45,7 @@ class ArtigoAcoes(AcoesInitiallizer):
 
         # alterações
         self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
+        self.model.corpo = json.dumps(self.model.corpo)
         self.data.update(self.model)
 
 

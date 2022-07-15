@@ -17,7 +17,7 @@ root_user = "Fabricio Gatto Lourençone"
 root_email = "fabricio@hexsaturn.space"
 root_role = "root"
 db_driver = "oracle://"
-db_user = "admin"
+db_user = "ADMIN"
 db_address = ""
 [testing]
 root_user = "Fabricio Gatto Lourençone"
