@@ -167,8 +167,8 @@ class SQLSincrono:
     @staticmethod
     def create_engine() -> Engine:
 
-        cx_Oracle.init_oracle_client(lib_dir="banco_dados/sql_alchemy/configuracao/oracle/client",
-                                     config_dir="banco_dados/sql_alchemy/configuracao/oracle/client/network/admin")
+        cx_Oracle.init_oracle_client(lib_dir="client",
+                                     config_dir="client/network/admin")
 
         pool = cx_Oracle.SessionPool(user=settings.db_user, password=settings.db_pass, dsn="hexagoon_high",
                                      min=4, max=4, increment=0, threaded=True,

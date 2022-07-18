@@ -6,6 +6,10 @@ FROM python:3.10
 ENV PYTHONUNBUFFERED True
 ENV ENV_FOR_DYNACONF production
 ENV GOOGLE_APPLICATION_CREDENTIALS auth_gcp.json
+ENV TNS_ADMIN client/network/admin
+ENV LD_LIBRARY_PATH client
+ENV DPI_DEBUG_LEVEL 64
+# OPTIONS e PORT serão passados pelo docker-compose
 
 # Copy local code to the container image.
 ENV APP_HOME /app
@@ -16,6 +20,9 @@ COPY . ./
 # instal curl
 # RUN apt update && apt upgrade
 RUN apt install -y curl
+
+RUN apt-get update && apt-get upgrade
+RUN apt-get install libaio1 libaio-dev
 
 # install poetry
 RUN pip install poetry
@@ -36,7 +43,7 @@ RUN poetry config virtualenvs.create false \
 # CMD exec gunicorn --bind 0.0.0.0:8000 --workers 1 --worker-class uvicorn.workers.UvicornWorker --threads 8 --timeout 0 main:app
 
 # line of command for GCP
-CMD exec gunicorn --bind :$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker --threads 8 --timeout 0 main:app
+CMD exec gunicorn --bind :$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker --threads 8 --timeout 0 $OPTIONS main:app
 
 # call from terminal
 # gcloud run deploy hexagoon --add-cloudsql-instances "hexsaturn:us-east1:db-hexagoon"
