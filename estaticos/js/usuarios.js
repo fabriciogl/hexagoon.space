@@ -6,7 +6,7 @@ async function excluirUsuario(){
     const id = window.event.target.id.replace('ue', '');
     const token = localStorage.getItem("jwt");
 
-    const response = await fetch(`https://hexagoon-ev3arw55ca-ue.a.run.app/usuario/${id}`, {
+    const response = await fetch(`${baseUrl}/usuario/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ async function desativarUsuario(){
     const id = window.event.target.id.replace('ud', '');
     const token = localStorage.getItem("jwt");
 
-    const response = await fetch(`http://0.0.0.0:8000/usuario/${id}/inactivate`, {
+    const response = await fetch(`${baseUrl}/usuario/${id}/inactivate`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ async function ativarUsuario() {
 
     const email = document.querySelector(`#e${id}`).innerText;
 
-    const response = await fetch(`http://0.0.0.0:8000/autenticacao/recuperar`, {
+    const response = await fetch(`${baseUrl}/autenticacao/recuperar`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ async function submeterUsuario(){
     const senha = document.querySelector('#senha').value;
     const nome = document.querySelector('#nome').value;
 
-    const create_response = await fetch(`http://0.0.0.0:8000/usuario`, {
+    const create_response = await fetch(`${baseUrl}/usuario`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ async function adicionarPerfil(){
     const role_id = document.querySelector(`#psa${id}`).selectedOptions[0].value;
     const token = localStorage.getItem("jwt");
 
-    const response = await fetch(`http://0.0.0.0:8000/as_usuario_role/`, {
+    const response = await fetch(`${baseUrl}/as_usuario_role/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ async function excluirPerfil(){
     const role_id = document.querySelector(`#psr${id}`).selectedOptions[0].value;
     const token = localStorage.getItem("jwt");
 
-    const response = await fetch(`http://0.0.0.0:8000/as_usuario_role/${role_id}`, {
+    const response = await fetch(`${baseUrl}/as_usuario_role/${role_id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

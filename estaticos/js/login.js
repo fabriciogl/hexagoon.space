@@ -1,13 +1,14 @@
 /*
  * Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
  */
+const baseUrl = window.location.origin;
 
 async function logarUsuario(){
 
     const email = document.querySelector('#email').value;
     const senha = document.querySelector('#senha').value;
 
-    const login_response = await fetch(`http://0.0.0.0:8000/hexagoon/administration`, {
+    const login_response = await fetch(`${baseUrl}/hexagoon/administration`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

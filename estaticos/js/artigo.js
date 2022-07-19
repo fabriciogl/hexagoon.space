@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
  */
+const baseUrl = window.location.origin;
 
 window.onload = async function(e){
 
@@ -30,7 +31,7 @@ async function fazerLogin(){
     const email = document.querySelector('input[type=email]');
     const senha = document.querySelector('input[type=password]');
 
-    const login_response = await fetch(`http://0.0.0.0:8000/autenticacao`, {
+    const login_response = await fetch(`${baseUrl}/autenticacao`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -223,7 +224,7 @@ async function updateArtigo(){
         return
     }
 
-    const artigo_response = await fetch(`http://0.0.0.0:8000/artigo/${id}`, {
+    const artigo_response = await fetch(`${baseUrl}/artigo/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -249,7 +250,7 @@ async function enviarArtigo(){
     }
     const token = localStorage.getItem("jwt");
 
-    const artigo_response = await fetch(`http://0.0.0.0:8000/artigo`, {
+    const artigo_response = await fetch(`${baseUrl}/artigo`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
