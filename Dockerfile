@@ -6,8 +6,8 @@ FROM python:3.10
 ENV PYTHONUNBUFFERED True
 ENV ENV_FOR_DYNACONF production
 ENV GOOGLE_APPLICATION_CREDENTIALS auth_gcp.json
-ENV TNS_ADMIN client/network/admin
-ENV LD_LIBRARY_PATH client
+ENV TNS_ADMIN oracle_client/network/admin
+ENV LD_LIBRARY_PATH oracle_client
 ENV DPI_DEBUG_LEVEL 64
 # OPTIONS e PORT serão passados pelo docker-compose
 

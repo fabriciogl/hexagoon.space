@@ -167,26 +167,37 @@ class SQLSincrono:
     @staticmethod
     def create_engine() -> Engine:
 
-        cx_Oracle.init_oracle_client(lib_dir="client",
-                                     config_dir="client/network/admin")
-
-        pool = cx_Oracle.SessionPool(user=settings.db_user, password=settings.db_pass, dsn="hexagoon_high",
-                                     min=4, max=4, increment=0, threaded=True,
-                                     encoding="UTF-8", nencoding="UTF-8")
 
         if not SQLSincrono.engine:
 
-            engine = create_engine("oracle://", creator=pool.acquire,
-                                   poolclass=NullPool, max_identifier_length=128)
+            if settings.current_env == 'production':
 
-            # engine = create_engine(
-            #     f"{settings.db_driver}{settings.db_user}:{settings.db_pass}@{settings.db_address}",
-            #     max_identifier_length=128
-                # json_serializer=lambda obj: json.dumps(obj, ensure_ascii=False)
-            # )
-            # cria um banco de dados caso não exista
-            # if not database_exists(engine.url):
-            #     create_database(engine.url)
+                cx_Oracle.init_oracle_client(lib_dir="oracle_client",
+                                             config_dir="oracle_client/network/admin")
+
+                pool = cx_Oracle.SessionPool(user=settings.db_user, password=settings.db_pass, dsn="hexagoon_high",
+                                             min=4, max=4, increment=0, threaded=True,
+                                             encoding="UTF-8", nencoding="UTF-8")
+
+                engine = create_engine("oracle://", creator=pool.acquire,
+                                       poolclass=NullPool, max_identifier_length=128)
+
+            if settings.current_env in ['testing', 'development']:
+
+                cx_Oracle.makedsn("localhost", 1521, sid="ORCLCDB")
+
+                engine = create_engine(
+                    f"{settings.db_driver}{settings.db_user}:{settings.db_pass}@{settings.db_address}"
+                )
+                #cria um banco de dados caso não exista
+                # if not database_exists(engine.url):
+                # create_database(engine.url)
+
+            # verifica se foi criado a engine por algum dos enviroments
+            try:
+                engine
+            except:
+                raise ValueError('Não foi possível criar o banco de dados')
 
             SQLSincrono.engine = engine
 

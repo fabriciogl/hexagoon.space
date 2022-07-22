@@ -2,7 +2,7 @@
 
 from sqlalchemy import select
 
-from banco_dados.sql_alchemy.configuracao.data_postgres import AsRolePrecedencia, AsUsuarioRole, Artigo, Usuario, Role
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import AsRolePrecedencia, AsUsuarioRole, Artigo, Usuario, Role
 
 
 def test_usuario(load_data):

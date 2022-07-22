@@ -4,26 +4,25 @@ from typing import Generator
 
 import pytest
 from passlib.hash import bcrypt
+from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils import database_exists, drop_database, create_database
 from starlette.testclient import TestClient
 
-from banco_dados.sql_alchemy.configuracao.data_postgres import SQLSincrono, Base, Usuario, Role, AsUsuarioRole, \
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import SQLSincrono, Base, Usuario, Role, AsUsuarioRole, \
     AsRolePrecedencia, Artigo
 from main import app
 
 
 @pytest.fixture(scope="package")
 def setup_db():
-    engine = SQLSincrono.create_engine()
-
-    if database_exists(engine.url):
-        drop_database(engine.url)
-
-    create_database(engine.url)
-
-    # cria um banco de dados caso não exista
-    Base.metadata.create_all(bind=SQLSincrono.engine)
+    SQLSincrono.create_engine()
+    session = SQLSincrono.create_session_load_data()
+    if not session.execute(select(Role).filter_by(sigla="root")).fetchone():
+        # cria um banco de dados caso não exista
+        Base.metadata.create_all(bind=SQLSincrono.engine)
+    else:
+        Base.metadata.drop_all(bind=SQLSincrono.engine)
+        Base.metadata.create_all(bind=SQLSincrono.engine)
 
     yield SQLSincrono.create_session()
 

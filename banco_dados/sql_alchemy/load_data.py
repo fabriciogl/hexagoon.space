@@ -1,7 +1,7 @@
 #  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 from passlib.hash import bcrypt
 
-from banco_dados.sql_alchemy.configuracao.data_postgres import Usuario, Role, AsUsuarioRole, AsRolePrecedencia
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Role, AsUsuarioRole, AsRolePrecedencia
 from config import settings
 
 
