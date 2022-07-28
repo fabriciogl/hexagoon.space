@@ -9,6 +9,7 @@ from api.v1.artigo.endpoint import artigo_endpoints
 from api.v1.as_usuario_role.endpoint import as_usuario_role_endpoints
 from api.v1.autenticacao.endpoint import autenticacao_endpoints
 from api.v1.html.endpoint import html_endpoints
+from api.v1.modalidade_artigo.endpoint import modalidade_artigo_endpoints
 from api.v1.recursos.basic_exceptions.generic_validation_exceptions import InvalidIdException
 from api.v1.recursos.basic_exceptions.handler_exception import invalid_id
 from api.v1.role.endpoint import role_endpoints
@@ -35,16 +36,13 @@ app.include_router(as_usuario_role_endpoints.router)
 app.include_router(html_endpoints.router)
 app.include_router(autenticacao_endpoints.router)
 app.include_router(artigo_endpoints.router)
+app.include_router(modalidade_artigo_endpoints.router)
 
 app.add_event_handler("startup", criar_tabelas)
 # app.add_event_handler("startup", iniciar_gcp_logger)
 
 app.add_exception_handler(InvalidIdException, invalid_id)
 
-
-@app.get("/")
-async def hello_world():
-    return {"resultado": "Hello World"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

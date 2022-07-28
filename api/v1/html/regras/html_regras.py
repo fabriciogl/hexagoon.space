@@ -72,3 +72,16 @@ class HTMLRegras(RegrasInitiallizer):
         #
         # except NoResultFound:
         #     raise SQLException('Não há objetos do tipo artigo.')
+
+    def regra_6(self):
+        """
+        use : [articleGroup_1]
+        """
+        # # forma de se recuperar somente algumas colunas da tabela
+        # select_query = select(Artigo.id, Artigo.titulo)
+        #
+        # try:
+        #     self.handler.operacoes.execute(select_query).scalar_one()
+        #
+        # except NoResultFound:
+        #     raise SQLException('Não há objetos do tipo artigo.')

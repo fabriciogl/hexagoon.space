@@ -14,7 +14,7 @@ from api.v1.recursos.validations.password_validation import check_password
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import SQLSincrono
 
 router = APIRouter(
-    prefix="/hexagoon",
+    prefix="",
     responses={404: {"model": Message}, 405: {"model": Message}, 401: {"model": Message}},
     tags=['HTML']
 )
@@ -59,7 +59,7 @@ class HTMLEndpoints:
 
     @staticmethod
     @router.get(
-        "/artigos",
+        "/",
         response_class=HTMLResponse,
         status_code=200
     )
@@ -76,6 +76,29 @@ class HTMLEndpoints:
 
         # realiza as acoes necessárias no model
         HTMLAcoes(handler=handler, acao='articleAll')
+
+        return handler.sucesso
+
+    @staticmethod
+    @router.get(
+        "/artigoGrupos/{_id}",
+        response_class=HTMLResponse,
+        status_code=200
+    )
+    async def group_article_template(
+            request: Request,
+            _id: int,
+            session: Session = Depends(SQLSincrono.create_session)
+    ):
+        handler = ResponseHandler()
+        handler.request = request
+        handler.sessao = session
+
+        # regras aplicáveis ao model
+        HTMLRegras(_id=_id, handler=handler, regra='articleGroup')
+
+        # realiza as acoes necessárias no model
+        HTMLAcoes(_id=_id, handler=handler, acao='articleGroup')
 
         return handler.sucesso
 

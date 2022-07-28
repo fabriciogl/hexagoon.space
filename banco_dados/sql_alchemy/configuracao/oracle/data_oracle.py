@@ -159,6 +159,15 @@ class Role(Base):
 class Artigo(Base):
     titulo = Column(String(150))
     corpo = Column(BLOB)
+    modalidade_artigo_id = Column(ForeignKey('modalidade_artigo.id'))
+    # exemplo de situação com relação many-to-one
+    modalidade_artigo = relationship("ModalidadeArtigo", back_populates="artigos")
+
+
+class ModalidadeArtigo(Base):
+    modalidade = Column(String(150))
+    # exemplo de situação com relação one-to-many
+    artigos = relationship("Artigo", back_populates='modalidade_artigo')
 
 
 class SQLSincrono:
@@ -167,15 +176,13 @@ class SQLSincrono:
     @staticmethod
     def create_engine() -> Engine:
 
-
         if not SQLSincrono.engine:
 
             if settings.current_env == 'production':
-
                 cx_Oracle.init_oracle_client(lib_dir="oracle_client",
                                              config_dir="oracle_client/network/admin")
 
-                pool = cx_Oracle.SessionPool(user=settings.db_user, password=settings.db_pass, dsn="hexagoon_high",
+                pool = cx_Oracle.SessionPool(user=settings.db_user, password=settings.db_pass, dsn=settings.dns,
                                              min=4, max=4, increment=0, threaded=True,
                                              encoding="UTF-8", nencoding="UTF-8")
 
@@ -184,12 +191,10 @@ class SQLSincrono:
 
             if settings.current_env in ['testing', 'development']:
 
-                cx_Oracle.makedsn("localhost", 1521, sid="ORCLCDB")
-
                 engine = create_engine(
                     f"{settings.db_driver}{settings.db_user}:{settings.db_pass}@{settings.db_address}"
                 )
-                #cria um banco de dados caso não exista
+                # cria um banco de dados caso não exista
                 # if not database_exists(engine.url):
                 # create_database(engine.url)
 
@@ -274,6 +279,10 @@ def criar_tabelas():
     Base.metadata.create_all(bind=SQLSincrono.engine)
     # Cria o usuário root
     session = SQLSincrono.create_session_load_data()
-    if not session.execute(select(Role).filter_by(sigla="root")).fetchone():
+    if not session.execute(select(Usuario).filter_by(email=settings.root_email)).fetchone():
+        Base.metadata.drop_all(bind=SQLSincrono.engine)
+        Base.metadata.create_all(bind=SQLSincrono.engine)
         from banco_dados.sql_alchemy.load_data import load_data
         load_data(session)
+    # garantir a criação de tabelas novas mesmo que o banco já exista
+    Base.metadata.create_all(bind=SQLSincrono.engine)

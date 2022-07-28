@@ -8,7 +8,7 @@ async function logarUsuario(){
     const email = document.querySelector('#email').value;
     const senha = document.querySelector('#senha').value;
 
-    const login_response = await fetch(`${baseUrl}/hexagoon/administration`, {
+    const login_response = await fetch(`${baseUrl}/administration`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ async function logarUsuario(){
         // window.location.assign(resultado)
 
 
-        // // rederiza a resposta da api/hexagoon/administration
+        // // rederiza a resposta da api/administration
         const resposta = await login_response.text();
         document.write(resposta);
 

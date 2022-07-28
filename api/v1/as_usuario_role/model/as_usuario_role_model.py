@@ -24,6 +24,7 @@ class AsUsuarioRoleOut(BaseModel):
 
         class Config:
             orm_mode = True
+            title = 'AsUsuarioRole'
 
     id: int
     usuario: UsuarioOutReduzido

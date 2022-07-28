@@ -21,7 +21,7 @@ COPY . ./
 # RUN apt update && apt upgrade
 RUN apt install -y curl
 
-RUN apt-get update && apt-get upgrade
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated
 RUN apt-get install libaio1 libaio-dev
 
 # install poetry

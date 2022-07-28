@@ -10,19 +10,15 @@ from starlette.testclient import TestClient
 
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import SQLSincrono, Base, Usuario, Role, AsUsuarioRole, \
     AsRolePrecedencia, Artigo
+from config import settings
 from main import app
 
 
 @pytest.fixture(scope="package")
 def setup_db():
     SQLSincrono.create_engine()
-    session = SQLSincrono.create_session_load_data()
-    if not session.execute(select(Role).filter_by(sigla="root")).fetchone():
-        # cria um banco de dados caso não exista
-        Base.metadata.create_all(bind=SQLSincrono.engine)
-    else:
-        Base.metadata.drop_all(bind=SQLSincrono.engine)
-        Base.metadata.create_all(bind=SQLSincrono.engine)
+    Base.metadata.drop_all(bind=SQLSincrono.engine)
+    Base.metadata.create_all(bind=SQLSincrono.engine)
 
     yield SQLSincrono.create_session()
 
@@ -56,7 +52,7 @@ def load_data(setup_db):
     session.add_all([as_role_precedencia_1, as_role_precedencia_2, as_role_precedencia_3])
     # Creates artigos
     artigo1 = Artigo(titulo='Dança dos Lobos',
-                     corpo=json.dumps('Dançar com um lobo pode ser a última dança ta tua vida.'))
+                     corpo=json.dumps('Dançar com um lobo pode ser a última dança da tua vida.'))
     artigo2 = Artigo(titulo='Dança dos Gatos', corpo=json.dumps('Dançar com um gato pode ser arriscado.'))
     artigo3 = Artigo(titulo='Dança dos Coelhos', corpo=json.dumps('Dançar com um coelho pode ser interessante.'))
     session.add_all([artigo1, artigo2, artigo3])

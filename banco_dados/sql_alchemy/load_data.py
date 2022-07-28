@@ -1,7 +1,10 @@
 #  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+import json
+
 from passlib.hash import bcrypt
 
-from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Role, AsUsuarioRole, AsRolePrecedencia
+from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Role, AsUsuarioRole, AsRolePrecedencia, \
+    Artigo, ModalidadeArtigo
 from config import settings
 
 
@@ -30,6 +33,18 @@ def load_data(session):
     as_role_precedencia_2 = AsRolePrecedencia(sub_role=role_user, precedencia=role_root)
     as_role_precedencia_3 = AsRolePrecedencia(sub_role=role_user, precedencia=role_admin)
     session.add_all([as_role_precedencia_1, as_role_precedencia_2, as_role_precedencia_3])
+
+    # cria modalidade de artigo
+    modalidade_artigo_1 = ModalidadeArtigo(modalidade='Hexagoon Base')
+    session.add(modalidade_artigo_1)
+
+    # cria um artigo base para posterior modificação
+    artigo_1 = Artigo(
+        titulo='Hexagoon',
+        corpo=json.dumps({"blocks": [{"data": {"level": 2, "text": "Bem Vindo ao Hexagoon"}, "id": "VlSDl34iWg", "type": "header"}]}),
+        modalidade_artigo=modalidade_artigo_1
+    )
+    session.add(artigo_1)
 
 
     session.commit()

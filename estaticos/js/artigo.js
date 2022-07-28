@@ -9,7 +9,8 @@ window.onload = async function(e){
         document.querySelector('input[type=email]').style.display = 'none';
         document.querySelector('input[type=password]').style.display = 'none';
         document.querySelector('input[value=Logar]').style.display = 'none';
-        document.querySelector('#ua').style.display = 'block';
+        document.querySelector('#aa').style.display = 'block';
+        document.querySelector('#ca').style.display = 'block';
         document.querySelector('#pa').style.display = 'block';
     }
 
@@ -67,7 +68,8 @@ async function fazerLogin(){
         email.style.display = 'none';
         document.querySelector('input[value=Logar]').style.display = 'none';
 
-        document.querySelector('#ua').style.display = 'block';
+        document.querySelector('#ca').style.display = 'block';
+        document.querySelector('#aa').style.display = 'block';
         document.querySelector('#pa').style.display = 'block';
     }
 }
@@ -203,7 +205,7 @@ async function respostaPushArtigo(response){
         const li_original = document.querySelector('.list-group-item');
         const li_clone = li_original.cloneNode(true);
         li_clone.querySelector('a').innerText = resposta.titulo;
-        li_clone.querySelector('a').setAttribute('href', `/hexagoon/artigo/${resposta.id}`);
+        li_clone.querySelector('a').setAttribute('href', `/artigo/${resposta.id}`);
         document.querySelector('ul').appendChild(li_clone);
     }
 
@@ -214,7 +216,7 @@ async function respostaPushArtigo(response){
 async function updateArtigo(){
 
     const token = localStorage.getItem("jwt");
-    const id = document.querySelector('#id').textContent;
+    const id = document.querySelector('#aid').textContent;
 
     let savedData;
     try{
@@ -241,7 +243,9 @@ async function updateArtigo(){
 
 async function enviarArtigo(){
 
+    const modalidade_artigo = document.querySelector('#maid').textContent;
     let savedData;
+
     try{
         savedData = await editor.save();
     } catch {
@@ -257,7 +261,8 @@ async function enviarArtigo(){
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-            "corpo": JSON.stringify(savedData)
+            "corpo": JSON.stringify(savedData),
+            "modalidade_artigo_id": modalidade_artigo
         })
     });
 
@@ -271,6 +276,11 @@ async function createArtigo(){
     const newContent = {"blocks": [{"data": {"level": 2, "text": "Novo Artigo"}, "type": "header"}]}
     editor.render(newContent);
 
-    document.querySelector('#ua').value = "Enviar Artigo"
-    document.querySelector('#ua').onclick = enviarArtigo;
+    document.querySelector('#ca').value = "Enviar Artigo"
+    document.querySelector('#ca').onclick = enviarArtigo;
+}
+
+async function selecionaGrupo(){
+    const grupo_id = window.event.target.selectedOptions[0].value;
+    window.open(`${baseUrl}/artigoGrupos/${grupo_id}`, '_self');
 }
