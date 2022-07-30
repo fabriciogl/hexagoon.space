@@ -17,7 +17,7 @@ def load_data(session):
     usuario = Usuario(
         nome=settings.root_user,
         email=settings.root_email,
-        senha=bcrypt.using(rounds=7).hash(settings.root_senha),
+        senha=bcrypt.using(rounds=7).hash(settings.root_pass),
         ativo=True
     )
     usuario.a_roles.append(as_role_usuario)

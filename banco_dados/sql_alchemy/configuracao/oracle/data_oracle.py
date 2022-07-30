@@ -194,9 +194,6 @@ class SQLSincrono:
                 engine = create_engine(
                     f"{settings.db_driver}{settings.db_user}:{settings.db_pass}@{settings.db_address}"
                 )
-                # cria um banco de dados caso não exista
-                # if not database_exists(engine.url):
-                # create_database(engine.url)
 
             # verifica se foi criado a engine por algum dos enviroments
             try:
