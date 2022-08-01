@@ -1,20 +1,12 @@
 ## 1 CLONE THE PROJECT
 
--> ```git clone https://github.com/fabriciogl/hexagoon.git```
+-> ```https://github.com/fabriciogl/hexagoon.space.git```
 
-## 2 SELECT THE BRANCH
-
-Using terminal
---> ```git checkout hexagoon.space```
-
-Using PyCharm
---> Select branch ```hexagoon.space``` from bottom right git integration.
-
-## 3 POETRY
+## 2 POETRY
 
 --> Having python 3.10 installed, use ``` pip install poetry ```
 
-## 4 INSTALL PACKAGES
+## 3 INSTALL PACKAGES
 
 --> Inside the root app folder run ``` poetry install ```
 

@@ -15,6 +15,7 @@ from api.v1.recursos.basic_exceptions.handler_exception import invalid_id
 from api.v1.role.endpoint import role_endpoints
 from api.v1.usuario.endpoint import usuario_endpoints
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import criar_tabelas
+from config import settings
 from logger.gcp_logger import iniciar_gcp_logger
 
 app = FastAPI()
@@ -38,7 +39,8 @@ app.include_router(autenticacao_endpoints.router)
 app.include_router(artigo_endpoints.router)
 app.include_router(modalidade_artigo_endpoints.router)
 
-app.add_event_handler("startup", criar_tabelas)
+if settings.current_env in ['production', 'development']:
+    app.add_event_handler("startup", criar_tabelas)
 # app.add_event_handler("startup", iniciar_gcp_logger)
 
 app.add_exception_handler(InvalidIdException, invalid_id)
