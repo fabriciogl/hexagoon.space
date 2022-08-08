@@ -2,11 +2,11 @@
 
 from passlib.hash import bcrypt
 
-from API.V1.Excecoes.LoginExceptions import LoginException
-from API.V1.Excecoes.MongoExceptions import MongoFindException2
-from API.V1.Excecoes.TokenExceptions import TokenInvalidException
+from api.V1.Excecoes.LoginExceptions import LoginException
+from api.V1.Excecoes.MongoExceptions import MongoFindException2
+from api.V1.Excecoes.TokenExceptions import TokenInvalidException
 from Model.Usuario import Usuario
-from Repositorio.Mongo.UsuarioRepository import UsuarioRepository
+from banco_dados.mongodb.UsuarioRepository import UsuarioRepository
 
 
 async def check_password(usuario_externo: Usuario) -> Usuario:

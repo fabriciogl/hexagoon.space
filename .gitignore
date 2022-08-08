@@ -219,3 +219,7 @@ dmypy.json
 .idea/
 Certificados/
 Documentos/
+
+.secrets.toml
+auth_gcp.json
+banco_dados/sql_alchemy/configuracao/oracle

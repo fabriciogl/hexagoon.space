@@ -3,35 +3,60 @@
 
 import uvicorn
 from fastapi import FastAPI
+from passlib.hash import bcrypt
 from starlette.staticfiles import StaticFiles
 
-from API.V1.Endpoints import VerticeEndpoints, TesteEndpoints, UsuarioEndpoints
-from API.V1.Excecoes.ExceptionHandlers import invalid_id, not_found
-from API.V1.Excecoes.GenericValidationExceptions import InvalidIdException
-from API.V1.Excecoes.MongoExceptions import MongoFindException2
-from Repositorio.Mongo.Configuracao.MongoSetupAssincrono import MongoSetupAssincrono
-from Repositorio.Mongo.Configuracao.MongoSetupSincrono import MongoSetupSincrono
+from api.v1.usuario.endpoint import usuario_endpoints
+from api.v1.autenticacao.endpoint import autenticacao_endpoints
+from api.v1.role.endpoint import role_endpoints
+# from api.V1.Excecoes.ExceptionHandlers import invalid_id, not_found
+# from api.V1.Excecoes.GenericValidationExceptions import InvalidIdException
+# from api.V1.Excecoes.MongoExceptions import MongoFindException2
+from api.v1.recursos.response_handler import ResponseHandler
+from api.v1.usuario.model.usuario_model import Usuario
+from banco_dados.mongodb.configuracao.MongoConection import Operacoes
+from banco_dados.mongodb.configuracao.MongoSetupSincrono import MongoSetupSincrono
+from banco_dados.mongodb.load_data import load_data
 
 app = FastAPI()
 
-app.mount("/Estaticos", StaticFiles(directory="Estaticos"), name="Estaticos")
+app.mount("/estaticos", StaticFiles(directory="estaticos"), name="estaticos")
 
-app.include_router(VerticeEndpoints.router)
-app.include_router(UsuarioEndpoints.router)
-app.include_router(TesteEndpoints.router)
+# app.include_router(VerticeEndpoints.router)
+app.include_router(usuario_endpoints.router)
+app.include_router(autenticacao_endpoints.router)
+app.include_router(role_endpoints.router)
+# app.include_router(TesteEndpoints.router)
 
-app.add_event_handler("startup", MongoSetupAssincrono.connect_db)
-app.add_event_handler("startup", MongoSetupSincrono.connect_db)
-app.add_event_handler("shutdown", MongoSetupAssincrono.close_db)
+# app.add_event_handler("startup", MongoSetupAssincrono.connect_db)
+app.add_event_handler("startup", MongoSetupSincrono.connect_client)
+app.add_event_handler("startup", load_data)
+
+# app.add_event_handler("shutdown", MongoSetupAssincrono.close_db)
 
 
-app.add_exception_handler(InvalidIdException, invalid_id)
-app.add_exception_handler(MongoFindException2, not_found)
+# app.add_exception_handler(InvalidIdException, invalid_id)
+# app.add_exception_handler(MongoFindException2, not_found)
 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    handler = ResponseHandler(Operacoes())
+    senha = bcrypt.using(rounds=7).hash('cookies')
+    documento = handler.operacao.insert(
+        Usuario(
+            nome="Fabricio",
+            email="fabricio@hexagoon.space",
+            senha=senha,
+            ativo=True,
+            roles=[
+                {'_id': 'root'},
+                {'_id': 'admin'}
+            ]
+        )
+    )
+    documento['_id'] = 'X1'
+    return documento
 
 
 if __name__ == "__main__":
