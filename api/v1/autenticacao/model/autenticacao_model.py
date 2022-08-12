@@ -19,7 +19,7 @@ class AutenticacaoIn(BaseModel):
 class AutenticacaoOut(BaseModel):
     token: Optional[str]
     exp: Optional[datetime]
-    roles: Optional[List[RoleOut]]
+    roles: Optional[List[str]]
 
     class Config:
         orm_mode = True

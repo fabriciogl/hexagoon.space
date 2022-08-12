@@ -4,7 +4,7 @@ import logging
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
 
-from api.v1.usuario.model.usuario_model import Usuario
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioTokenOut
 
 
 class TokenExpiredException(HTTPException):
@@ -34,7 +34,7 @@ class TokenException(HTTPException):
 
 class RoleException(HTTPException):
 
-    def __init__(self, usuario: Usuario, request: Request):
+    def __init__(self, usuario: UsuarioTokenOut, request: Request):
         logging.critical(f'Usuário {usuario.email} tentou acessar {request.url} com método {request.method}')
         super().__init__(401, f'Usuário sem permissão.')
 

@@ -1,5 +1,5 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
-
+import datetime
 from typing import Optional, Union, Any
 
 from bson import ObjectId
@@ -31,6 +31,19 @@ class RoleIn(BaseModel):
         arbitrary_types_allowed = True
 
 
+class RoleUsuarioTokenOut(BaseModel):
+    sigla: Optional[str]
+
+
+class RolePrecedenciaIn(BaseModel):
+    """ Role gerada para ser inserida como precedencia em outra Role """
+    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    sigla: Optional[str]
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
 class Role(BaseModel):
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
     sigla: Optional[str]
@@ -45,11 +58,21 @@ class Role(BaseModel):
 
     precedencias: Optional[list[RolePrecendida]] = []
 
+    # accountability
+    criado_em: Optional[datetime.datetime]
+    criado_por: Optional[ObjectId]
+    alterado_em: Optional[datetime.datetime]
+    alterado_por: Optional[ObjectId]
+    # softdelete
+    deletado_em: Optional[datetime.datetime]
+    deletado_por: Optional[ObjectId]
+
     class Config:
         title = 'roles'
         arbitrary_types_allowed = True
 
-class RolePrecedencia(BaseModel):
+
+class RolePrecedenciaUpdate(BaseModel):
     precedencia: str
 
     class Config:

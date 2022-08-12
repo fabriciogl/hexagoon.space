@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "hexagoon"
+name = "hexagoon-mongodb"
 version = "0.1.0"
-description = "backend app for hexagoon site"
+description = "backend app for hexagoon-mongodb"
 authors = ["Fabricio Gatto Lourençone <fa_gatto7@yahoo.com.br>"]
 license = "MIT"
 

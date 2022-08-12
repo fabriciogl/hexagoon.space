@@ -12,7 +12,7 @@ class MongoSetupSincrono:
         return MongoSetupSincrono.client[settings.db_name]
 
     @staticmethod
-    async def connect_client():
+    def connect_client():
         """Create database connection."""
         if not MongoSetupSincrono.client:
             MongoSetupSincrono.client = MongoClient('localhost', 27017)

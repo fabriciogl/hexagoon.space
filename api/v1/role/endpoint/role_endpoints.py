@@ -6,7 +6,7 @@ from fastapi.params import Security
 from api.v1.recursos.response_handler import ResponseHandler
 from api.v1.recursos.validations.token_role_validation import valida_role
 from api.v1.role.acoes.role_acoes import RoleAcoes
-from api.v1.role.model.role_model import RoleOut, RoleIn, RolePrecedencia
+from api.v1.role.model.role_model import RoleOut, RoleIn, RolePrecedenciaUpdate
 from api.v1.role.regras.role_regras import RoleRegras
 
 router = APIRouter(
@@ -93,8 +93,8 @@ class RoleEndpoints:
         status_code=200,
         response_model=RoleOut
     )
-    async def update(
-            model: RolePrecedencia,
+    async def add_precedencia(
+            model: RolePrecedenciaUpdate,
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):
@@ -112,8 +112,8 @@ class RoleEndpoints:
         status_code=200,
         response_model=RoleOut
     )
-    async def update(
-            model: RolePrecedencia,
+    async def rm_precedencia(
+            model: RolePrecedenciaUpdate,
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):

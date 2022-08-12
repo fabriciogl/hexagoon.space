@@ -11,27 +11,70 @@ from banco_dados.mongodb.configuracao.MongoSetupSincrono import MongoSetupSincro
 class Operacoes:
     # atributo da classe que armazena as operações a serem comitadas
     def __init__(self):
-        self._operacoes_a_comitar: dict = {}
         self._db: MongoClient = MongoSetupSincrono.get_db_client()
 
-    def find(
+    def find_all(
             self,
-            filter: dict = None,
+            collection: str,
+            filter: dict = None
+    ) -> list:
+        """
+          Metodo do handler para bucar todos os documentos da coleção
+        """
+
+        return list(self._db[collection].find(filter=filter))
+
+    def find_one(
+            self,
+            collection: str,
+            where: dict = None,
             id: str = None,
-            collection: str = None
+            soft_deleteds: bool = False
     ) -> Dict:
         """
           Metodo do handler para bucar documento no banco
         """
-
-        # adiciona a operação à lista a ser comitada
+        if not where:
+            where = {}
         if id:
-            return self._db[collection].find_one(filter={'_id': ObjectId(id)})
+            where['_id'] = ObjectId(id)
+        if not soft_deleteds:
+            where['deletado_em'] = None
+
         return self._db[collection].find_one(
-            filter=filter
+            filter=where
         )
 
-    def insert(self, model: BaseModel, id: str = None) -> Dict:
+    def find_lef_join(
+            self,
+            collection: str,
+            where: dict = None,
+            id: str = None
+    ) -> Dict:
+        """
+          Metodo do handler para bucar documento no banco realizando $lookup
+        """
+
+        if id:
+            match = {"$match": {"_id": ObjectId(id)}}
+        elif where:
+            match = {"$match": where}
+
+        left_join = [
+            match,
+            {"$lookup":
+                 {"from": "roles",
+                  "localField": "roles._id",
+                  "foreignField": "_id",
+                  "as": "rolePrecedencias"
+                  }
+             }
+        ]
+
+        # adiciona a operação à lista a ser comitada
+        return self._db[collection].aggregate(left_join).next()
+
+    def insert(self, model: BaseModel) -> Dict:
         """
           Metodo do handler para inserir o documento no banco
         """
@@ -39,10 +82,10 @@ class Operacoes:
         # para identificar a coleção para salvar
         collection = model.Config.title
 
-        # adiciona a operação à lista a ser comitada
+        # utiliza find and replace para poder retornar o objeto inserido
         return self._db[collection] \
             .find_one_and_replace(
-            filter=id if id else {'id': ''},
+            filter={'z': 'z'},
             replacement=model.dict(by_alias=True, exclude_none=True),  # salva no banco com _id ao invés de id
             upsert=True,
             return_document=ReturnDocument.AFTER
@@ -101,6 +144,9 @@ class Sessao:
     def start_session(self, *args, **kwargs):
         return self._client.start_session(*args, **kwargs)
 
+    def get_db(self):
+        return self._db
+
     def find(
             self,
             session,
@@ -114,9 +160,9 @@ class Sessao:
 
         # adiciona a operação à lista a ser comitada
         if id:
-            return self._db[collection].find_one(filter={'_id': ObjectId(id)}, session=session)
+            return self._db[collection].find_one(where={'_id': ObjectId(id)}, session=session)
         return self._db[collection].find_one(
-            filter=filter,
+            where=filter,
             session=session
         )
 

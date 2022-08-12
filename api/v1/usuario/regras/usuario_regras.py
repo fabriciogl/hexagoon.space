@@ -2,7 +2,7 @@
 
 from sqlalchemy.exc import NoResultFound
 
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
+from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoFindException
 from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.usuario.excecoes.usuario_excecoes import UsuarioCreateException, UsuarioUpdateException
 from api.v1.usuario.model.usuario_model import Usuario
@@ -18,7 +18,7 @@ class UsuarioRegras(RegrasInitiallizer):
         """
         # Necessário passar por string para pegar casos deletados.
         resultado = self.handler.operacao \
-            .find(filter={'email': self.model.email}, collection='usuarios')
+            .find_one(where={'email': self.model.email}, collection='usuarios', soft_deleteds=True)
 
         if resultado:
             raise UsuarioCreateException('Email informado possui cadastro. Utilize opção de recuperação de senha.')
@@ -29,11 +29,10 @@ class UsuarioRegras(RegrasInitiallizer):
 
         verifica se o id existe e se está ativo
         """
-        self.data: Usuario = Usuario(
-            **self.handler.operacao.find(id=self._id, collection='usuarios')
-        )
-        if not self.data:
-            raise SQLFindException(self._id, 'Usuário')
+        if data := self.handler.operacao.find_one(id=self._id, collection='usuarios'):
+            self.data: Usuario = Usuario(**data)
+        else:
+            raise MongoFindException(self._id, 'Usuário')
 
     def regra_3(self):
         """
@@ -52,9 +51,7 @@ class UsuarioRegras(RegrasInitiallizer):
 
         verifica se o id existe.
         """
-        try:
-            self.data: Usuario = Usuario(
-                **self.handler.operacao.find(model=self.model, id=self._id)
-            )
-        except NoResultFound:
-            raise SQLFindException(self._id, 'Usuário')
+        if data := self.handler.operacao.find_one(id=self._id, collection='usuarios'):
+            self.data: Usuario = Usuario(**data)
+        else:
+            raise MongoFindException(self._id, 'Usuário')

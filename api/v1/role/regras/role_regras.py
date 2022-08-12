@@ -1,6 +1,6 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
+from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoFindException
 from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.role.model.role_model import Role
 
@@ -13,8 +13,9 @@ class RoleRegras(RegrasInitiallizer):
 
         verifica se o id existe e se está ativo
         """
-        self.data: Role = Role(
-            **self.handler.operacao.find(id=self._id, collection='roles')
-        )
-        if not self.data:
-            raise SQLFindException(self._id, 'Role')
+        try:
+            self.data: Role = Role(
+                **self.handler.operacao.find_one(id=self._id, collection='roles')
+            )
+        except TypeError:
+            raise MongoFindException(self._id, 'Role')

@@ -13,7 +13,7 @@ from api.v1.recursos.basic_exceptions.token_exceptions import TokenException, \
     RoleException
 from api.v1.recursos.response_handler import ResponseHandler
 from api.v1.usuario.excecoes.usuario_excecoes import UsuarioFindException
-from api.v1.usuario.model.usuario_model import Usuario
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioTokenOut
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from config import settings
 
@@ -21,7 +21,7 @@ from config import settings
 def valida_token(
         request: Request,
         token: Optional[str] = None
-) -> Tuple[Usuario, Any, Request]:
+) -> Tuple[UsuarioTokenOut, Any, Request]:
     # inicia um objeto de conexão com o banco
     operacao = Operacoes()
     # verifica se existe token no header
@@ -54,7 +54,7 @@ def valida_token(
 
     # busca o usuário no banco de dados
     try:
-        usuario_data: Usuario = Usuario(**operacao.find(id=_id, collection='usuarios'))
+        usuario_data: UsuarioTokenOut = UsuarioTokenOut(**operacao.find_lef_join(id=_id, collection='usuarios'))
 
     except NoResultFound:
         raise UsuarioFindException(ordem=1, _id=_id, request=request)
@@ -64,23 +64,28 @@ def valida_token(
 
 async def valida_role(
         security_scopes: SecurityScopes,
-        usuario_session_request: Tuple[Usuario, Operacoes, Request] = Depends(valida_token)
+        usuario_session_request: Tuple[UsuarioTokenOut, Operacoes, Request] = Depends(valida_token)
 ) -> ResponseHandler:
     usuario, operacao, request = usuario_session_request
 
     can_access = False
     # roles originais
-    roles_siglas = [role.sigla for role in usuario.roles]
+    roles_siglas = [role['sigla'] for role in usuario.rolePrecedencias]
+    precedencias = []
+    for role in usuario.rolePrecedencias:
+        precedencias.extend(role['precedencias'])
+    precedencias_sigla = [precedencia['sigla'] for precedencia in precedencias]
     # sub_roles
     # roles = [role for role in usuario.roles]
     # a_sub_roles = [a_sub_roles for role in roles for a_sub_roles in role.a_sub_roles]
     # all_sub_roles = [a.sub_role.sigla for a in a_sub_roles]
     # todas as roles
-    # all_roles = all_sub_roles + roles_siglas
+    all_roles = set(roles_siglas + precedencias_sigla)
     # verifica as roles necessárias para o endpoint
     for role in security_scopes.scopes:
-        if role in roles_siglas:
+        if role in all_roles:
             can_access = True
+            break
 
     if not can_access:
         raise RoleException(usuario=usuario, request=request)

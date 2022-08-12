@@ -3,13 +3,14 @@
 import inspect
 import re
 from abc import ABC
+import datetime
 from operator import itemgetter
 from typing import Callable, Union, re as t_re, Optional
 
 from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError, DataError
 
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLCreateException
+from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoCreateException
 from api.v1.recursos.response_handler import ResponseHandler
 
 
@@ -50,8 +51,8 @@ class AcoesInitiallizer(ABC):
 
     @classmethod
     def create_list_action(cls):
-        """metodo que cria a lista de acoes de cada classe instaciada de acoes
-           e salva em um dicionario criado na classe instaciada"""
+        """metodo que cria a lista de acoes de cada classe instaciada
+           a ser executado pelos endpoints"""
         if not hasattr(cls, 'actions'):
             # cria um atributo na classe instaciada, chamado 'action'
             setattr(cls, 'actions', {})
@@ -78,41 +79,38 @@ class AcoesInitiallizer(ABC):
 
     def encerra_find(self):
         """ use : [find-999] """
+        self.data.id = str(self.data.id)
         self.handler.sucesso = self.data
     def encerra_create(self):
         """ use : [create-999] """
-        # try:
-        #     self.handler.sessao.flush()
-        # except IntegrityError:
-        #     raise SQLCreateException()
-        #
-        # except DataError:
-        #     raise SQLCreateException()
-        data = self.handler.operacao.insert(self.data)
+        self.model.criado_em = datetime.datetime.now()
+        self.model.criado_por = self.handler.usuario.id
+        # insere no banco
+        self.data = self.handler.operacao.insert(self.model)
         # converte ObjectId para string
-        data['_id'] = str(data['_id'])
+        self.data['_id'] = str(self.data['_id'])
         # responde o usuario
-        self.handler.sucesso = data
+        self.handler.sucesso = self.data
 
     def encerra_update(self):
         """ use : [update-999] """
-        # try:
-        #     self.handler.sessao.flush()
-        # except IntegrityError:
-        #     raise SQLCreateException()
-        #
-        # except DataError:
-        #     raise SQLCreateException()
+        self.model.alterado_em = datetime.datetime.now()
+        self.model.alterado_por = self.handler.usuario.id
+
+        self.data = self.handler.operacao.update(
+            id=self._id,
+            model=self.model
+        )
         # converte ObjectId para string
-        self.data.id = str(self.data.id)
+        self.data['_id'] = str(self.data['_id'])
         # responde o usuario
         self.handler.sucesso = self.data
 
     def encerra_softdelete(self):
         """ use : [softdelete-999] """
-
-        self.handler.operacao.insert(self.data)
-
+        self.model.deletado_em = datetime.datetime.now()
+        self.model.deletado_por = self.handler.usuario.id
+        self.handler.operacao.update(self._id, self.model)
         self.handler.sucesso = {'resultado': 'Conteúdo deletado.'}
 
 

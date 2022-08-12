@@ -4,9 +4,7 @@ from typing import Optional, Any
 
 from starlette.requests import Request
 
-# from api.v1.usuario.model.usuario_model import UsuarioIn
-from Model.Usuario import Usuario
-from api.v1.usuario.model.usuario_model import UsuarioIn
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioIn
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 
 
