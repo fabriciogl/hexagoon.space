@@ -2,6 +2,7 @@
 from typing import Tuple, Optional, Any
 
 import jwt
+from bson import ObjectId
 from fastapi.params import Depends
 from fastapi.security import SecurityScopes
 from sqlalchemy import select
@@ -54,7 +55,18 @@ def valida_token(
 
     # busca o usuário no banco de dados
     try:
-        usuario_data: UsuarioTokenOut = UsuarioTokenOut(**operacao.find_lef_join(id=_id, collection='usuarios'))
+        # documento que permite fazer o join no mongodb
+        left_join = [
+            {"$match": {"_id": ObjectId(_id)}},
+            {"$lookup":
+                 {"from": "roles",
+                  "localField": "roles._id",
+                  "foreignField": "_id",
+                  "as": "subRoles"
+                  }
+             }
+        ]
+        usuario_data: UsuarioTokenOut = UsuarioTokenOut(**operacao.find_with_join(join=left_join, collection='usuarios'))
 
     except NoResultFound:
         raise UsuarioFindException(ordem=1, _id=_id, request=request)
@@ -70,17 +82,17 @@ async def valida_role(
 
     can_access = False
     # roles originais
-    roles_siglas = [role['sigla'] for role in usuario.rolePrecedencias]
-    precedencias = []
-    for role in usuario.rolePrecedencias:
-        precedencias.extend(role['precedencias'])
-    precedencias_sigla = [precedencia['sigla'] for precedencia in precedencias]
+    roles_siglas = [role['sigla'] for role in usuario.roles]
+    sub_roles = []
+    for role in usuario.roles:
+        sub_roles.extend(role['sub_roles'])
+    sub_roles_sigla = [sub_roles['sigla'] for sub_roles in sub_roles]
     # sub_roles
     # roles = [role for role in usuario.roles]
     # a_sub_roles = [a_sub_roles for role in roles for a_sub_roles in role.a_sub_roles]
     # all_sub_roles = [a.sub_role.sigla for a in a_sub_roles]
     # todas as roles
-    all_roles = set(roles_siglas + precedencias_sigla)
+    all_roles = set(roles_siglas + sub_roles_sigla)
     # verifica as roles necessárias para o endpoint
     for role in security_scopes.scopes:
         if role in all_roles:

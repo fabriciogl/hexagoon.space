@@ -6,7 +6,7 @@ from bson import ObjectId
 from passlib.hash import bcrypt
 from starlette.testclient import TestClient
 
-from api.v1.role.model.role_model import Role, RolePrecedenciaIn
+from api.v1.role.model.role_model import Role, SubRoleUpdate
 from api.v1.usuario.model.usuario_model import Usuario
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from banco_dados.mongodb.configuracao.MongoConection import Sessao
@@ -57,7 +57,7 @@ def operacao():
             validator={
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["sigla", "descricao", "precedencias"],
+                    "required": ["sigla", "descricao", "sub_roles"],
                     "properties": {
                         "sigla": {
                             "bsonType": "string",
@@ -67,7 +67,7 @@ def operacao():
                             "bsonType": "string",
                             "description": "texto descritivo da role"
                         },
-                        "precedencias": {
+                        "sub_roles": {
                             "bsonType": "array",
                             "description": "array de precedencias da role, podendo ser array vazio",
                             "items": {
@@ -91,11 +91,11 @@ def operacao():
             }
         )
         # cria as collections com validacao de esquema
-        role_user = RolePrecedenciaIn(**sessao.insert(session, role_user))
-        role_admin.precedencias.append(role_user)
-        role_admin = RolePrecedenciaIn(**sessao.insert(session, role_admin))
-        role_root.precedencias.append(role_admin)
-        role_root = RolePrecedenciaIn(**sessao.insert(session, role_root))
+        role_user = SubRoleUpdate(**sessao.insert(session, role_user))
+        role_admin.sub_roles.append(role_user)
+        role_admin = SubRoleUpdate(**sessao.insert(session, role_admin))
+        role_root.sub_roles.append(role_admin)
+        role_root = SubRoleUpdate(**sessao.insert(session, role_root))
         TestRoleEndpoints.id_root = str(role_root.id)
 
         # cria a collectiona usuarios com validação de esquema

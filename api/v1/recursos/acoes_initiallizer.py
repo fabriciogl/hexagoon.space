@@ -7,10 +7,11 @@ import datetime
 from operator import itemgetter
 from typing import Callable, Union, re as t_re, Optional
 
+from bson import ObjectId
 from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError, DataError
 
-from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoCreateException
+from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoCreateException, MongoException
 from api.v1.recursos.response_handler import ResponseHandler
 
 
@@ -83,10 +84,16 @@ class AcoesInitiallizer(ABC):
         self.handler.sucesso = self.data
     def encerra_create(self):
         """ use : [create-999] """
+        # accountability
         self.model.criado_em = datetime.datetime.now()
         self.model.criado_por = self.handler.usuario.id
-        # insere no banco
-        self.data = self.handler.operacao.insert(self.model)
+        # cria o id
+        self.model.id = ObjectId()
+        try:
+            # insere no banco
+            self.data = self.handler.operacao.insert(self.model)
+        except Exception as e:
+            MongoException(e.details['errmsg'])
         # converte ObjectId para string
         self.data['_id'] = str(self.data['_id'])
         # responde o usuario

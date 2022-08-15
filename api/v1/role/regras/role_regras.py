@@ -9,7 +9,7 @@ class RoleRegras(RegrasInitiallizer):
 
     def regra_1(self):
         """
-        use : [find-1, inactivate-1, update-1, softdelete-1, adiciona_precedencia-1, remove_precedencia-1]
+        use : [find-1, inactivate-1, update-1, softdelete-1, adiciona_sub_role-1, remove_sub_role-1]
 
         verifica se o id existe e se está ativo
         """

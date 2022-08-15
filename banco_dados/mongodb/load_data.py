@@ -2,7 +2,7 @@
 from bson import ObjectId
 from passlib.hash import bcrypt
 
-from api.v1.role.model.role_model import Role, RolePrecedenciaIn
+from api.v1.role.model.role_model import Role, SubRoleUpdate
 from api.v1.usuario.model.usuario_model import Usuario
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes, Sessao
 from config import settings
@@ -47,7 +47,7 @@ def load_data():
                                "bsonType": "string",
                                "description": "texto descritivo da role"
                             },
-                            "precedencias": {
+                            "sub_roles": {
                                "bsonType": "array",
                                "description": "array de precedencias da role, podendo ser array vazio",
                                "items": {
@@ -71,11 +71,11 @@ def load_data():
                 }
             )
             # cria as collections com validacao de esquema
-            role_user = RolePrecedenciaIn(**sessao.insert(session, role_user))
+            role_user = SubRoleUpdate(**sessao.insert(session, role_user))
             role_admin.precedencias.append(role_user)
-            role_admin = RolePrecedenciaIn(**sessao.insert(session, role_admin))
+            role_admin = SubRoleUpdate(**sessao.insert(session, role_admin))
             role_root.precedencias.append(role_admin)
-            role_root = RolePrecedenciaIn(**sessao.insert(session, role_root))
+            role_root = SubRoleUpdate(**sessao.insert(session, role_root))
 
             # cria a collectiona usuarios com validação de esquema
             sessao.get_db().drop_collection(name_or_collection=Usuario.Config.title, session=session)

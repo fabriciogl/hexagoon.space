@@ -8,7 +8,7 @@ def test_usuario(operacao):
     assert len(operacao.find_all(collection="usuarios")) == 2
 
     # valida quantidade de usuarios ativos
-    usuarios_ativos = operacao.find_all(collection="usuarios", filter={"ativo": True})
+    usuarios_ativos = operacao.find_all(collection="usuarios", where={"ativo": True})
     assert len(usuarios_ativos) == 1
     usuario = Usuario(**operacao.find_one(collection="usuarios", where={"ativo": True}))
     # valida quantidade de roles do usuario ativo

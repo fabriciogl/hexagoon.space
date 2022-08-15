@@ -33,9 +33,8 @@ async def check_password(
         raise LoginException(ordem=3, usuario=usuario_model, request=request)
 
     # cria o handler da requisicao
-    handler = ResponseHandler()
+    handler = ResponseHandler(operacao=operacao)
     handler.usuario = usuario_handler
-    handler.operacao = operacao
     handler.request = request
 
     return handler

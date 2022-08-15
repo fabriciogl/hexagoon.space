@@ -6,8 +6,9 @@ from fastapi.params import Security
 from api.v1.recursos.response_handler import ResponseHandler
 from api.v1.recursos.validations.token_role_validation import valida_role
 from api.v1.role.acoes.role_acoes import RoleAcoes
-from api.v1.role.model.role_model import RoleOut, RoleIn, RolePrecedenciaUpdate
+from api.v1.role.model.role_model import RoleOut, RoleIn, SubRoleIn
 from api.v1.role.regras.role_regras import RoleRegras
+from banco_dados.mongodb.configuracao.MongoConection import Sessao
 
 router = APIRouter(
     prefix="/role",
@@ -89,38 +90,43 @@ class RoleEndpoints:
 
     @staticmethod
     @router.put(
-        "/{_id}/adiciona_precedencia",
-        status_code=200,
+        "/{_id}/adiciona_sub_role",
+        status_code=201,
         response_model=RoleOut
     )
-    async def add_precedencia(
-            model: RolePrecedenciaUpdate,
+    async def add_sub_role(
+            model: SubRoleIn,
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):
+        # inicia uma instancia de sessao do mongodb
+        handler.sessao = Sessao()
+
         # regras aplicáveis ao model
-        RoleRegras(_id=_id, model=model, handler=handler, regra='adiciona_precedencia')
+        RoleRegras(_id=_id, model=model, handler=handler, regra='adiciona_sub_role')
 
         # realiza as acoes necessárias no model
-        RoleAcoes(_id=_id, model=model, handler=handler, acao='adiciona_precedencia')
+        RoleAcoes(_id=_id, model=model, handler=handler, acao='adiciona_sub_role')
 
         return handler.sucesso
 
     @staticmethod
     @router.put(
-        "/{_id}/remove_precedencia",
+        "/{_id}/remove_sub_role",
         status_code=200,
         response_model=RoleOut
     )
-    async def rm_precedencia(
-            model: RolePrecedenciaUpdate,
+    async def remove_sub_role(
+            model: SubRoleIn,
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):
+        # inicia uma instancia de sessao do mongodb
+        handler.sessao = Sessao()
         # regras aplicáveis ao model
-        RoleRegras(_id=_id, model=model, handler=handler, regra='remove_precedencia')
+        RoleRegras(_id=_id, model=model, handler=handler, regra='remove_sub_role')
 
         # realiza as acoes necessárias no model
-        RoleAcoes(_id=_id, model=model, handler=handler, acao='remove_precedencia')
+        RoleAcoes(_id=_id, model=model, handler=handler, acao='remove_sub_role')
 
         return handler.sucesso

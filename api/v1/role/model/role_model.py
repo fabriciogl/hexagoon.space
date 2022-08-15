@@ -11,10 +11,10 @@ class RoleOut(BaseModel):
     sigla: Optional[str]
     descricao: Optional[str]
 
-    class RolePrecendida(BaseModel):
+    class SubRoles(BaseModel):
         sigla: Optional[str]
 
-    precedencias: Optional[list[RolePrecendida]] = []
+    sub_roles: Optional[list[SubRoles]] = []
 
     class Config:
         title = 'roles'
@@ -35,8 +35,8 @@ class RoleUsuarioTokenOut(BaseModel):
     sigla: Optional[str]
 
 
-class RolePrecedenciaIn(BaseModel):
-    """ Role gerada para ser inserida como precedencia em outra Role """
+class SubRoleUpdate(BaseModel):
+    """ Role gerada para ser inserida como sub_role em outra Role """
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
     sigla: Optional[str]
 
@@ -49,14 +49,14 @@ class Role(BaseModel):
     sigla: Optional[str]
     descricao: Optional[str]
 
-    class RolePrecendida(BaseModel):
+    class SubRoles(BaseModel):
         id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
         sigla: Optional[str]
 
         class Config:
             arbitrary_types_allowed = True
 
-    precedencias: Optional[list[RolePrecendida]] = []
+    sub_roles: Optional[list[SubRoles]] = []
 
     # accountability
     criado_em: Optional[datetime.datetime]
@@ -72,9 +72,8 @@ class Role(BaseModel):
         arbitrary_types_allowed = True
 
 
-class RolePrecedenciaUpdate(BaseModel):
-    precedencia: str
+class SubRoleIn(BaseModel):
+    sub_role: str
 
     class Config:
         title = 'roles'
-        arbitrary_types_allowed = True

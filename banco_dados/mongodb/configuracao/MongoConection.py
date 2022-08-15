@@ -5,6 +5,7 @@ from bson import ObjectId
 from pydantic import BaseModel
 from pymongo import InsertOne, MongoClient, ReturnDocument
 
+from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoException
 from banco_dados.mongodb.configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 
@@ -16,13 +17,24 @@ class Operacoes:
     def find_all(
             self,
             collection: str,
-            filter: dict = None
+            where: dict = None,
+            soft_deleteds: bool = False,
+            cursor: bool = False
     ) -> list:
         """
           Metodo do handler para bucar todos os documentos da coleção
         """
 
-        return list(self._db[collection].find(filter=filter))
+        # mongo considera null campos com valor null ou que não existem
+        if not where:
+            where = {}
+        if not soft_deleteds:
+            where['deletado_em'] = None
+
+        if cursor:
+            return self._db[collection].find(filter=where)
+        # retorna list para consumir o cursor
+        return list(self._db[collection].find(filter=where))
 
     def find_one(
             self,
@@ -45,34 +57,16 @@ class Operacoes:
             filter=where
         )
 
-    def find_lef_join(
+    def find_with_join(
             self,
             collection: str,
-            where: dict = None,
-            id: str = None
+            join: list = None
     ) -> Dict:
         """
           Metodo do handler para bucar documento no banco realizando $lookup
         """
-
-        if id:
-            match = {"$match": {"_id": ObjectId(id)}}
-        elif where:
-            match = {"$match": where}
-
-        left_join = [
-            match,
-            {"$lookup":
-                 {"from": "roles",
-                  "localField": "roles._id",
-                  "foreignField": "_id",
-                  "as": "rolePrecedencias"
-                  }
-             }
-        ]
-
         # adiciona a operação à lista a ser comitada
-        return self._db[collection].aggregate(left_join).next()
+        return self._db[collection].aggregate(join).next()
 
     def insert(self, model: BaseModel) -> Dict:
         """
@@ -85,7 +79,7 @@ class Operacoes:
         # utiliza find and replace para poder retornar o objeto inserido
         return self._db[collection] \
             .find_one_and_replace(
-            filter={'z': 'z'},
+            filter={'_id': model.id},  # necessário passar um filter para find_one_and_replace
             replacement=model.dict(by_alias=True, exclude_none=True),  # salva no banco com _id ao invés de id
             upsert=True,
             return_document=ReturnDocument.AFTER
@@ -121,18 +115,6 @@ class Operacoes:
         return self._db[collection] \
             .delete_one(filter={'_id': _id})
 
-    # def comitar(self):
-    #     """ Metodo EXCLUSIVO da classe, não chamar diretamento do model. """
-    #
-    #     resultado = {}
-    #     for collection, operacoes in self._operacoes_a_comitar.items():
-    #         resultado[collection] = \
-    #             MongoSetupSincrono \
-    #                 .db_client[collection] \
-    #                 .bulk_write(operacoes)
-    #
-    #     return resultado
-
 
 class Sessao:
     # atributo da classe que armazena as operações a serem comitadas
@@ -147,24 +129,40 @@ class Sessao:
     def get_db(self):
         return self._db
 
-    def find(
+    def find_one(
             self,
             session,
-            filter: dict = None,
+            collection: str,
+            where: dict = None,
             id: str = None,
-            collection: str = None
+            soft_deleteds: bool = False
     ) -> Dict:
         """
           Metodo do handler para bucar documento no banco
         """
-
-        # adiciona a operação à lista a ser comitada
+        if not where:
+            where = {}
         if id:
-            return self._db[collection].find_one(where={'_id': ObjectId(id)}, session=session)
+            where['_id'] = ObjectId(id)
+        if not soft_deleteds:
+            where['deletado_em'] = None
+
         return self._db[collection].find_one(
-            where=filter,
+            filter=where,
             session=session
         )
+
+    def find_with_join(
+            self,
+            session,
+            collection: str,
+            join: list = None
+    ) -> Dict:
+        """
+          Metodo do handler para bucar documento no banco realizando $lookup
+        """
+        # adiciona a operação à lista a ser comitada
+        return self._db[collection].aggregate(join, session=session).next()
 
     def insert(self, session, model: BaseModel, id: str = None) -> Dict:
         """

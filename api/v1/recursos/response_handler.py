@@ -5,13 +5,18 @@ from typing import Optional, Any
 from starlette.requests import Request
 
 from api.v1.usuario.model.usuario_model import Usuario, UsuarioIn
-from banco_dados.mongodb.configuracao.MongoConection import Operacoes
+from banco_dados.mongodb.configuracao.MongoConection import Operacoes, Sessao
 
 
 class ResponseHandler:
 
-    def __init__(self, operacao: Operacoes = None):
+    def __init__(
+            self,
+            operacao: Operacoes = None,
+            sessao: Sessao = None
+    ):
         self._operacao: Optional[Operacoes] = operacao
+        self._sessao: Optional[Sessao] = sessao
         self._request: Optional[Request] = None
         self._usuario: Optional[Usuario] = None
         self._sucesso: Optional[Any] = None
@@ -38,8 +43,8 @@ class ResponseHandler:
         return self._operacao
 
     @operacao.setter
-    def operacao(self, sessao: Operacoes):
-        self._operacao = sessao
+    def operacao(self, operacao: Operacoes):
+        self._operacao = operacao
 
     @property
     def request(self):
@@ -56,3 +61,11 @@ class ResponseHandler:
     @acao.setter
     def acao(self, acao: str):
         self._acao = acao
+
+    @property
+    def sessao(self):
+        return self._sessao
+
+    @sessao.setter
+    def sessao(self, sessao: Sessao):
+        self._sessao = sessao

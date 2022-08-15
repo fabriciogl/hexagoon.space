@@ -60,6 +60,30 @@ class TestRoleEndpoints:
         assert update_role.sigla == "paid"
 
     @staticmethod
+    def test_add_predencia(client: TestClient, operacao):
+        response = client.put(
+            f"role/{TestRoleEndpoints.id_root}/adiciona_sub_role",
+            json={"sub_role": f"{TestRoleEndpoints.novo_id}"},
+            headers={'Authorization': f'Bearer {TestRoleEndpoints.token}'}
+        )
+
+        assert response.status_code == 201
+        assert response.json().get('_id')
+        assert {"sigla": "paid"} in response.json().get('sub_roles')
+
+    @staticmethod
+    def test_remove_predencia(client: TestClient, operacao):
+        response = client.put(
+            f"role/{TestRoleEndpoints.id_root}/remove_sub_role",
+            json={"sub_role": f"{TestRoleEndpoints.novo_id}"},
+            headers={'Authorization': f'Bearer {TestRoleEndpoints.token}'}
+        )
+
+        assert response.status_code == 200
+        assert response.json().get('_id')
+        assert {"sigla": "paid"} not in response.json().get('sub_roles')
+
+    @staticmethod
     def test_delete(client: TestClient, operacao):
         response = client.delete(
             f"role/{TestRoleEndpoints.novo_id}",

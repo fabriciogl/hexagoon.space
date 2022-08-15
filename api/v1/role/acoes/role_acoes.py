@@ -5,7 +5,7 @@ from pymongo.errors import OperationFailure
 
 from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
 from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoUpdateException
-from api.v1.role.model.role_model import RoleIn, Role, RolePrecedenciaUpdate
+from api.v1.role.model.role_model import RoleIn, Role, SubRoleIn, SubRoleUpdate
 from banco_dados.mongodb.configuracao.MongoConection import Sessao
 
 
@@ -35,28 +35,26 @@ class RoleAcoes(AcoesInitiallizer):
         self.model: Role = Role()
 
     def acao_5(self):
-        """ use : [adiciona_precedencia-1] """
+        """ use : [adiciona_sub_role-1] """
         # declara o modelo específico da ação
-        self.model: RolePrecedenciaUpdate
-        # inicia a sessao
-        sessao = Sessao()
-        with sessao.start_session(causal_consistency=True) as session:
+        self.model: SubRoleIn
+        with self.handler.sessao.start_session(causal_consistency=True) as session:
             # realiza a inserção em sessão para manter integridade entre as operações
-            role = Role(**sessao.find(session, id=self.model.precedencia, collection='roles'))
+            role = SubRoleUpdate(**self.handler.sessao.find_one(session=session, id=self.model.sub_role, collection='roles'))
             # addToSet adiciona somente valores ao array que não existem
             # mapear a correspondência exata do campo, se for o caso usando dotação
             # Ex. "role.procedencias"
-            addition = {"precedencias": role.dict(exclude={'precedencias', 'descricao'}, by_alias=True)}
+            addition = {"sub_roles": role.dict(exclude={'sub_roles', 'descricao'}, by_alias=True)}
             try:
                 self.data = Role(
-                    **sessao.add_to_set(
+                    **self.handler.sessao.add_to_set(
                         session=session,
                         id=self._id,
                         add=addition,
                         collection='roles'
                     )
                 )
-            except OperationFailure:
+            except OperationFailure as e:
                 raise MongoUpdateException(self._id)
 
         # converte ObjectId para string
@@ -65,21 +63,19 @@ class RoleAcoes(AcoesInitiallizer):
         self.handler.sucesso = self.data
 
     def acao_6(self):
-        """ use : [remove_precedencia-1] """
+        """ use : [remove_sub_role-1] """
         # declara o modelo específico da ação
-        self.model: RolePrecedenciaUpdate
-        # inicia a sessao
-        sessao = Sessao()
-        with sessao.start_session(causal_consistency=True) as session:
+        self.model: SubRoleIn
+        with self.handler.sessao.start_session(causal_consistency=True) as session:
             # realiza a inserção em sessão para manter integridade entre as operações
-            role = Role(**sessao.find(session, id=self.model.precedencia, collection='roles'))
+            role = SubRoleUpdate(**self.handler.sessao.find_one(session=session, id=self.model.sub_role, collection='roles'))
             # addToSet adiciona somente valores ao array que não existem
             # mapear a correspondência exata do campo, se for o caso usando dotação
-            # Ex. "role.procedencias"
-            remove = {"precedencias": role.dict(exclude={'precedencias'})}
+            # Ex. "role.sub_roles"
+            remove = {"sub_roles": role.dict(exclude={'sub_roles'}, by_alias=True)}
 
             self.data = Role(
-                **sessao.pull_from_set(
+                **self.handler.sessao.pull_from_set(
                     session=session,
                     id=self._id,
                     remove=remove,
