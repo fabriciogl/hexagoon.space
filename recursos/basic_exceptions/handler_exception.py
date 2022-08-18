@@ -4,7 +4,7 @@ import json
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from api.v1.recursos.basic_exceptions.generic_validation_exceptions import InvalidIdException
+from recursos.basic_exceptions.generic_validation_exceptions import InvalidIdException
 
 
 # from API.V1.Excecoes.BasicExceptions.MongoExceptions import MongoFindException2

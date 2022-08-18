@@ -1,12 +1,11 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
-import json
 
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 from api.v1.artigo.model.artigo_model import ArtigoIn
-from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
+from recursos.acoes_initiallizer import AcoesInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLFindException
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import ModalidadeArtigo
 
 
@@ -16,7 +15,7 @@ class ModalidadeArtigoAcoes(AcoesInitiallizer):
     data: ModalidadeArtigo
 
     def acao_1(self):
-        """ use : [find_1] """
+        """ use : [find-1] """
         select_query = select(ModalidadeArtigo).filter_by(id=self._id)
         try:
             self.data = self.handler.sessao.execute(select_query).scalar_one()
@@ -27,13 +26,13 @@ class ModalidadeArtigoAcoes(AcoesInitiallizer):
         self.handler.sucesso = self.data
 
     def acao_2(self):
-        """ use : [create_1] """
+        """ use : [create-1] """
         self.data = ModalidadeArtigo(**self.model.dict())
         self.handler.sessao.add(self.data)
 
 
     def acao_3(self):
-        """ use : [update_1] """
+        """ use : [update-1] """
         select_query = select(ModalidadeArtigo).filter_by(id=self._id)
         try:
             self.data = self.handler.sessao.execute(select_query).scalar_one()
@@ -46,7 +45,7 @@ class ModalidadeArtigoAcoes(AcoesInitiallizer):
 
 
     def acao_4(self):
-        """ use : [softdelete_1] """
+        """ use : [soft_delete-1] """
         select_query = select(ModalidadeArtigo).filter_by(id=self._id)
 
         try:

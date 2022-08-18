@@ -9,9 +9,9 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 
-from api.v1.recursos.basic_exceptions.token_exceptions import TokenException, \
+from recursos.basic_exceptions.token_exceptions import TokenException, \
     RoleException
-from api.v1.recursos.response_handler import ResponseHandler
+from recursos.response_handler import ResponseHandler
 from api.v1.usuario.excecoes.usuario_excecoes import UsuarioFindException
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, SQLSincrono
 from config import settings

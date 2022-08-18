@@ -8,9 +8,9 @@ from starlette.responses import HTMLResponse
 
 from api.v1.html.acoes.html_acoes import HTMLAcoes
 from api.v1.html.regras.html_regras import HTMLRegras
-from api.v1.recursos.excecao_model import Message
-from api.v1.recursos.response_handler import ResponseHandler
-from api.v1.recursos.validations.password_validation import check_password
+from recursos.basic_exceptions.excecao_model import Message
+from recursos.response_handler import ResponseHandler
+from recursos.validations.password_validation import check_password
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import SQLSincrono
 
 router = APIRouter(

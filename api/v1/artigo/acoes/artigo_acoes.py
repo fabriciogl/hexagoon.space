@@ -5,8 +5,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 from api.v1.artigo.model.artigo_model import ArtigoIn
-from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
+from recursos.acoes_initiallizer import AcoesInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLFindException
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Artigo
 
 
@@ -16,7 +16,7 @@ class ArtigoAcoes(AcoesInitiallizer):
     data: Artigo
 
     def acao_1(self):
-        """ use : [find_1] """
+        """ use : [find-1, update-1, soft_delete-1] """
         select_query = select(Artigo).filter_by(id=self._id)
         try:
             self.data = self.handler.sessao.execute(select_query).scalar_one()
@@ -27,7 +27,7 @@ class ArtigoAcoes(AcoesInitiallizer):
         self.handler.sucesso = self.data
 
     def acao_2(self):
-        """ use : [create_1] """
+        """ use : [create-1] """
         self.data = Artigo(**self.model.dict())
         self.data.titulo = self.model.corpo['blocks'][0]['data']['text']
         self.data.corpo = json.dumps(self.data.corpo)
@@ -35,14 +35,7 @@ class ArtigoAcoes(AcoesInitiallizer):
 
 
     def acao_3(self):
-        """ use : [update_1] """
-        select_query = select(Artigo).filter_by(id=self._id)
-        try:
-            self.data = self.handler.sessao.execute(select_query).scalar_one()
-
-        except NoResultFound:
-            raise SQLFindException(self._id, 'Artigo')
-
+        """ use : [update-2] """
         # alterações
         self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
         self.model.corpo = json.dumps(self.model.corpo)
@@ -50,15 +43,6 @@ class ArtigoAcoes(AcoesInitiallizer):
 
 
     def acao_4(self):
-        """ use : [softdelete_1] """
-        select_query = select(Artigo).filter_by(id=self._id)
-
-        try:
-            if data := self.handler.sessao.execute(select_query).scalar_one():
-                self.data = data
-
-        except NoResultFound:
-            raise SQLFindException(self._id, 'Role')
-
+        """ use : [soft_delete-2] """
         self.data.soft_delete()
 

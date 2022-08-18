@@ -3,9 +3,9 @@
 from fastapi import APIRouter
 from fastapi.params import Security
 
-from api.v1.recursos.excecao_model import Message
-from api.v1.recursos.response_handler import ResponseHandler
-from api.v1.recursos.validations.token_role_validation import valida_role
+from recursos.basic_exceptions.excecao_model import Message
+from recursos.response_handler import ResponseHandler
+from recursos.validations.token_role_validation import valida_role
 from api.v1.usuario.acoes.usuario_acoes import UsuarioAcoes
 from api.v1.usuario.model.usuario_model import UsuarioIn, UsuarioOut
 from api.v1.usuario.regras.usuario_regras import UsuarioRegras
@@ -21,7 +21,8 @@ class UsuarioEndpoints:
 
     @staticmethod
     @router.get("/{id}",
-                response_model=UsuarioOut
+                response_model=UsuarioOut,
+                include_in_schema=False
                 )
     async def find(
             id: int,
@@ -38,7 +39,8 @@ class UsuarioEndpoints:
     @staticmethod
     @router.post("",
                  response_model=UsuarioOut,
-                 status_code=201)
+                 status_code=201,
+                 include_in_schema=False)
     async def create(
             usuario: UsuarioIn,
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
@@ -53,7 +55,8 @@ class UsuarioEndpoints:
     @staticmethod
     @router.put("/{_id}",
                 response_model=UsuarioOut,
-                status_code=200
+                status_code=200,
+                include_in_schema=False
                 )
     async def update(
             usuario: UsuarioIn,
@@ -71,7 +74,8 @@ class UsuarioEndpoints:
     @staticmethod
     @router.delete(
         "/{_id}",
-        status_code=200
+        status_code=200,
+        include_in_schema=False
     )
     async def delete(
             _id: int,
@@ -79,15 +83,16 @@ class UsuarioEndpoints:
     ):
 
         # regras aplicáveis ao model
-        UsuarioRegras(_id=_id, handler=handler, regra='softdelete')
+        UsuarioRegras(_id=_id, handler=handler, regra='soft_delete')
 
         # realiza as acoes necessárias no model
-        UsuarioAcoes(_id=_id, handler=handler, acao='softdelete')
+        UsuarioAcoes(_id=_id, handler=handler, acao='soft_delete')
 
     @staticmethod
     @router.delete(
         "/{_id}/inactivate",
-        status_code=200
+        status_code=200,
+        include_in_schema=False
     )
     async def inactivate(
             _id: int,

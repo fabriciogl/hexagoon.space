@@ -78,7 +78,7 @@ class BaseMixin:
             if connection.connection.info['handler'].acao in ['update', 'inactivate']:
                 target.alterador_id = usuario.id
 
-            elif connection.connection.info['handler'].acao == 'softdelete':
+            elif connection.connection.info['handler'].acao == 'soft_delete':
                 target.deletador_id = usuario.id
                 target.deletado_em = datetime.now()
 

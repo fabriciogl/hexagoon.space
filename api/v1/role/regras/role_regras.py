@@ -3,8 +3,8 @@
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
-from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLFindException
+from recursos.regras_initiallizer import RegrasInitiallizer
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Role
 
 
@@ -12,7 +12,7 @@ class RoleRegras(RegrasInitiallizer):
 
     def regra_1(self):
         """
-        use : [find_1, inactivate_1, update_1, softdelete_1]
+        use : [find-1, inactivate-1, update-1, soft_delete-1]
 
         verifica se o id existe e se está ativo
         """

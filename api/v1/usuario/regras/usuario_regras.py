@@ -3,8 +3,8 @@
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
-from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLFindException
+from recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.usuario.excecoes.usuario_excecoes import UsuarioCreateException, UsuarioUpdateException
 from api.v1.usuario.model.usuario_model import UsuarioIn
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario
@@ -16,7 +16,7 @@ class UsuarioRegras(RegrasInitiallizer):
 
     def regra_1(self):
         """
-        use : [create_1]
+        use : [create-1]
         """
         # Necessário passar por string para pegar casos deletados.
         resultado = self.handler.sessao \
@@ -32,7 +32,7 @@ class UsuarioRegras(RegrasInitiallizer):
 
     def regra_2(self):
         """
-        use : [find_1, inactivate_1, update_1]
+        use : [find-1, inactivate-1, update-1]
 
         verifica se o id existe e se está ativo
         """
@@ -44,7 +44,7 @@ class UsuarioRegras(RegrasInitiallizer):
 
     def regra_3(self):
         """
-        use : [update_2]
+        use : [update-2]
 
         verifica se trata-se de tentativa de alterar email do cadastro
         """
@@ -55,7 +55,7 @@ class UsuarioRegras(RegrasInitiallizer):
 
     def regra_4(self):
         """
-        use : [softdelete_1]
+        use : [soft_delete-1]
 
         verifica se o id existe.
         """

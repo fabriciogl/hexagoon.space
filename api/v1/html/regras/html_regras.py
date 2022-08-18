@@ -3,9 +3,9 @@
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLException
-from api.v1.recursos.basic_exceptions.token_exceptions import RoleException
-from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLException
+from recursos.basic_exceptions.token_exceptions import RoleException
+from recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.usuario.model.usuario_model import UsuarioIn
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Artigo
 
@@ -18,13 +18,13 @@ class HTMLRegras(RegrasInitiallizer):
 
     def regra_1(self):
         """
-        use : [login_1]
+        use : [login-1]
         """
         pass
 
     def regra_2(self):
         """
-        use : [admin_1]
+        use : [admin-1]
         """
         can_access = False
         # roles originais
@@ -45,13 +45,13 @@ class HTMLRegras(RegrasInitiallizer):
 
     def regra_3(self):
         """
-        use : [redirect_1]
+        use : [redirect-1]
         """
         pass
 
     def regra_4(self):
         """
-        use : [article_1]
+        use : [article-1]
         """
         select_query = select(Artigo).where((Artigo.id == self._id))
         try:
@@ -62,7 +62,7 @@ class HTMLRegras(RegrasInitiallizer):
 
     def regra_5(self):
         """
-        use : [articleAll_1]
+        use : [articleAll-1]
         """
         # # forma de se recuperar somente algumas colunas da tabela
         # select_query = select(Artigo.id, Artigo.titulo)
@@ -75,7 +75,7 @@ class HTMLRegras(RegrasInitiallizer):
 
     def regra_6(self):
         """
-        use : [articleGroup_1]
+        use : [articleGroup-1]
         """
         # # forma de se recuperar somente algumas colunas da tabela
         # select_query = select(Artigo.id, Artigo.titulo)

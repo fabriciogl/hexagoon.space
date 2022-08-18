@@ -3,8 +3,8 @@
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
-from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLFindException
+from recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.usuario.model.usuario_model import UsuarioIn
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario
 
@@ -17,7 +17,7 @@ class AutenticacaoRegras(RegrasInitiallizer):
 
     def regra_1(self):
         """
-        use : [recuperar_1]
+        use : [recuperar-1]
         """
         select_query = select(Usuario).where(Usuario.email == self.model.email)
 
@@ -29,5 +29,5 @@ class AutenticacaoRegras(RegrasInitiallizer):
 
     def regra_2(self):
         """
-        use : [login_1]
+        use : [login-1]
         """

@@ -3,7 +3,7 @@
 from sqlalchemy import select
 
 from api.v1.as_usuario_role.model.as_usuario_role_model import AsUsuarioRoleIn
-from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
+from recursos.acoes_initiallizer import AcoesInitiallizer
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario as UsuarioData, Role as RoleData, \
     AsUsuarioRole
 
@@ -14,16 +14,16 @@ class AsUsuarioRoleAcoes(AcoesInitiallizer):
     data: AsUsuarioRole
 
     def acao_0(self):
-        """ use : [find_0, update_0, softdelete_0] """
+        """ use : [find-0, update-0, soft_delete-0] """
         select_query = select(AsUsuarioRole).filter_by(id=self._id)
         self.data: AsUsuarioRole = self.handler.sessao.execute(select_query).scalar_one()
 
     def acao_1(self):
-        """ use : [find_1] """
+        """ use : [find-1] """
         self.handler.sucesso = self.data
 
     def acao_2(self):
-        """ use : [create_1] """
+        """ use : [create-1] """
         # Seleciona o usuário
         select_usuario = select(UsuarioData).filter_by(id=self.model.usuario_id)
         usuario: UsuarioData = self.handler.sessao.execute(select_usuario).scalar_one()
@@ -38,11 +38,11 @@ class AsUsuarioRoleAcoes(AcoesInitiallizer):
 
 
     def acao_3(self):
-        """ use : [softdelete_1] """
+        """ use : [soft_delete-1] """
         self.data.soft_delete()
 
     def acao_4(self):
-        """ use : [update_1] """
+        """ use : [update-1] """
         self.data.update(self.model)
 
 

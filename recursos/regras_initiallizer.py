@@ -8,7 +8,7 @@ from typing import Callable, Union, re as t_re, Optional
 
 from pydantic import BaseModel
 
-from api.v1.recursos.response_handler import ResponseHandler
+from recursos.response_handler import ResponseHandler
 
 
 class RegrasInitiallizer(ABC):
@@ -54,9 +54,9 @@ class RegrasInitiallizer(ABC):
                 use_cases: t_re.Match = re.search(r'(?P<use>use\s{,4}[:=]{1,2}\s{,4}\[.*])', doc_string, flags=re.IGNORECASE)
                 if use_cases and use_cases.group('use'):
                     # identifica todas as regras declaradas na funcao
-                    list_uses = re.findall(r'\w*\d', use_cases.group('use'))
+                    list_uses = re.findall(r'\w*-\d{1,2}', use_cases.group('use'))
                     for use_order in list_uses:
-                        use, order = use_order.split('_')
+                        use, order = use_order.split('-')
                         # Adicionei ao dicionario rules uma chave com o nome do metodo e valor
                         # após, uma chave com a ordem e o metodo como valor
                         cls.rules \

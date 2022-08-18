@@ -4,7 +4,7 @@ from typing import Union, Type
 
 from pydantic.types import ConstrainedStr, _registered
 
-from api.v1.recursos.basic_exceptions.generic_validation_exceptions import GenericValidationException
+from recursos.basic_exceptions.generic_validation_exceptions import GenericValidationException
 
 
 class CustomIdValidation(ConstrainedStr):

@@ -1,14 +1,14 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 import json
 
-from sqlalchemy import select, asc, desc
+from sqlalchemy import select, desc
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 from starlette.responses import Response
 
 from api.v1.autenticacao.endpoint.autenticacao_endpoints import AutenticacaoEndpoints
-from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLException
+from recursos.acoes_initiallizer import AcoesInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLException
 from api.v1.usuario.model.usuario_model import UsuarioOut
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Artigo, Role, ModalidadeArtigo
 from templates.Jinja2 import create_templates
@@ -22,7 +22,7 @@ class HTMLAcoes(AcoesInitiallizer):
     # data:
 
     def acao_1(self):
-        """ use : [login_1] """
+        """ use : [login-1] """
 
         self.handler.sucesso = templates.TemplateResponse(
             "login.html",
@@ -32,7 +32,7 @@ class HTMLAcoes(AcoesInitiallizer):
         )
 
     def acao_2(self):
-        """ use : [admin_1] """
+        """ use : [admin-1] """
 
         try:
             if data := self.handler \
@@ -78,7 +78,7 @@ class HTMLAcoes(AcoesInitiallizer):
         self.handler.sucesso = Response(content=html_response.body, headers=headers, media_type="text/html")
 
     def acao_3(self):
-        """ use : [article_1] """
+        """ use : [article-1] """
 
         # recupera o artigo que será exibido
         select_query = select(Artigo).where((Artigo.id == self._id))
@@ -102,7 +102,7 @@ class HTMLAcoes(AcoesInitiallizer):
         )
 
     def acao_4(self):
-        """ use : [articleAll_1]"""
+        """ use : [articleAll-1]"""
 
         # forma de se recuperar somente algumas colunas da tabela
         select_query = select(Artigo.id, Artigo.titulo).order_by(desc(Artigo.criado_em))
@@ -130,7 +130,7 @@ class HTMLAcoes(AcoesInitiallizer):
         )
 
     def acao_5(self):
-        """ use : [articleGroup_1]"""
+        """ use : [articleGroup-1]"""
 
         try:
             query = select(ModalidadeArtigo).filter_by(id=self._id)

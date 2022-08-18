@@ -6,8 +6,8 @@ from fastapi.params import Security
 from api.v1.artigo.acoes.artigo_acoes import ArtigoAcoes
 from api.v1.artigo.model.artigo_model import ArtigoOut, ArtigoIn
 from api.v1.artigo.regras.artigo_regras import ArtigoRegras
-from api.v1.recursos.response_handler import ResponseHandler
-from api.v1.recursos.validations.token_role_validation import valida_role
+from recursos.response_handler import ResponseHandler
+from recursos.validations.token_role_validation import valida_role
 
 router = APIRouter(
     prefix="/artigo",
@@ -81,9 +81,9 @@ class ArtigoEndpoints:
             handler: ResponseHandler = Security(valida_role, scopes=["admin"])
     ):
         # regras aplicáveis ao model
-        ArtigoRegras(_id=_id, handler=handler, regra='softdelete')
+        ArtigoRegras(_id=_id, handler=handler, regra='soft_delete')
 
         # realiza as acoes necessárias no model
-        ArtigoAcoes(_id=_id, handler=handler, acao='softdelete')
+        ArtigoAcoes(_id=_id, handler=handler, acao='soft_delete')
 
         return handler.sucesso

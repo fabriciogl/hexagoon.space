@@ -7,8 +7,8 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 
-from api.v1.recursos.basic_exceptions.login_exceptions import LoginException
-from api.v1.recursos.response_handler import ResponseHandler
+from recursos.basic_exceptions.login_exceptions import LoginException
+from recursos.response_handler import ResponseHandler
 from api.v1.usuario.model.usuario_model import UsuarioTokenIn
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, SQLSincrono
 

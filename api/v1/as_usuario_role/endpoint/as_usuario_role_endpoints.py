@@ -6,8 +6,8 @@ from fastapi.params import Security
 from api.v1.as_usuario_role.acoes.as_usuario_role_acoes import AsUsuarioRoleAcoes
 from api.v1.as_usuario_role.model.as_usuario_role_model import AsUsuarioRoleOut, AsUsuarioRoleIn
 from api.v1.as_usuario_role.regras.as_usuario_role_regras import AsUsuarioRoleRegras
-from api.v1.recursos.response_handler import ResponseHandler
-from api.v1.recursos.validations.token_role_validation import valida_role
+from recursos.response_handler import ResponseHandler
+from recursos.validations.token_role_validation import valida_role
 
 router = APIRouter(
     prefix="/as_usuario_role",
@@ -79,8 +79,8 @@ class AsUsuarioRoleEndpoints:
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):
         # valida as regras necessárias no model
-        AsUsuarioRoleRegras(_id=_id, handler=handler, regra='softdelete')
+        AsUsuarioRoleRegras(_id=_id, handler=handler, regra='soft_delete')
         # realiza as acoes necessárias no model
-        AsUsuarioRoleAcoes(_id=_id, handler=handler, acao='softdelete')
+        AsUsuarioRoleAcoes(_id=_id, handler=handler, acao='soft_delete')
 
         return handler.sucesso

@@ -6,8 +6,8 @@ from sqlalchemy.exc import NoResultFound
 from config import settings
 from api.v1.as_usuario_role.excecoes.as_usuario_role_exceptions import AsUsuarioRoleRegrasException
 from api.v1.as_usuario_role.model.as_usuario_role_model import AsUsuarioRoleIn
-from api.v1.recursos.basic_exceptions.sql_exceptions import SQLFindException
-from api.v1.recursos.regras_initiallizer import RegrasInitiallizer
+from recursos.basic_exceptions.sql_exceptions import SQLFindException
+from recursos.regras_initiallizer import RegrasInitiallizer
 from banco_dados.sql_alchemy.configuracao.oracle.data_oracle import Usuario, Role, AsUsuarioRole
 
 
@@ -17,7 +17,7 @@ class AsUsuarioRoleRegras(RegrasInitiallizer):
 
     def regra_1(self):
         """
-        use : [create_1]
+        use : [create-1]
         """
         select_usuario = select(Usuario).filter_by(id=self.model.usuario_id)
         try:
@@ -38,7 +38,7 @@ class AsUsuarioRoleRegras(RegrasInitiallizer):
 
     def regra_2(self):
         """
-        use : [find_1, inactivate_1, update_1, softdelete_1]
+        use : [find-1, inactivate-1, update-1, soft_delete-1]
 
         verifica se o id existe e se está ativo
         """
@@ -50,7 +50,7 @@ class AsUsuarioRoleRegras(RegrasInitiallizer):
 
     def regra_3(self):
         """
-        use : [softdelete_2]
+        use : [soft_delete-2]
 
         verifica se o id é do usuário root e se irá deletar a role root (proíbe)
         """
