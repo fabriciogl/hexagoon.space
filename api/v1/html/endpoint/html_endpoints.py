@@ -81,7 +81,7 @@ class HTMLEndpoints:
 
     @staticmethod
     @router.get(
-        "/artigoGrupos/{_id}",
+        "/grupos/{_id}",
         response_class=HTMLResponse,
         status_code=200
     )
@@ -104,7 +104,7 @@ class HTMLEndpoints:
 
     @staticmethod
     @router.get(
-        "/artigo/{_id}",
+        "/html/{_id}",
         response_class=HTMLResponse,
         status_code=200
     )

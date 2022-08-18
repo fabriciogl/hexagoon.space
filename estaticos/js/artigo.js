@@ -205,7 +205,7 @@ async function respostaPushArtigo(response){
         const li_original = document.querySelector('.list-group-item');
         const li_clone = li_original.cloneNode(true);
         li_clone.querySelector('a').innerText = resposta.titulo;
-        li_clone.querySelector('a').setAttribute('href', `/artigo/${resposta.id}`);
+        li_clone.querySelector('a').setAttribute('href', `/${resposta.id}`);
         document.querySelector('ul').appendChild(li_clone);
     }
 
@@ -282,5 +282,5 @@ async function createArtigo(){
 
 async function selecionaGrupo(){
     const grupo_id = window.event.target.selectedOptions[0].value;
-    window.open(`${baseUrl}/artigoGrupos/${grupo_id}`, '_self');
+    window.open(`${baseUrl}/grupos/${grupo_id}`, '_self');
 }

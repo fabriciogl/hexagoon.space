@@ -14,7 +14,7 @@
      <li class="list-group-item">Artigos mais recentes</li>
     {% if artigos %}
         {% for artigo in artigos %}
-            <li class="list-group-item"><a href="/artigo/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
+            <li class="list-group-item"><a href="/html/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
         {% endfor %}
     {% endif %}
 </ul>
