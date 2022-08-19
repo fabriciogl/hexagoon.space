@@ -32,10 +32,8 @@ class UsuarioOut(BaseModel):
 
 
 class UsuarioOutReduzido(BaseModel):
-    id: int
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: str
-    email: EmailStr
-
 
 class Usuario(BaseModel):
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
@@ -50,7 +48,7 @@ class Usuario(BaseModel):
     criado_por: Optional[ObjectId]
     alterado_em: Optional[datetime.datetime]
     alterado_por: Optional[ObjectId]
-    # softdelete
+    # soft_delete
     deletado_em: Optional[datetime.datetime]
     deletado_por: Optional[ObjectId]
 

@@ -63,7 +63,7 @@ class Role(BaseModel):
     criado_por: Optional[ObjectId]
     alterado_em: Optional[datetime.datetime]
     alterado_por: Optional[ObjectId]
-    # softdelete
+    # soft_delete
     deletado_em: Optional[datetime.datetime]
     deletado_por: Optional[ObjectId]
 

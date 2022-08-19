@@ -1,9 +1,13 @@
 #  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+import datetime
+import json
+
 from bson import ObjectId
 from passlib.hash import bcrypt
 
+from api.v1.artigo.model.artigo_model import Artigo
 from api.v1.role.model.role_model import Role, SubRoleUpdate
-from api.v1.usuario.model.usuario_model import Usuario
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioOutReduzido
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes, Sessao
 from config import settings
 
@@ -37,7 +41,7 @@ def load_data():
                 validator={
                     "$jsonSchema": {
                         "bsonType": "object",
-                        "required": [ "sigla", "descricao", "precedencias"],
+                        "required": [ "sigla", "descricao", "sub_roles"],
                         "properties": {
                             "sigla": {
                                "bsonType": "string",
@@ -72,12 +76,12 @@ def load_data():
             )
             # cria as collections com validacao de esquema
             role_user = SubRoleUpdate(**sessao.insert(session, role_user))
-            role_admin.precedencias.append(role_user)
+            role_admin.sub_roles.append(role_user)
             role_admin = SubRoleUpdate(**sessao.insert(session, role_admin))
-            role_root.precedencias.append(role_admin)
+            role_root.sub_roles.append(role_admin)
             role_root = SubRoleUpdate(**sessao.insert(session, role_root))
 
-            # cria a collectiona usuarios com validação de esquema
+            # cria a collection usuarios com validação de esquema
             sessao.get_db().drop_collection(name_or_collection=Usuario.Config.title, session=session)
             sessao.get_db().create_collection(
                 name=Usuario.Config.title,
@@ -126,4 +130,49 @@ def load_data():
                 }
             )
             usuario.roles.append(role_root)
-            sessao.insert(session, usuario)
+            usuario = UsuarioOutReduzido(**sessao.insert(session, usuario))
+
+            # cria a collection artigos com validação de esquema
+            sessao.get_db().drop_collection(name_or_collection=Artigo.Config.title, session=session)
+            sessao.get_db().create_collection(
+                name=Artigo.Config.title,
+                validator={
+                    "$jsonSchema": {
+                        "bsonType": "object",
+                        "required": ["titulo", "corpo", "criado_em", "criado_por"],
+                        "properties": {
+                            "titulo": {
+                                "bsonType": "string"
+                            },
+                            "corpo": {
+                                "bsonType": "string"
+                            },
+                            "criado_em": {
+                                "bsonType": "date"
+                            },
+                            "criado_por": {
+                                "bsonType": "object",
+                                "required": ["_id", "nome"],
+                                "additionalProperties": False,
+                                "properties": {
+                                    "_id": {
+                                        "bsonType": "objectId",
+                                        "description": "O _id do usuario criador"
+                                    },
+                                    "nome": {
+                                        "bsonType": "string",
+                                        "description": "nome do usuário criador do artigo"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+            artigo = Artigo(
+                titulo='Artigo Primeiro',
+                corpo=json.dumps({"blocks": [{"data": {"level": 2, "text": "Bem Vindo ao Hexagoon"}, "id": "VlSDl34iWg", "type": "header"}]}),
+                criado_em=datetime.datetime.now(),
+                criado_por=usuario
+            )
+            sessao.insert(session, artigo)

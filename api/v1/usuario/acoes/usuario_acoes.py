@@ -1,10 +1,10 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
-import datetime
 
 from passlib.hash import bcrypt
 
-from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
-from api.v1.usuario.model.usuario_model import Usuario, UsuarioIn, UsuarioOut
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioIn
+from recursos.acoes_initiallizer import AcoesInitiallizer
+from recursos.basic_exceptions.mongo_exceptions import MongoFindException
 
 
 class UsuarioAcoes(AcoesInitiallizer):
@@ -14,9 +14,10 @@ class UsuarioAcoes(AcoesInitiallizer):
 
     def acao_0(self):
         """ use: [find-1, inactivate-1] """
-        self.data: Usuario = Usuario(
-            **self.handler.operacao.find_one(id=self._id, collection='usuarios')
-        )
+        if data := self.handler.operacao.find_one(id=self._id, collection='usuarios'):
+            self.data: Usuario = Usuario(**data)
+        else:
+            MongoFindException(self._id, 'Usuarios')
 
     def acao_2(self):
         """ use : [create-1] """
@@ -40,6 +41,6 @@ class UsuarioAcoes(AcoesInitiallizer):
         self.model: Usuario = Usuario(**self.model.dict(exclude_none=True))
 
     def acao_5(self):
-        """ use : [softdelete-2] """
+        """ use : [soft_delete-2] """
         # Seleciona o usuário
         self.model: Usuario = Usuario()

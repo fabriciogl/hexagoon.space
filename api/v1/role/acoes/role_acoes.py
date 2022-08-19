@@ -1,12 +1,10 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
-import datetime
 
 from pymongo.errors import OperationFailure
 
-from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
-from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoUpdateException
-from api.v1.role.model.role_model import RoleIn, Role, SubRoleIn, SubRoleUpdate
-from banco_dados.mongodb.configuracao.MongoConection import Sessao
+from recursos.acoes_initiallizer import AcoesInitiallizer
+from recursos.basic_exceptions.mongo_exceptions import MongoUpdateException
+from api.v1.role.model.role_model import Role, SubRoleIn, SubRoleUpdate
 
 
 class RoleAcoes(AcoesInitiallizer):
@@ -30,7 +28,7 @@ class RoleAcoes(AcoesInitiallizer):
         self.model: Role = Role(**self.model.dict(exclude_none=True))
 
     def acao_3(self):
-        """ use : [softdelete-1] """
+        """ use : [soft_delete-1] """
         # converte o model de entrada para o modelo do banco
         self.model: Role = Role()
 

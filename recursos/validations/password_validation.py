@@ -2,13 +2,10 @@
 
 from fastapi.params import Depends
 from passlib.hash import bcrypt
-from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
-from sqlalchemy.orm import Session
 from starlette.requests import Request
 
-from api.v1.recursos.basic_exceptions.login_exceptions import LoginException
-from api.v1.recursos.response_handler import ResponseHandler
+from recursos.basic_exceptions.login_exceptions import LoginException
+from recursos.response_handler import ResponseHandler
 from api.v1.usuario.model.usuario_model import UsuarioTokenIn, Usuario, UsuarioOut
 from banco_dados.mongodb.configuracao import MongoConection
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes

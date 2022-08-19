@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import jwt
 
 from api.v1.autenticacao.model.autenticacao_model import AutenticacaoOut
-from api.v1.recursos.acoes_initiallizer import AcoesInitiallizer
+from recursos.acoes_initiallizer import AcoesInitiallizer
 from api.v1.usuario.model.usuario_model import UsuarioTokenIn, Usuario
 from config import settings
 

@@ -1,16 +1,15 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from api.v1.autenticacao.acoes.autenticacao_acoes import AutenticacaoAcoes
 from api.v1.autenticacao.model.autenticacao_model import AutenticacaoOut
 from api.v1.autenticacao.regras.autenticacao_regras import AutenticacaoRegras
-from api.v1.recursos.excecao_model import Message
-from api.v1.recursos.response_handler import ResponseHandler
-from api.v1.recursos.validations.password_validation import check_password
+from recursos.basic_exceptions.excecao_model import Message
+from recursos.response_handler import ResponseHandler
+from recursos.validations.password_validation import check_password
 from api.v1.usuario.model.usuario_model import UsuarioTokenIn
 
 from banco_dados.mongodb.configuracao import MongoConection

@@ -5,16 +5,14 @@ import jwt
 from bson import ObjectId
 from fastapi.params import Depends
 from fastapi.security import SecurityScopes
-from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
-from sqlalchemy.orm import Session
 from starlette.requests import Request
 
-from api.v1.recursos.basic_exceptions.token_exceptions import TokenException, \
+from recursos.basic_exceptions.token_exceptions import TokenException, \
     RoleException
-from api.v1.recursos.response_handler import ResponseHandler
+from recursos.response_handler import ResponseHandler
 from api.v1.usuario.excecoes.usuario_excecoes import UsuarioFindException
-from api.v1.usuario.model.usuario_model import Usuario, UsuarioTokenOut
+from api.v1.usuario.model.usuario_model import UsuarioTokenOut
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from config import settings
 

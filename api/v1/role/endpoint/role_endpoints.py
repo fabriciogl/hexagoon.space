@@ -3,8 +3,8 @@
 from fastapi import APIRouter
 from fastapi.params import Security
 
-from api.v1.recursos.response_handler import ResponseHandler
-from api.v1.recursos.validations.token_role_validation import valida_role
+from recursos.response_handler import ResponseHandler
+from recursos.validations.token_role_validation import valida_role
 from api.v1.role.acoes.role_acoes import RoleAcoes
 from api.v1.role.model.role_model import RoleOut, RoleIn, SubRoleIn
 from api.v1.role.regras.role_regras import RoleRegras
@@ -81,10 +81,10 @@ class RoleEndpoints:
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):
         # regras aplicáveis ao model
-        RoleRegras(_id=_id, handler=handler, regra='softdelete')
+        RoleRegras(_id=_id, handler=handler, regra='soft_delete')
 
         # realiza as acoes necessárias no model
-        RoleAcoes(_id=_id, handler=handler, acao='softdelete')
+        RoleAcoes(_id=_id, handler=handler, acao='soft_delete')
 
         return handler.sucesso
 

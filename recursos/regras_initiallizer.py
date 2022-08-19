@@ -8,7 +8,7 @@ from typing import Callable, Union, re as t_re, Optional
 
 from pydantic import BaseModel
 
-from api.v1.recursos.response_handler import ResponseHandler
+from recursos.response_handler import ResponseHandler
 
 
 class RegrasInitiallizer(ABC):

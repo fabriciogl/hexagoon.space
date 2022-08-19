@@ -9,10 +9,9 @@ from typing import Callable, Union, re as t_re, Optional
 
 from bson import ObjectId
 from pydantic import BaseModel
-from sqlalchemy.exc import IntegrityError, DataError
 
-from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoCreateException, MongoException
-from api.v1.recursos.response_handler import ResponseHandler
+from recursos.basic_exceptions.mongo_exceptions import MongoException
+from recursos.response_handler import ResponseHandler
 
 
 class AcoesInitiallizer(ABC):
@@ -113,8 +112,8 @@ class AcoesInitiallizer(ABC):
         # responde o usuario
         self.handler.sucesso = self.data
 
-    def encerra_softdelete(self):
-        """ use : [softdelete-999] """
+    def encerra_soft_delete(self):
+        """ use : [soft_delete-999] """
         self.model.deletado_em = datetime.datetime.now()
         self.model.deletado_por = self.handler.usuario.id
         self.handler.operacao.update(self._id, self.model)

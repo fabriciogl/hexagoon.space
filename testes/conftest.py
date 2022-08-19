@@ -69,7 +69,7 @@ def operacao():
                         },
                         "sub_roles": {
                             "bsonType": "array",
-                            "description": "array de precedencias da role, podendo ser array vazio",
+                            "description": "array de sub_roles da role, podendo ser array vazio",
                             "items": {
                                 "bsonType": "object",
                                 "required": ["_id", "sigla"],

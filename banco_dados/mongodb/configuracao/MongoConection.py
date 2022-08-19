@@ -3,9 +3,8 @@ from typing import Dict
 
 from bson import ObjectId
 from pydantic import BaseModel
-from pymongo import InsertOne, MongoClient, ReturnDocument
+from pymongo import MongoClient, ReturnDocument
 
-from api.v1.recursos.basic_exceptions.mongo_exceptions import MongoException
 from banco_dados.mongodb.configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 
@@ -164,7 +163,7 @@ class Sessao:
         # adiciona a operação à lista a ser comitada
         return self._db[collection].aggregate(join, session=session).next()
 
-    def insert(self, session, model: BaseModel, id: str = None) -> Dict:
+    def insert(self, session, model: BaseModel) -> Dict:
         """
           Metodo do handler para inserir o documento no banco
         """
@@ -175,7 +174,7 @@ class Sessao:
         # adiciona a operação à lista a ser comitada
         return self._db[collection] \
             .find_one_and_replace(
-            filter=id if id else {'id': ''},
+            filter={'id': ''},
             replacement=model.dict(by_alias=True, exclude_none=True),  # salva no banco com _id ao invés de id
             upsert=True,
             return_document=ReturnDocument.AFTER,
