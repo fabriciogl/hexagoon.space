@@ -35,6 +35,6 @@ class TokenException(HTTPException):
 class RoleException(HTTPException):
 
     def __init__(self, usuario: UsuarioTokenOut, request: Request):
-        logging.critical(f'Usuário {usuario.email} tentou acessar {request.url} com método {request.method}')
+        logging.critical(f'Usuário {usuario.id} tentou acessar {request.url} com método {request.method}')
         super().__init__(401, f'Usuário sem permissão.')
 
