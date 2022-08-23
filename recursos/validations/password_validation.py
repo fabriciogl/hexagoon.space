@@ -6,7 +6,7 @@ from starlette.requests import Request
 
 from recursos.basic_exceptions.login_exceptions import LoginException
 from recursos.response_handler import ResponseHandler
-from api.v1.usuario.model.usuario_model import UsuarioTokenIn, Usuario, UsuarioOut
+from api.v1.usuario.model.usuario_model import UsuarioTokenIn, Usuario, UsuarioHandlerToken, UsuarioHandlerSenha
 from banco_dados.mongodb.configuracao import MongoConection
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 
@@ -19,7 +19,7 @@ async def check_password(
 
     if data := operacao.find_one(where={'email':usuario_model.email}, collection='usuarios'):
         usuario_validation: Usuario = Usuario(**data)
-        usuario_handler: UsuarioOut = UsuarioOut(**data)
+        usuario_handler: UsuarioHandlerSenha = UsuarioHandlerSenha(**data)
     else:
         raise LoginException(ordem=1, usuario=usuario_model, request=request)
 

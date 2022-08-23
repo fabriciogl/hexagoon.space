@@ -8,9 +8,9 @@ class ArtigoRegras(RegrasInitiallizer):
 
     def regra_1(self):
         """ use : [create-1, update-1] """
-        data = self.model
-        if data.corpo['blocks'][0]['type'] != 'header':
-            raise ArtigoCreateException('O primeiro bloco do texto deve ser do tipo título.')
+        # data = self.model
+        # if data.corpo['blocks'][0]['type'] != 'header':
+        #     raise ArtigoCreateException('O primeiro bloco do texto deve ser do tipo título.')
 
     def regra_2(self):
         """ use : [soft_delete-1] """

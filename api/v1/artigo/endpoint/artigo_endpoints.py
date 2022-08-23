@@ -4,7 +4,8 @@ from fastapi import APIRouter
 from fastapi.params import Security
 
 from api.v1.artigo.acoes.artigo_acoes import ArtigoAcoes
-from api.v1.artigo.model.artigo_model import ArtigoOut, ArtigoIn
+from api.v1.artigo.model.artigo_model import ArtigoOutCreate, ArtigoIn, ArtigoOutDelete, ArtigoOutUpdate, Artigo, \
+    ArtigoFind
 from api.v1.artigo.regras.artigo_regras import ArtigoRegras
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
@@ -20,14 +21,12 @@ class ArtigoEndpoints:
     @staticmethod
     @router.get(
         "/{_id}",
-        response_model=ArtigoOut
+        response_model=ArtigoFind
     )
     def find(
-            _id: int,
+            _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):
-        # valida as regras necessárias no model
-
         # realiza as acoes necessárias no model
         ArtigoAcoes(_id=_id, handler=handler, acao='find')
 
@@ -37,12 +36,12 @@ class ArtigoEndpoints:
     @staticmethod
     @router.post(
         "",
-        response_model=ArtigoOut,
-        status_code=201
+        response_model=ArtigoOutCreate,
+        status_code=201,
     )
     async def create(
             model: ArtigoIn,
-            handler: ResponseHandler = Security(valida_role, scopes=["user"])
+            handler: ResponseHandler = Security(valida_role, scopes=["user", "root"])
     ):
         # regras aplicáveis ao model
         ArtigoRegras(model=model, handler=handler, regra='update')
@@ -56,7 +55,7 @@ class ArtigoEndpoints:
     @router.put(
         "/{_id}",
         status_code=200,
-        response_model=ArtigoOut
+        response_model=ArtigoOutUpdate
     )
     async def update(
             model: ArtigoIn,
@@ -74,10 +73,11 @@ class ArtigoEndpoints:
     @staticmethod
     @router.delete(
         "/{_id}",
-        status_code=200
+        status_code=200,
+        response_model=ArtigoOutDelete
     )
     async def delete(
-            _id: int,
+            _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["admin"])
     ):
         # regras aplicáveis ao model

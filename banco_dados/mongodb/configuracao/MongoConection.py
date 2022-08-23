@@ -96,7 +96,7 @@ class Operacoes:
         return self._db[collection] \
             .find_one_and_update(
             filter={'_id': ObjectId(id)},
-            update={'$set': model.dict(exclude_none=True)},  # salva no banco com _id ao invés de id
+            update={'$set': model.dict(by_alias=True, exclude_none=True)},  # salva no banco com _id ao invés de id
             upsert=True,
             return_document=ReturnDocument.AFTER
         )

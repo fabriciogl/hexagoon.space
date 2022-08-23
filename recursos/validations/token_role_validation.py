@@ -12,7 +12,7 @@ from recursos.basic_exceptions.token_exceptions import TokenException, \
     RoleException
 from recursos.response_handler import ResponseHandler
 from api.v1.usuario.excecoes.usuario_excecoes import UsuarioFindException
-from api.v1.usuario.model.usuario_model import UsuarioTokenOut
+from api.v1.usuario.model.usuario_model import UsuarioTokenOut, UsuarioHandlerToken
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from config import settings
 
@@ -60,7 +60,7 @@ def valida_token(
                  {"from": "roles",
                   "localField": "roles._id",
                   "foreignField": "_id",
-                  "as": "subRoles"
+                  "as": "sub_roles"
                   }
              }
         ]
@@ -101,7 +101,8 @@ async def valida_role(
         raise RoleException(usuario=usuario, request=request)
 
     handler = ResponseHandler(operacao=operacao)
-    handler.usuario = usuario
+    # converto de usuárioTokenOut para UsuarioOut, removendo senha, email e nome
+    handler.usuario = UsuarioHandlerToken(**usuario.dict(by_alias=True))
     handler.request = request
 
     # adiciona o handler ao request para ser monitorado ao final da requisicao

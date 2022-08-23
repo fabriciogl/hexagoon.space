@@ -106,7 +106,7 @@ class TestUsuarioEndpoint:
         update_usuario = Usuario(**operacao.find_one(collection='usuarios', id=TestUsuarioEndpoint.id_root))
 
         assert response.status_code == 422
-        assert update_usuario.email == "joao@hexsaturn.space"
+        assert update_usuario.email == settings.root_email
 
     @staticmethod
     def test_create_email_utilizado(client: TestClient, operacao):

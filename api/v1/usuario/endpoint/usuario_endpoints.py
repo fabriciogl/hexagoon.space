@@ -7,7 +7,7 @@ from recursos.basic_exceptions.excecao_model import Message
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
 from api.v1.usuario.acoes.usuario_acoes import UsuarioAcoes
-from api.v1.usuario.model.usuario_model import Usuario, UsuarioOut, UsuarioIn
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioHandlerToken, UsuarioIn, UsuarioOutFind
 from api.v1.usuario.regras.usuario_regras import UsuarioRegras
 
 router = APIRouter(
@@ -21,7 +21,7 @@ class UsuarioEndpoints:
 
     @staticmethod
     @router.get("/{id}",
-                response_model=UsuarioOut
+                response_model=UsuarioOutFind
                 )
     async def find(
             id: str,
@@ -37,7 +37,7 @@ class UsuarioEndpoints:
 
     @staticmethod
     @router.post("",
-                 response_model=UsuarioOut,
+                 response_model=UsuarioHandlerToken,
                  status_code=201)
     async def create(
             usuario: Usuario,
@@ -52,7 +52,7 @@ class UsuarioEndpoints:
 
     @staticmethod
     @router.put("/{_id}",
-                response_model=UsuarioOut,
+                response_model=UsuarioHandlerToken,
                 status_code=200
                 )
     async def update(

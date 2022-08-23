@@ -6,7 +6,7 @@ from bson import ObjectId
 from passlib.hash import bcrypt
 
 from api.v1.artigo.model.artigo_model import Artigo
-from api.v1.role.model.role_model import Role, SubRoleUpdate
+from api.v1.role.model.role_model import Role, SubRoles
 from api.v1.usuario.model.usuario_model import Usuario, UsuarioOutReduzido
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes, Sessao
 from config import settings
@@ -75,11 +75,11 @@ def load_data():
                 }
             )
             # cria as collections com validacao de esquema
-            role_user = SubRoleUpdate(**sessao.insert(session, role_user))
+            role_user = SubRoles(**sessao.insert(session, role_user))
             role_admin.sub_roles.append(role_user)
-            role_admin = SubRoleUpdate(**sessao.insert(session, role_admin))
+            role_admin = SubRoles(**sessao.insert(session, role_admin))
             role_root.sub_roles.append(role_admin)
-            role_root = SubRoleUpdate(**sessao.insert(session, role_root))
+            role_root = SubRoles(**sessao.insert(session, role_root))
 
             # cria a collection usuarios com validação de esquema
             sessao.get_db().drop_collection(name_or_collection=Usuario.Config.title, session=session)

@@ -10,6 +10,7 @@ from typing import Callable, Union, re as t_re, Optional
 from bson import ObjectId
 from pydantic import BaseModel
 
+from api.v1.usuario.model.usuario_model import UsuarioOutReduzido
 from recursos.basic_exceptions.mongo_exceptions import MongoException
 from recursos.response_handler import ResponseHandler
 
@@ -80,28 +81,32 @@ class AcoesInitiallizer(ABC):
     def encerra_find(self):
         """ use : [find-999] """
         self.data.id = str(self.data.id)
+        # # converte ObjectId para string
+        # self.data['_id'] = str(self.data['_id'])
+        # self.data['criado_por']['_id'] = str(self.data['criado_por']['_id'])
         self.handler.sucesso = self.data
     def encerra_create(self):
         """ use : [create-999] """
         # accountability
         self.model.criado_em = datetime.datetime.now()
-        self.model.criado_por = self.handler.usuario.id
+        self.model.criado_por = UsuarioOutReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
         # cria o id
         self.model.id = ObjectId()
         try:
             # insere no banco
             self.data = self.handler.operacao.insert(self.model)
         except Exception as e:
-            MongoException(e.details['errmsg'])
+            raise MongoException(e.details['errmsg'])
         # converte ObjectId para string
         self.data['_id'] = str(self.data['_id'])
+        self.data['criado_por']['_id'] = str(self.data['criado_por']['_id'])
         # responde o usuario
         self.handler.sucesso = self.data
 
     def encerra_update(self):
         """ use : [update-999] """
         self.model.alterado_em = datetime.datetime.now()
-        self.model.alterado_por = self.handler.usuario.id
+        self.model.alterado_por = UsuarioOutReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
 
         self.data = self.handler.operacao.update(
             id=self._id,
@@ -109,15 +114,19 @@ class AcoesInitiallizer(ABC):
         )
         # converte ObjectId para string
         self.data['_id'] = str(self.data['_id'])
+        self.data['alterado_por']['_id'] = str(self.data['alterado_por']['_id'])
         # responde o usuario
         self.handler.sucesso = self.data
 
     def encerra_soft_delete(self):
         """ use : [soft_delete-999] """
         self.model.deletado_em = datetime.datetime.now()
-        self.model.deletado_por = self.handler.usuario.id
-        self.handler.operacao.update(self._id, self.model)
-        self.handler.sucesso = {'resultado': 'Conteúdo deletado.'}
+        self.model.deletado_por = UsuarioOutReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
+        self.data = self.handler.operacao.update(self._id, self.model)
+        # converte ObjectId para string
+        self.data['_id'] = str(self.data['_id'])
+        self.data['deletado_por']['_id'] = str(self.data['deletado_por']['_id'])
+        self.handler.sucesso = self.data
 
 
 

@@ -8,7 +8,7 @@ from starlette.responses import Response
 
 from api.v1.autenticacao.endpoint.autenticacao_endpoints import AutenticacaoEndpoints
 from recursos.acoes_initiallizer import AcoesInitiallizer
-from api.v1.usuario.model.usuario_model import UsuarioOut
+from api.v1.usuario.model.usuario_model import UsuarioHandlerToken
 from templates.Jinja2 import create_templates
 
 templates = create_templates()
@@ -56,7 +56,7 @@ class HTMLAcoes(AcoesInitiallizer):
         #
         # perfis: Role = self.handler.sessao.query(Role).all()
 
-        self.model: UsuarioOut = self.data
+        self.model: UsuarioHandlerToken = self.data
 
         html_response = templates.TemplateResponse(
             "usuarios.html",

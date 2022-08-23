@@ -1,7 +1,6 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 import json
 
-
 from api.v1.artigo.model.artigo_model import ArtigoIn, Artigo
 from recursos.acoes_initiallizer import AcoesInitiallizer
 from recursos.basic_exceptions.mongo_exceptions import MongoFindException
@@ -21,18 +20,16 @@ class ArtigoAcoes(AcoesInitiallizer):
 
     def acao_2(self):
         """ use : [create-1] """
-        self.data = Artigo(**self.model.dict())
-        self.data.titulo = self.model.corpo['blocks'][0]['data']['text']
-        self.data.corpo = json.dumps(self.data.corpo)
-        self.handler.sessao.add(self.data)
+        self.model: Artigo = Artigo(**self.model.dict())
+        # self.data.titulo = self.model.corpo['blocks'][0]['data']['text']
+        self.model.corpo = json.dumps(self.model.corpo)
 
 
     def acao_3(self):
         """ use : [update-2] """
         # alterações
-        self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
+        # self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
         self.model.corpo = json.dumps(self.model.corpo)
-        self.data.update(self.model)
 
 
     def acao_4(self):

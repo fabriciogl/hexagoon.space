@@ -4,7 +4,7 @@ from pymongo.errors import OperationFailure
 
 from recursos.acoes_initiallizer import AcoesInitiallizer
 from recursos.basic_exceptions.mongo_exceptions import MongoUpdateException
-from api.v1.role.model.role_model import Role, SubRoleIn, SubRoleUpdate
+from api.v1.role.model.role_model import Role, SubRoleIn, SubRoles
 
 
 class RoleAcoes(AcoesInitiallizer):
@@ -38,7 +38,7 @@ class RoleAcoes(AcoesInitiallizer):
         self.model: SubRoleIn
         with self.handler.sessao.start_session(causal_consistency=True) as session:
             # realiza a inserção em sessão para manter integridade entre as operações
-            role = SubRoleUpdate(**self.handler.sessao.find_one(session=session, id=self.model.sub_role, collection='roles'))
+            role = SubRoles(**self.handler.sessao.find_one(session=session, id=self.model.sub_role, collection='roles'))
             # addToSet adiciona somente valores ao array que não existem
             # mapear a correspondência exata do campo, se for o caso usando dotação
             # Ex. "role.procedencias"
@@ -66,7 +66,7 @@ class RoleAcoes(AcoesInitiallizer):
         self.model: SubRoleIn
         with self.handler.sessao.start_session(causal_consistency=True) as session:
             # realiza a inserção em sessão para manter integridade entre as operações
-            role = SubRoleUpdate(**self.handler.sessao.find_one(session=session, id=self.model.sub_role, collection='roles'))
+            role = SubRoles(**self.handler.sessao.find_one(session=session, id=self.model.sub_role, collection='roles'))
             # addToSet adiciona somente valores ao array que não existem
             # mapear a correspondência exata do campo, se for o caso usando dotação
             # Ex. "role.sub_roles"

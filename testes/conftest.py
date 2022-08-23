@@ -6,7 +6,7 @@ from bson import ObjectId
 from passlib.hash import bcrypt
 from starlette.testclient import TestClient
 
-from api.v1.role.model.role_model import Role, SubRoleUpdate
+from api.v1.role.model.role_model import Role, SubRoles
 from api.v1.usuario.model.usuario_model import Usuario
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from banco_dados.mongodb.configuracao.MongoConection import Sessao
@@ -91,11 +91,11 @@ def operacao():
             }
         )
         # cria as collections com validacao de esquema
-        role_user = SubRoleUpdate(**sessao.insert(session, role_user))
+        role_user = SubRoles(**sessao.insert(session, role_user))
         role_admin.sub_roles.append(role_user)
-        role_admin = SubRoleUpdate(**sessao.insert(session, role_admin))
+        role_admin = SubRoles(**sessao.insert(session, role_admin))
         role_root.sub_roles.append(role_admin)
-        role_root = SubRoleUpdate(**sessao.insert(session, role_root))
+        role_root = SubRoles(**sessao.insert(session, role_root))
         TestRoleEndpoints.id_root = str(role_root.id)
 
         # cria a collectiona usuarios com validação de esquema
