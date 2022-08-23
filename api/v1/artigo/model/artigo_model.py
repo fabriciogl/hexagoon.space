@@ -7,7 +7,7 @@ from pydantic import BaseModel, EmailStr, Field
 from pydantic.types import Json
 
 from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoIn
-from api.v1.usuario.model.usuario_model import UsuarioOutReduzido
+from api.v1.usuario.model.usuario_model import UsuarioReduzido, UsuarioOut
 
 
 class Artigo(BaseModel):
@@ -17,12 +17,12 @@ class Artigo(BaseModel):
 
     # accountability
     criado_em: Optional[datetime.datetime]
-    criado_por: Optional[ObjectId]
+    criado_por: Optional[UsuarioReduzido]
     alterado_em: Optional[datetime.datetime]
-    alterado_por: Optional[ObjectId]
+    alterado_por: Optional[UsuarioReduzido]
     # soft_delete
     deletado_em: Optional[datetime.datetime]
-    deletado_por: Optional[ObjectId]
+    deletado_por: Optional[UsuarioReduzido]
 
     class Config:
         title = "artigos"
@@ -37,6 +37,7 @@ class ArtigoIn(BaseModel):
     class Config:
         title = 'artigos'
 
+
 class ArtigoFind(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
@@ -44,22 +45,24 @@ class ArtigoFind(BaseModel):
 
     # accountability
     criado_em: Optional[datetime.datetime]
-    criado_por: Optional[Any]
+    criado_por: Optional[UsuarioOut]
     alterado_em: Optional[datetime.datetime]
-    alterado_por: Optional[Any]
+    alterado_por: Optional[UsuarioOut]
     # soft_delete
     deletado_em: Optional[datetime.datetime]
-    deletado_por: Optional[Any]
+    deletado_por: Optional[UsuarioOut]
 
     class Config:
         title = "artigos"
         arbitrary_types_allowed = True
+
+
 class ArtigoOutCreate(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
     criado_em: Optional[datetime.datetime]
-    criado_por: Optional[UsuarioOutReduzido]
+    criado_por: Optional[UsuarioReduzido]
 
 
 class ArtigoOutUpdate(BaseModel):
@@ -67,7 +70,7 @@ class ArtigoOutUpdate(BaseModel):
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
     alterado_em: Optional[datetime.datetime]
-    alterado_por: Optional[UsuarioOutReduzido]
+    alterado_por: Optional[UsuarioReduzido]
 
 
 class ArtigoOutDelete(BaseModel):
@@ -75,4 +78,4 @@ class ArtigoOutDelete(BaseModel):
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
     deletado_em: Optional[datetime.datetime]
-    deletado_por: Optional[UsuarioOutReduzido]
+    deletado_por: Optional[UsuarioReduzido]

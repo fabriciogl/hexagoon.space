@@ -56,6 +56,13 @@ class RoleIn(BaseModel):
 class RoleUsuarioOut(BaseModel):
     sigla: Optional[str]
 
+class RoleUsuario(BaseModel):
+    """ Role gerada para ser inserida como sub_role em outra Role """
+    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    sigla: Optional[str]
+
+    class Config:
+        arbitrary_types_allowed = True
 class SubRoles(BaseModel):
     """ Role gerada para ser inserida como sub_role em outra Role """
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')

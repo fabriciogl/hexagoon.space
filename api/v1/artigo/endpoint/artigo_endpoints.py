@@ -27,6 +27,9 @@ class ArtigoEndpoints:
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):
+        # regras aplicáveis ao model
+        ArtigoRegras(_id=_id, handler=handler, regra='find')
+
         # realiza as acoes necessárias no model
         ArtigoAcoes(_id=_id, handler=handler, acao='find')
 
@@ -59,7 +62,7 @@ class ArtigoEndpoints:
     )
     async def update(
             model: ArtigoIn,
-            _id: int,
+            _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):
         # regras aplicáveis ao model

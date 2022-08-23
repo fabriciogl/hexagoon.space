@@ -7,7 +7,7 @@ from passlib.hash import bcrypt
 
 from api.v1.artigo.model.artigo_model import Artigo
 from api.v1.role.model.role_model import Role, SubRoles
-from api.v1.usuario.model.usuario_model import Usuario, UsuarioOutReduzido
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioReduzido
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes, Sessao
 from config import settings
 
@@ -130,7 +130,7 @@ def load_data():
                 }
             )
             usuario.roles.append(role_root)
-            usuario = UsuarioOutReduzido(**sessao.insert(session, usuario))
+            usuario = UsuarioReduzido(**sessao.insert(session, usuario))
 
             # cria a collection artigos com validação de esquema
             sessao.get_db().drop_collection(name_or_collection=Artigo.Config.title, session=session)

@@ -22,7 +22,7 @@ class RegrasInitiallizer(ABC):
     ):
         self._id = _id
         self.model = model
-        self.model_db = None
+        self.data = None
         self.handler = handler
 
         # verifica se a lista de acoes do objeto foi inicializada

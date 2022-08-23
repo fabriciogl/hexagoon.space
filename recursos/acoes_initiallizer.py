@@ -10,7 +10,7 @@ from typing import Callable, Union, re as t_re, Optional
 from bson import ObjectId
 from pydantic import BaseModel
 
-from api.v1.usuario.model.usuario_model import UsuarioOutReduzido
+from api.v1.usuario.model.usuario_model import UsuarioReduzido
 from recursos.basic_exceptions.mongo_exceptions import MongoException
 from recursos.response_handler import ResponseHandler
 
@@ -89,7 +89,7 @@ class AcoesInitiallizer(ABC):
         """ use : [create-999] """
         # accountability
         self.model.criado_em = datetime.datetime.now()
-        self.model.criado_por = UsuarioOutReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
+        self.model.criado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
         # cria o id
         self.model.id = ObjectId()
         try:
@@ -106,7 +106,7 @@ class AcoesInitiallizer(ABC):
     def encerra_update(self):
         """ use : [update-999] """
         self.model.alterado_em = datetime.datetime.now()
-        self.model.alterado_por = UsuarioOutReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
+        self.model.alterado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
 
         self.data = self.handler.operacao.update(
             id=self._id,
@@ -121,7 +121,7 @@ class AcoesInitiallizer(ABC):
     def encerra_soft_delete(self):
         """ use : [soft_delete-999] """
         self.model.deletado_em = datetime.datetime.now()
-        self.model.deletado_por = UsuarioOutReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
+        self.model.deletado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
         self.data = self.handler.operacao.update(self._id, self.model)
         # converte ObjectId para string
         self.data['_id'] = str(self.data['_id'])

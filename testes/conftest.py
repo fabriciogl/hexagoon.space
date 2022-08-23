@@ -1,4 +1,6 @@
 #  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+import datetime
+import json
 from typing import Generator
 
 import pytest
@@ -6,13 +8,15 @@ from bson import ObjectId
 from passlib.hash import bcrypt
 from starlette.testclient import TestClient
 
-from api.v1.role.model.role_model import Role, SubRoles
+from api.v1.artigo.model.artigo_model import Artigo
+from api.v1.role.model.role_model import Role, SubRoles, RoleUsuario
 from api.v1.usuario.model.usuario_model import Usuario
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from banco_dados.mongodb.configuracao.MongoConection import Sessao
 from banco_dados.mongodb.configuracao.MongoSetupSincrono import MongoSetupSincrono
 from config import settings
 from main import app
+from testes.endpoints.test_artigo_endpoints import TestArtigoEndpoints
 from testes.endpoints.test_role_endpoints import TestRoleEndpoints
 from testes.endpoints.test_usuario_endpoints import TestUsuarioEndpoint
 
@@ -95,7 +99,7 @@ def operacao():
         role_admin.sub_roles.append(role_user)
         role_admin = SubRoles(**sessao.insert(session, role_admin))
         role_root.sub_roles.append(role_admin)
-        role_root = SubRoles(**sessao.insert(session, role_root))
+        role_root = RoleUsuario(**sessao.insert(session, role_root))
         TestRoleEndpoints.id_root = str(role_root.id)
 
         # cria a collectiona usuarios com validação de esquema
@@ -147,9 +151,74 @@ def operacao():
             }
         )
         usuario1.roles.append(role_root)
+        role_admin = RoleUsuario(**role_admin.dict(by_alias=True))
+        usuario1.roles.append(role_admin)
+        role_user = RoleUsuario(**role_user.dict(by_alias=True))
+        usuario1.roles.append(role_user)
         usuario_root = Usuario(**sessao.insert(session, usuario1))
         TestUsuarioEndpoint.id_root = str(usuario_root.id)
         sessao.insert(session, usuario2)
+        # criacao de Artigos
+        # cria a collectiona usuarios com validação de esquema
+        sessao.get_db().drop_collection(name_or_collection=Artigo.Config.title, session=session)
+        sessao.get_db().create_collection(
+            name=Artigo.Config.title,
+            validator={
+                "$jsonSchema": {
+                    "bsonType": "object",
+                    "required": ["titulo", "corpo", "criado_em", "criado_por"],
+                    "properties": {
+                        "titulo": {
+                            "bsonType": "string"
+                        },
+                        "corpo": {
+                            "bsonType": "string"
+                        },
+                        "criado_em": {
+                            "bsonType": "date"
+                        },
+                        "criado_por": {
+                            "bsonType": "object",
+                            "required": ["_id", "nome"],
+                            "additionalProperties": False,
+                            "properties": {
+                                "_id": {
+                                    "bsonType": "objectId",
+                                    "description": "O _id do usuario criador"
+                                },
+                                "nome": {
+                                    "bsonType": "string",
+                                    "description": "nome do usuário criador do artigo"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
+
+        artigo1 = Artigo(
+            titulo='Dança dos Lobos',
+            corpo=json.dumps('Dançar com um lobo pode ser a última dança da tua vida.'),
+            criado_por=usuario_root.dict(by_alias=True),
+            criado_em=datetime.datetime.now()
+        )
+        artigo2 = Artigo(
+            titulo='Dança dos Gatos',
+            corpo=json.dumps('Dançar com um gato pode ser arriscado.'),
+            criado_por=usuario_root.dict(by_alias=True),
+            criado_em=datetime.datetime.now()
+        )
+        artigo3 = Artigo(
+            titulo='Dança dos Coelhos',
+            corpo=json.dumps('Dançar com um coelho pode ser interessante.'),
+            criado_por=usuario_root.dict(by_alias=True),
+            criado_em=datetime.datetime.now()
+        )
+        artigo = Artigo(**sessao.insert(session, artigo1))
+        TestArtigoEndpoints.id_artigo = str(artigo.id)
+        sessao.insert(session, artigo2)
+        sessao.insert(session, artigo3)
 
     operacao = Operacoes()
 

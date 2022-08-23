@@ -13,10 +13,9 @@ class ArtigoAcoes(AcoesInitiallizer):
 
     def acao_1(self):
         """ use : [find-1, update-1, soft_delete-1] """
-        if data := self.handler.operacao.find_one(id=self._id, collection='artigos'):
-            self.data: Artigo = Artigo(**data)
-        else:
-            MongoFindException(self._id, 'Artigo')
+        self.data: Artigo = Artigo(
+            **self.handler.operacao.find_one(id=self._id, collection='artigos')
+        )
 
     def acao_2(self):
         """ use : [create-1] """
@@ -30,9 +29,9 @@ class ArtigoAcoes(AcoesInitiallizer):
         # alterações
         # self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
         self.model.corpo = json.dumps(self.model.corpo)
+        self.model: Artigo = Artigo(**self.model.dict())
 
 
     def acao_4(self):
         """ use : [soft_delete-2] """
-        self.data.soft_delete()
-
+        self.model: Artigo = Artigo()

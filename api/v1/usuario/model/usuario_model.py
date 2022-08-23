@@ -5,7 +5,7 @@ from typing import Optional, List, Union, Any
 from bson import ObjectId
 from pydantic import BaseModel, EmailStr, Field
 
-from api.v1.role.model.role_model import RoleUsuarioOut
+from api.v1.role.model.role_model import RoleUsuarioOut, RoleUsuario
 
 
 class UsuarioIn(BaseModel):
@@ -19,6 +19,7 @@ class UsuarioIn(BaseModel):
         title = 'usuarios'
         arbitrary_types_allowed = True
 
+
 # modelo passado para o handler após validação do token
 class UsuarioHandlerToken(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
@@ -29,9 +30,14 @@ class UsuarioHandlerToken(BaseModel):
         title = 'usuarios'
 
 
-class UsuarioOutReduzido(BaseModel):
+class UsuarioReduzido(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: str
+
+
+class UsuarioOut(BaseModel):
+    nome: str
+
 
 class Usuario(BaseModel):
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
@@ -39,16 +45,16 @@ class Usuario(BaseModel):
     email: Optional[EmailStr]
     senha: Optional[str]
     ativo: Optional[bool]
-    roles: Optional[List[RoleUsuarioOut]]
+    roles: Optional[List[RoleUsuario]]
 
     # accountability
     criado_em: Optional[datetime.datetime]
-    criado_por: Optional[UsuarioOutReduzido]
+    criado_por: Optional[UsuarioReduzido]
     alterado_em: Optional[datetime.datetime]
-    alterado_por: Optional[UsuarioOutReduzido]
+    alterado_por: Optional[UsuarioReduzido]
     # soft_delete
     deletado_em: Optional[datetime.datetime]
-    deletado_por: Optional[UsuarioOutReduzido]
+    deletado_por: Optional[UsuarioReduzido]
 
     class Config:
         title = 'usuarios'
@@ -63,14 +69,18 @@ class UsuarioTokenIn(BaseModel):
     class Config:
         title = 'usuarios'
 
+
 # modelo utilizado no handler, após validação da senha
 class UsuarioHandlerSenha(BaseModel):
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
     nome: Optional[str]
     roles: Optional[list[RoleUsuarioOut]]
+
     class Config:
         title = 'usuarios'
         arbitrary_types_allowed = True
+
+
 class UsuarioTokenOut(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: Optional[str]
