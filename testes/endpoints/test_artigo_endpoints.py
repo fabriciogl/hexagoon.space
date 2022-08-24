@@ -15,6 +15,7 @@ class TestArtigoEndpoints:
     token = None
     id_artigo = None
     novo_id = None
+    modalidade_artigo_id = None
 
     @staticmethod
     def test_find(client: TestClient, operacao):
@@ -36,7 +37,8 @@ class TestArtigoEndpoints:
             "artigo",
             json={
                 "titulo": "Erick Hobsbawn",
-                "corpo": json.dumps("eric@hexsaturn.space")
+                "corpo": json.dumps("eric@hexsaturn.space"),
+                "modalidade_artigo_id": TestArtigoEndpoints.modalidade_artigo_id
             },
             headers={'Authorization': f'Bearer {TestArtigoEndpoints.token}'}
         )
@@ -76,7 +78,7 @@ class TestArtigoEndpoints:
         assert delete_usuario.deletado_por is not None
 
     @staticmethod
-    def test_usuario_not_found(client: TestClient, operacao):
+    def test_artigo_not_found(client: TestClient, operacao):
         response = client.get(
             f"artigo/{ObjectId(b'123456789012')}",
             headers={'Authorization': f'Bearer {TestArtigoEndpoints.token}'}

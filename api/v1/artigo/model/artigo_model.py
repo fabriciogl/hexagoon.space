@@ -14,6 +14,7 @@ class Artigo(BaseModel):
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
+    modalidade_artigo: Optional[ModalidadeArtigoIn]
 
     # accountability
     criado_em: Optional[datetime.datetime]
@@ -33,6 +34,15 @@ class ArtigoIn(BaseModel):
     titulo: Optional[str]
     corpo: Optional[Json]
     modalidade_artigo_id: Optional[str]
+
+    class Config:
+        title = 'artigos'
+
+
+class ArtigoInCreate(BaseModel):
+    titulo: str
+    corpo: Json
+    modalidade_artigo_id: str
 
     class Config:
         title = 'artigos'

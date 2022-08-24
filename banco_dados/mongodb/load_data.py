@@ -6,14 +6,14 @@ from bson import ObjectId
 from passlib.hash import bcrypt
 
 from api.v1.artigo.model.artigo_model import Artigo
-from api.v1.role.model.role_model import Role, SubRoles
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoIn
+from api.v1.role.model.role_model import Role, SubRoles, RoleUsuario
 from api.v1.usuario.model.usuario_model import Usuario, UsuarioReduzido
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes, Sessao
 from config import settings
 
 
 def load_data():
-
     operacao = Operacoes()
     usuario = Usuario(
         id=ObjectId(),
@@ -41,34 +41,34 @@ def load_data():
                 validator={
                     "$jsonSchema": {
                         "bsonType": "object",
-                        "required": [ "sigla", "descricao", "sub_roles"],
+                        "required": ["sigla", "descricao", "sub_roles"],
                         "properties": {
                             "sigla": {
-                               "bsonType": "string",
-                               "description": "texto título da role"
+                                "bsonType": "string",
+                                "description": "texto título da role"
                             },
                             "descricao": {
-                               "bsonType": "string",
-                               "description": "texto descritivo da role"
+                                "bsonType": "string",
+                                "description": "texto descritivo da role"
                             },
                             "sub_roles": {
-                               "bsonType": "array",
-                               "description": "array de precedencias da role, podendo ser array vazio",
-                               "items": {
-                                   "bsonType": "object",
-                                   "required": ["_id", "sigla"],
-                                   "additionalProperties": False,
-                                   "properties": {
-                                       "_id":{
-                                           "bsonType": "objectId",
-                                           "description": "O _id da role dada como precedida"
-                                       },
-                                       "sigla":{
-                                           "bsonType": "string",
-                                           "description": "título da role precedida"
-                                       }
-                                   }
-                               }
+                                "bsonType": "array",
+                                "description": "array de precedencias da role, podendo ser array vazio",
+                                "items": {
+                                    "bsonType": "object",
+                                    "required": ["_id", "sigla"],
+                                    "additionalProperties": False,
+                                    "properties": {
+                                        "_id": {
+                                            "bsonType": "objectId",
+                                            "description": "O _id da role dada como precedida"
+                                        },
+                                        "sigla": {
+                                            "bsonType": "string",
+                                            "description": "título da role precedida"
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -79,7 +79,7 @@ def load_data():
             role_admin.sub_roles.append(role_user)
             role_admin = SubRoles(**sessao.insert(session, role_admin))
             role_root.sub_roles.append(role_admin)
-            role_root = SubRoles(**sessao.insert(session, role_root))
+            role_root = RoleUsuario(**sessao.insert(session, role_root))
 
             # cria a collection usuarios com validação de esquema
             sessao.get_db().drop_collection(name_or_collection=Usuario.Config.title, session=session)
@@ -133,19 +133,52 @@ def load_data():
             usuario = UsuarioReduzido(**sessao.insert(session, usuario))
 
             # cria a collection artigos com validação de esquema
+            sessao.get_db().drop_collection(name_or_collection=ModalidadeArtigo.Config.title, session=session)
+            sessao.get_db().create_collection(
+                name=ModalidadeArtigo.Config.title,
+                validator={
+                    "$jsonSchema": {
+                        "bsonType": "object",
+                        "required": ["nome"],
+                        "properties": {
+                            "nome": {
+                                "bsonType": "string"
+                            }
+                        }
+                    }
+                }
+            )
+            modalidade_artigo = ModalidadeArtigoIn(**sessao.insert(session, ModalidadeArtigo(nome='Hexagoon Base')))
+
+            # cria a collection artigos com validação de esquema
             sessao.get_db().drop_collection(name_or_collection=Artigo.Config.title, session=session)
             sessao.get_db().create_collection(
                 name=Artigo.Config.title,
                 validator={
                     "$jsonSchema": {
                         "bsonType": "object",
-                        "required": ["titulo", "corpo", "criado_em", "criado_por"],
+                        "required": ["titulo", "corpo", "modalidade_artigo", "criado_em", "criado_por"],
                         "properties": {
                             "titulo": {
                                 "bsonType": "string"
                             },
                             "corpo": {
                                 "bsonType": "string"
+                            },
+                            "modalidade_artigo": {
+                                "bsonType": "object",
+                                "required": ["_id", "nome"],
+                                "additionalProperties": False,
+                                "properties": {
+                                    "_id": {
+                                        "bsonType": "objectId",
+                                        "description": "O _id do usuario criador"
+                                    },
+                                    "nome": {
+                                        "bsonType": "string",
+                                        "description": "nome do usuário criador do artigo"
+                                    }
+                                }
                             },
                             "criado_em": {
                                 "bsonType": "date"
@@ -171,7 +204,9 @@ def load_data():
             )
             artigo = Artigo(
                 titulo='Artigo Primeiro',
-                corpo=json.dumps({"blocks": [{"data": {"level": 2, "text": "Bem Vindo ao Hexagoon"}, "id": "VlSDl34iWg", "type": "header"}]}),
+                corpo=json.dumps({"blocks": [
+                    {"data": {"level": 2, "text": "Bem Vindo ao Hexagoon"}, "id": "VlSDl34iWg", "type": "header"}]}),
+                modalidade_artigo=modalidade_artigo,
                 criado_em=datetime.datetime.now(),
                 criado_por=usuario
             )

@@ -4,7 +4,8 @@ from fastapi import APIRouter
 from fastapi.params import Security
 
 from api.v1.modalidade_artigo.acoes.modalidade_artigo_acoes import ModalidadeArtigoAcoes
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoOut, ModalidadeArtigoIn
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoOut, ModalidadeArtigoIn, \
+    ModalidadeArtigoOutCreate, ModalidadeArtigoOutDelete, ModalidadeArtigoUpdate
 from api.v1.modalidade_artigo.regras.modalidade_artigo_regras import ModalidadeArtigoRegras
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
@@ -15,7 +16,7 @@ router = APIRouter(
 )
 
 
-class ArtigoEndpoints:
+class ModalidadeArtigoEndpoints:
 
     @staticmethod
     @router.get(
@@ -23,21 +24,21 @@ class ArtigoEndpoints:
         response_model=ModalidadeArtigoOut
     )
     def find(
-            _id: int,
+            _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["admin"])
     ):
-        # valida as regras necessárias no model
+        # regras aplicáveis ao model
+        ModalidadeArtigoRegras(_id=_id, handler=handler, regra='find')
 
         # realiza as acoes necessárias no model
         ModalidadeArtigoAcoes(_id=_id, handler=handler, acao='find')
 
         return handler.sucesso
 
-    # O response_model_exclude funciona somente para a sucesso do request, mas não para a documentação
     @staticmethod
     @router.post(
         "",
-        response_model=ModalidadeArtigoOut,
+        response_model=ModalidadeArtigoOutCreate,
         status_code=201
     )
     async def create(
@@ -56,11 +57,11 @@ class ArtigoEndpoints:
     @router.put(
         "/{_id}",
         status_code=200,
-        response_model=ModalidadeArtigoOut
+        response_model=ModalidadeArtigoUpdate
     )
     async def update(
             model: ModalidadeArtigoIn,
-            _id: int,
+            _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["admin"])
     ):
         # regras aplicáveis ao model
@@ -74,10 +75,11 @@ class ArtigoEndpoints:
     @staticmethod
     @router.delete(
         "/{_id}",
-        status_code=200
+        status_code=200,
+        response_model=ModalidadeArtigoOutDelete
     )
     async def delete(
-            _id: int,
+            _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["admin"])
     ):
         # regras aplicáveis ao model

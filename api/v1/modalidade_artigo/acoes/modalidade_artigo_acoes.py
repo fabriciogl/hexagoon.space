@@ -1,55 +1,32 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 
-from api.v1.artigo.model.artigo_model import ArtigoIn
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoIn, \
+    ModalidadeArtigoUpdate
 from recursos.acoes_initiallizer import AcoesInitiallizer
 
 
 class ModalidadeArtigoAcoes(AcoesInitiallizer):
     # declara o tipo do model
-    model: ArtigoIn
+    model: ModalidadeArtigoIn
     data: ModalidadeArtigo
 
     def acao_1(self):
         """ use : [find-1] """
-        # select_query = select(ModalidadeArtigo).filter_by(id=self._id)
-        # try:
-        #     self.data = self.handler.sessao.execute(select_query).scalar_one()
-        #
-        # except NoResultFound:
-        #     raise SQLFindException(self._id, 'ModalidadeArtigo')
 
-        self.handler.sucesso = self.data
+        self.data: ModalidadeArtigo = ModalidadeArtigo(
+            **self.handler.operacao.find_one(
+                id=self._id,
+                collection='modalidadeArtigos'
+            ))
 
     def acao_2(self):
         """ use : [create-1] """
-        self.data = ModalidadeArtigo(**self.model.dict())
-        self.handler.sessao.add(self.data)
-
+        self.model: ModalidadeArtigo = ModalidadeArtigo(**self.model.dict())
 
     def acao_3(self):
         """ use : [update-1] """
-        # select_query = select(ModalidadeArtigo).filter_by(id=self._id)
-        # try:
-        #     self.data = self.handler.sessao.execute(select_query).scalar_one()
-        #
-        # except NoResultFound:
-        #     raise SQLFindException(self._id, 'ModalidadeArtigo')
-        #
-        # # alterações
-        # self.data.update(self.model)
-
+        self.model: ModalidadeArtigoUpdate = ModalidadeArtigoUpdate(**self.model.dict())
 
     def acao_4(self):
         """ use : [soft_delete-1] """
-        # select_query = select(ModalidadeArtigo).filter_by(id=self._id)
-        #
-        # try:
-        #     if data := self.handler.sessao.execute(select_query).scalar_one():
-        #         self.data = data
-        #
-        # except NoResultFound:
-        #     raise SQLFindException(self._id, 'Role')
-        #
-        # self.data.soft_delete()
-
+        self.model: ModalidadeArtigo = ModalidadeArtigo()

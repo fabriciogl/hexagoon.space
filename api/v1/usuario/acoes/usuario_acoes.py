@@ -14,10 +14,7 @@ class UsuarioAcoes(AcoesInitiallizer):
 
     def acao_0(self):
         """ use: [find-1, inactivate-1] """
-        if data := self.handler.operacao.find_one(id=self._id, collection='usuarios'):
-            self.data: Usuario = Usuario(**data)
-        else:
-            MongoFindException(self._id, 'Usuarios')
+        self.data: Usuario = Usuario(**self.handler.operacao.find_one(id=self._id, collection='usuarios'))
 
     def acao_2(self):
         """ use : [create-1] """

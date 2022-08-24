@@ -5,7 +5,7 @@ from fastapi.params import Security
 
 from api.v1.artigo.acoes.artigo_acoes import ArtigoAcoes
 from api.v1.artigo.model.artigo_model import ArtigoOutCreate, ArtigoIn, ArtigoOutDelete, ArtigoOutUpdate, Artigo, \
-    ArtigoFind
+    ArtigoFind, ArtigoInCreate
 from api.v1.artigo.regras.artigo_regras import ArtigoRegras
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
@@ -43,8 +43,8 @@ class ArtigoEndpoints:
         status_code=201,
     )
     async def create(
-            model: ArtigoIn,
-            handler: ResponseHandler = Security(valida_role, scopes=["user", "root"])
+            model: ArtigoInCreate,
+            handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):
         # regras aplicáveis ao model
         ArtigoRegras(model=model, handler=handler, regra='update')
