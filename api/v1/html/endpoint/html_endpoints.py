@@ -88,7 +88,7 @@ class HTMLEndpoints:
     )
     async def group_article_template(
             request: Request,
-            _id: int,
+            _id: str,
             operacao: Operacoes = Depends(MongoConection.Operacoes)
     ):
         handler = ResponseHandler()
@@ -111,7 +111,7 @@ class HTMLEndpoints:
     )
     async def article_template(
             request: Request,
-            _id: int,
+            _id: str,
             operacao: Operacoes = Depends(MongoConection.Operacoes)
     ):
         handler = ResponseHandler()

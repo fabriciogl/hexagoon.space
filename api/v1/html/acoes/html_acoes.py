@@ -1,17 +1,15 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 import json
 
-from sqlalchemy import select, desc
-from sqlalchemy.exc import NoResultFound
-from sqlalchemy.orm import joinedload
+from bson import ObjectId
 from starlette.responses import Response
 
 from api.v1.artigo.model.artigo_model import Artigo
 from api.v1.autenticacao.endpoint.autenticacao_endpoints import AutenticacaoEndpoints
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoIn
 from api.v1.role.model.role_model import Role
-from recursos.acoes_initiallizer import AcoesInitiallizer
 from api.v1.usuario.model.usuario_model import UsuarioHandlerToken, Usuario
+from recursos.acoes_initiallizer import AcoesInitiallizer
 from templates.Jinja2 import create_templates
 
 templates = create_templates()
@@ -32,7 +30,8 @@ class HTMLAcoes(AcoesInitiallizer):
 
     def acao_2(self):
         """ use : [admin-1]
-        renderiza a tela de administracao de usuarios"""
+        renderiza a tela de administracao de usuarios
+        """
 
         usuarios_data = self.handler.operacao.find_all(collection='usuarios')
         usuarios = []
@@ -66,25 +65,33 @@ class HTMLAcoes(AcoesInitiallizer):
         """ use : [article-1] """
 
         # recupera o artigo que será exibido
-        # select_query = select(Artigo).where((Artigo.id == self._id))
-        # self.data: Artigo = self.handler.sessao.execute(select_query).scalar_one()
-        # self.data.corpo = json.loads(self.data.corpo)
-        #
-        # # recupera todas as modalidades de artigo ordenando pela escolhida
-        # modalidade_artigo: ModalidadeArtigo = self.handler.sessao.query(ModalidadeArtigo).all()
-        # modalidade_escolhida_ordenada = [self.data.modalidade_artigo]
-        # modalidade_artigo.remove(self.data.modalidade_artigo)
-        # modalidade_escolhida_ordenada.extend(modalidade_artigo)
-        #
-        # self.handler.sucesso = templates.TemplateResponse(
-        #     "artigos/artigo_individual.html",
-        #     {
-        #         "request": self.handler.request,
-        #         "artigo": self.data,
-        #         "artigos": self.data.modalidade_artigo.artigos,
-        #         "modalidadesArtigo": modalidade_escolhida_ordenada
-        #     }
-        # )
+        artigo_data = self.handler.operacao.find_one(id=self._id, collection='artigos')
+        self.data: Artigo = Artigo(**artigo_data)
+        self.data.corpo = json.loads(self.data.corpo)
+
+        # recupera todas as modalidades de artigo ordenando pela escolhida
+        modalidades_artigo_data = self.handler.operacao.find_all(collection='modalidadeArtigos')
+        modalidades_artigo: [ModalidadeArtigoIn] = [ModalidadeArtigoIn(**ma) for ma in modalidades_artigo_data]
+        modalidades_ordenadas = [self.data.modalidade_artigo]
+        modalidades_artigo.remove(self.data.modalidade_artigo)
+        modalidades_ordenadas.extend(modalidades_artigo)
+
+        # recupera todos os artigos de mesma modalidade
+        artigos_data = self.handler.operacao.find_all(
+            where={'modalidade_artigo._id': self.data.modalidade_artigo.id},
+            collection='artigos'
+        )
+        artigos = [Artigo(**a) for a in artigos_data]
+
+        self.handler.sucesso = templates.TemplateResponse(
+            "artigos/artigo_individual.html",
+            {
+                "request": self.handler.request,
+                "artigo": self.data,
+                "artigos": artigos,
+                "modalidadesArtigo": modalidades_ordenadas
+            }
+        )
 
     def acao_4(self):
         """ use : [articleAll-1]"""
@@ -101,7 +108,8 @@ class HTMLAcoes(AcoesInitiallizer):
 
         # recupera todas as modalidades de artigo
         if modalidades_artigos_data := self.handler.operacao.find_all(collection='modalidadeArtigos'):
-            lista_modalidade_artigo: [ModalidadeArtigo] = [ModalidadeArtigo(**modalidade) for modalidade in modalidades_artigos_data]
+            lista_modalidade_artigo: [ModalidadeArtigo] = [ModalidadeArtigo(**modalidade) for modalidade in
+                                                           modalidades_artigos_data]
 
         self.handler.sucesso = templates.TemplateResponse(
             "artigos/landing_page_artigos.html",
@@ -116,32 +124,40 @@ class HTMLAcoes(AcoesInitiallizer):
     def acao_5(self):
         """ use : [articleGroup-1]"""
 
-        # try:
-        #     query = select(ModalidadeArtigo).filter_by(id=self._id)
-        #     if data := self.handler.sessao.execute(query).scalar_one():
-        #         self.data: ModalidadeArtigo = data
-        #
-        # except NoResultFound:
-        #     raise SQLException('Não há grupos de artigos.')
-        #
-        # artigo: Artigo = self.data.artigos[0] if len(self.data.artigos) != 0 else Artigo(
-        #     titulo="Novo Artigo do Grupo",
-        #     corpo=json.dumps({"blocks": [{"data": {"level": 2, "text": "Bem Vindo ao Hexagoon"}, "id": "VlSDl34iWg", "type": "header"}]})
-        # )
-        # artigo.corpo = json.loads(artigo.corpo)
-        #
-        # # recupera todas as modalidades de artigo ordenando pela escolhida
-        # modalidade_artigo: ModalidadeArtigo = self.handler.sessao.query(ModalidadeArtigo).all()
-        # modalidade_escolhida_ordenada = [self.data]
-        # modalidade_artigo.remove(self.data)
-        # modalidade_escolhida_ordenada.extend(modalidade_artigo)
-        #
-        # self.handler.sucesso = templates.TemplateResponse(
-        #     "artigos/artigo_individual.html",
-        #     {
-        #         "request": self.handler.request,
-        #         "artigos": self.data.artigos,
-        #         "artigo": artigo,
-        #         "modalidadesArtigo": modalidade_escolhida_ordenada
-        #     }
-        # )
+        # recupera todos os artigos de mesma modalidade
+        artigos_data = self.handler.operacao.find_all(
+            where={'modalidade_artigo._id': ObjectId(self._id)},
+            collection='artigos'
+        )
+        artigos = [Artigo(**a) for a in artigos_data]
+
+        # recupera todas as modalidades de artigo ordenando pela escolhida
+        modalidades_artigo_data = self.handler.operacao.find_all(collection='modalidadeArtigos')
+        modalidades_artigo: [ModalidadeArtigoIn] = [ModalidadeArtigoIn(**ma) for ma in modalidades_artigo_data]
+        # recupera o primeiro para ser exibido, se não existir gera um dinamicamente.
+        if len(artigos) != 0:
+            artigo: Artigo = artigos[0]
+            modalidades_ordenadas = [artigo.modalidade_artigo]
+            modalidades_artigo.remove(artigo.modalidade_artigo)
+            modalidades_ordenadas.extend(modalidades_artigo)
+
+        else:
+            artigo = Artigo(
+                titulo="Novo Artigo do Grupo",
+                corpo=json.dumps({"blocks": [
+                    {"data": {"level": 2, "text": "Bem Vindo ao Hexagoon"}, "id": "VlSDl34iWg", "type": "header"}]})
+            )
+            modalidades_ordenadas = [m for m in modalidades_artigo if str(m.id) == self._id]
+            modalidades_ordenadas.extend([m for m in modalidades_artigo if str(m.id) != self._id])
+
+        artigo.corpo = json.loads(artigo.corpo)
+
+        self.handler.sucesso = templates.TemplateResponse(
+            "artigos/artigo_individual.html",
+            {
+                "request": self.handler.request,
+                "artigos": artigos,
+                "artigo": artigo,
+                "modalidadesArtigo": modalidades_ordenadas
+            }
+        )

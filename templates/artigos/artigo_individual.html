@@ -2,25 +2,28 @@
 {% block title %}{{ artigo.modalidade_artigo.modalidade|safe }}{% endblock %}
 {% block dataJson %}{{ artigo.corpo|tojson }}{% endblock %}
 {% block artigoGrupos %}
-<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="modalidadeArtigos" id="ma" onchange="selecionaGrupo()">
+<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="modalidadeArtigos" id="ma"
+        onchange="selecionaGrupo()">
     {% for modalidade in modalidadesArtigo %}
-    <option value="{{ modalidade.id }}" id="ma{{ modalidade.id }}">{{ modalidade.modalidade }}</option>
+    <option value="{{ modalidade.id }}" id="ma{{ modalidade.id }}">{{ modalidade.nome }}</option>
     {% endfor %}
 </select>
 {% endblock %}
 {% block artigoId %}{{ artigo.id }}{% endblock %}
 {% block modalidadeArtigoId %}{{ modalidadesArtigo.0.id }}{% endblock %}
 {% block pushArtigo %}
-<input class="col-12 btn-success" type="button" value="Criar Artigo" onclick="createArtigo()" style="display: none" id="ca">
-<input class="col-12 btn-warning" type="button" value="Atualizar Artigo" onclick="updateArtigo()" style="display: none" id="aa">
+<input class="col-12 btn-success" type="button" value="Criar Artigo" onclick="createArtigo()" style="display: none"
+       id="ca">
+<input class="col-12 btn-warning" type="button" value="Atualizar Artigo" onclick="updateArtigo()" style="display: none"
+       id="aa">
 {%  endblock %}
 {% block listaArtigos %}
 <ul class="list-group">
     {% if artigos %}
     <li class="list-group-item"><a href="/">Página Inicial</a></li>
-        {% for artigo in artigos %}
-            <li class="list-group-item"><a href="/html/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
-        {% endfor %}
+    {% for artigo in artigos %}
+    <li class="list-group-item"><a href="/html/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
+    {% endfor %}
     {% endif %}
 </ul>
 {%  endblock %}

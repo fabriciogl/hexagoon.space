@@ -2,20 +2,21 @@
 {% block title %}Bem Vindo ao Hexagoon 🪐{% endblock %}
 {% block dataJson %}{{ artigo.corpo|tojson }}{% endblock %}
 {% block artigoGrupos %}
-    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="modalidadeArtigos" id="ma" onchange="selecionaGrupo()">
-        <option value="paginaInicial">Página Inicial</option>
-        {% for modalidade in modalidadesArtigo %}
-        <option value="{{ modalidade.id }}" id="ma{{ modalidade.id }}">{{ modalidade.nome }}</option>
-        {% endfor %}
-    </select>
+<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="modalidadeArtigos" id="ma"
+        onchange="selecionaGrupo()">
+    <option value="paginaInicial">Página Inicial</option>
+    {% for modalidade in modalidadesArtigo %}
+    <option value="{{ modalidade.id }}" id="ma{{ modalidade.id }}">{{ modalidade.nome }}</option>
+    {% endfor %}
+</select>
 {% endblock %}
 {% block listaArtigos %}
 <ul class="list-group">
-     <li class="list-group-item">Artigos mais recentes</li>
+    <li class="list-group-item">Artigos mais recentes</li>
     {% if artigos %}
-        {% for artigo in artigos %}
-            <li class="list-group-item"><a href="/html/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
-        {% endfor %}
+    {% for artigo in artigos %}
+    <li class="list-group-item"><a href="/html/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
+    {% endfor %}
     {% endif %}
 </ul>
 {%  endblock %}

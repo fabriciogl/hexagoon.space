@@ -25,16 +25,16 @@ class ArtigoAcoes(AcoesInitiallizer):
         )
         self.model: Artigo = Artigo(**self.model.dict())
         self.model.modalidade_artigo = modalidade_artigo
-        # self.data.titulo = self.model.corpo['blocks'][0]['data']['text']
+        self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
         self.model.corpo = json.dumps(self.model.corpo)
 
 
     def acao_3(self):
         """ use : [update-2] """
         # alterações
-        # self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
-        self.model.corpo = json.dumps(self.model.corpo)
         self.model: Artigo = Artigo(**self.model.dict())
+        self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
+        self.model.corpo = json.dumps(self.model.corpo)
 
 
     def acao_4(self):

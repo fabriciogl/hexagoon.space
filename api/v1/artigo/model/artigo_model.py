@@ -40,7 +40,6 @@ class ArtigoIn(BaseModel):
 
 
 class ArtigoInCreate(BaseModel):
-    titulo: str
     corpo: Json
     modalidade_artigo_id: str
 
