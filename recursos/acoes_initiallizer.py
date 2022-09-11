@@ -122,7 +122,7 @@ class AcoesInitiallizer(ABC):
         """ use : [soft_delete-999] """
         self.model.deletado_em = datetime.datetime.now()
         self.model.deletado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
-        self.data = self.handler.operacao.update(self._id, self.model)
+        self.data = self.handler.operacao.update(id=self._id, model=self.model)
         # converte ObjectId para string
         self.data['_id'] = str(self.data['_id'])
         self.data['deletado_por']['_id'] = str(self.data['deletado_por']['_id'])

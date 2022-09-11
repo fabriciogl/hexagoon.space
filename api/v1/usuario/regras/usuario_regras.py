@@ -53,3 +53,17 @@ class UsuarioRegras(RegrasInitiallizer):
             self.data: Usuario = Usuario(**data)
         else:
             raise MongoFindException(self._id, 'Usuário')
+
+    def regra_5(self):
+        """
+        use : [adiciona_role-1]
+
+        verifica se o id existe.
+        """
+
+    def regra_6(self):
+        """
+        use : [remove_role-1]
+
+        verifica se o id existe.
+        """

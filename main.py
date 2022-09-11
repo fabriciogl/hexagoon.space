@@ -44,9 +44,9 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 
-@app.get("/")
-async def root():
-    return {'return': 'Hello World'}
+# @app.get("/")
+# async def root():
+#     return {'return': 'Hello World'}
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@
     <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="modalidadeArtigos" id="ma" onchange="selecionaGrupo()">
         <option value="paginaInicial">Página Inicial</option>
         {% for modalidade in modalidadesArtigo %}
-        <option value="{{ modalidade.id }}" id="ma{{ modalidade.id }}">{{ modalidade.modalidade }}</option>
+        <option value="{{ modalidade.id }}" id="ma{{ modalidade.id }}">{{ modalidade.nome }}</option>
         {% endfor %}
     </select>
 {% endblock %}

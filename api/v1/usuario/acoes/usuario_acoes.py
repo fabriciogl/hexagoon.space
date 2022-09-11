@@ -1,10 +1,11 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+import datetime
 
 from passlib.hash import bcrypt
 
-from api.v1.usuario.model.usuario_model import Usuario, UsuarioIn
+from api.v1.role.model.role_model import RoleUsuario
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioIn, UsuarioRoleIn, UsuarioOut, UsuarioReduzido
 from recursos.acoes_initiallizer import AcoesInitiallizer
-from recursos.basic_exceptions.mongo_exceptions import MongoFindException
 
 
 class UsuarioAcoes(AcoesInitiallizer):
@@ -41,3 +42,68 @@ class UsuarioAcoes(AcoesInitiallizer):
         """ use : [soft_delete-2] """
         # Seleciona o usuário
         self.model: Usuario = Usuario()
+
+    def acao_6(self):
+        """ use : [adiciona_role-1] """
+        # Inicia a sessao
+        with self.handler.sessao.start_session(causal_consistency=True) as session:
+            # Seleciona a role
+            self.model: UsuarioRoleIn
+            role: RoleUsuario = RoleUsuario(
+                **self.handler.sessao.find_one(
+                    session=session,
+                    id=self.model.role.id,
+                    collection='roles'
+                )
+            )
+
+            # campos que serão atualizados, role e alterado
+            addition = {"roles": role.dict(by_alias=True)}
+            self.model.alterado_em = datetime.datetime.now()
+            self.model.alterado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
+
+            self.data: UsuarioOut = UsuarioOut(
+                **self.handler.sessao.add_to_set(
+                    session=session,
+                    id=self._id,
+                    add=addition,
+                    model=self.model,
+                    collection='usuarios'
+                )
+            )
+            # converte de ObjectId para id
+            self.data.id = str(self.data.id)
+
+            self.handler.sucesso = self.data
+
+    def acao_7(self):
+        """ use : [remove_role-1] """
+        # Inicia a sessao
+        with self.handler.sessao.start_session(causal_consistency=True) as session:
+            # Seleciona a role
+            self.model: UsuarioRoleIn
+            role: RoleUsuario = RoleUsuario(
+                **self.handler.sessao.find_one(
+                    session=session,
+                    id=self.model.role.id,
+                    collection='roles'
+                )
+            )
+
+            remove = {"roles": role.dict(by_alias=True)}
+            self.model.alterado_em = datetime.datetime.now()
+            self.model.alterado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
+
+            self.data: UsuarioOut = UsuarioOut(
+                **self.handler.sessao.pull_from_set(
+                    session=session,
+                    id=self._id,
+                    model=self.model,
+                    remove=remove,
+                    collection='usuarios'
+                )
+            )
+            # converte de ObjectId para id
+            self.data.id = str(self.data.id)
+
+            self.handler.sucesso = self.data

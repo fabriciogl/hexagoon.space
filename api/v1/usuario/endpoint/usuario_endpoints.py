@@ -3,12 +3,14 @@
 from fastapi import APIRouter
 from fastapi.params import Security
 
+from api.v1.usuario.acoes.usuario_acoes import UsuarioAcoes
+from api.v1.usuario.model.usuario_model import Usuario, UsuarioHandlerToken, UsuarioIn, UsuarioOut, UsuarioRoleIn, \
+    UsuarioSoftDeletedOut
+from api.v1.usuario.regras.usuario_regras import UsuarioRegras
+from banco_dados.mongodb.configuracao.MongoConection import Sessao
 from recursos.basic_exceptions.excecao_model import Message
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
-from api.v1.usuario.acoes.usuario_acoes import UsuarioAcoes
-from api.v1.usuario.model.usuario_model import Usuario, UsuarioHandlerToken, UsuarioIn, UsuarioOutFind
-from api.v1.usuario.regras.usuario_regras import UsuarioRegras
 
 router = APIRouter(
     prefix="/usuario",
@@ -21,7 +23,7 @@ class UsuarioEndpoints:
 
     @staticmethod
     @router.get("/{id}",
-                response_model=UsuarioOutFind
+                response_model=UsuarioOut
                 )
     async def find(
             id: str,
@@ -71,7 +73,8 @@ class UsuarioEndpoints:
     @staticmethod
     @router.delete(
         "/{_id}",
-        status_code=200
+        status_code=200,
+        response_model=UsuarioSoftDeletedOut
     )
     async def delete(
             _id: str,
@@ -83,6 +86,8 @@ class UsuarioEndpoints:
 
         # realiza as acoes necessárias no model
         UsuarioAcoes(_id=_id, handler=handler, acao='soft_delete')
+
+        return handler.sucesso
 
     @staticmethod
     @router.delete(
@@ -99,6 +104,50 @@ class UsuarioEndpoints:
 
         # realiza as acoes necessárias no model
         UsuarioAcoes(_id=_id, handler=handler, acao='inactivate')
+
+        return handler.sucesso
+
+    @staticmethod
+    @router.put(
+        "/{_id}/adiciona_role",
+        response_model=UsuarioOut,
+        status_code=200
+    )
+    async def adiciona_role(
+            usuario: UsuarioRoleIn,
+            _id: str,
+            handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
+    ):
+        # inicia uma instancia de sessao do mongodb
+        handler.sessao = Sessao()
+
+        # regras aplicáveis ao model
+        UsuarioRegras(_id=_id, model=usuario, handler=handler, regra='adiciona_role')
+
+        # realiza as acoes necessárias no model
+        UsuarioAcoes(_id=_id, model=usuario, handler=handler, acao='adiciona_role')
+
+        return handler.sucesso
+
+    @staticmethod
+    @router.put(
+        "/{_id}/remove_role",
+        response_model=UsuarioOut,
+        status_code=200
+    )
+    async def adiciona_role(
+            usuario: UsuarioRoleIn,
+            _id: str,
+            handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
+    ):
+        # inicia uma instancia de sessao do mongodb
+        handler.sessao = Sessao()
+
+        # regras aplicáveis ao model
+        UsuarioRegras(_id=_id, model=usuario, handler=handler, regra='remove_role')
+
+        # realiza as acoes necessárias no model
+        UsuarioAcoes(_id=_id, model=usuario, handler=handler, acao='remove_role')
 
         return handler.sucesso
 

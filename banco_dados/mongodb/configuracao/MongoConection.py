@@ -5,8 +5,24 @@ from bson import ObjectId
 from pydantic import BaseModel
 from pymongo import MongoClient, ReturnDocument
 
-from banco_dados.mongodb.configuracao.MongoSetupSincrono import MongoSetupSincrono
+def where_setup(
+        id = None,
+        where=None,
+        soft_deleteds=None
+):
+    """ Função para setar o campo where antes do find ou update"""
+    if not where:
+        where = {}
+    if id:
+        where['_id'] = ObjectId(id)
+    if not soft_deleteds:
+        where['deletado_em'] = None
 
+    return where
+
+
+
+from banco_dados.mongodb.configuracao.MongoSetupSincrono import MongoSetupSincrono
 
 class Operacoes:
     # atributo da classe que armazena as operações a serem comitadas
@@ -45,12 +61,11 @@ class Operacoes:
         """
           Metodo do handler para bucar documento no banco
         """
-        if not where:
-            where = {}
-        if id:
-            where['_id'] = ObjectId(id)
-        if not soft_deleteds:
-            where['deletado_em'] = None
+        where = where_setup(
+            id=id,
+            where=where,
+            soft_deleteds=soft_deleteds
+        )
 
         return self._db[collection].find_one(
             filter=where
@@ -84,10 +99,18 @@ class Operacoes:
             return_document=ReturnDocument.AFTER
         )
 
-    def update(self, id: str, model: BaseModel) -> Dict:
+    def update(
+            self,
+            model: BaseModel,
+            where: dict = None,
+            id: str = None
+    ) -> Dict:
         """
           Metodo do handler para atualizar o documento no banco
         """
+
+        where = where_setup(where=where, id=id)
+
         # identifica o nome da classe do model
         # para identificar a coleção para salvar
         collection = model.Config.title
@@ -95,7 +118,7 @@ class Operacoes:
         # adiciona a operação à lista a ser comitada
         return self._db[collection] \
             .find_one_and_update(
-            filter={'_id': ObjectId(id)},
+            filter=where,
             update={'$set': model.dict(by_alias=True, exclude_none=True)},  # salva no banco com _id ao invés de id
             upsert=True,
             return_document=ReturnDocument.AFTER
@@ -181,7 +204,12 @@ class Sessao:
             session=session
         )
 
-    def update(self, session, id: str, model: BaseModel) -> Dict:
+    def update(
+            self,
+            session,
+            id: str,
+            model: BaseModel
+    ) -> Dict:
         """
           Metodo do handler para atualizar o documento no banco
         """
@@ -203,18 +231,17 @@ class Sessao:
             self,
             session,
             id: str,
+            model: BaseModel,
             add: dict,
             collection: str
     ) -> dict:
         """
-          Metodo do handler para persistir a instância em memória.
+          Método para adicionar valores ao array
         """
-
-        # adiciona a operação à lista a ser comitada
         return self._db[collection] \
             .find_one_and_update(
             filter={'_id': ObjectId(id)},
-            update={'$addToSet': add},
+            update={'$addToSet': add, '$set': model.dict(exclude_none=True)},
             return_document=ReturnDocument.AFTER,
             session=session
         )
@@ -223,18 +250,19 @@ class Sessao:
             self,
             session,
             id: str,
+            model: BaseModel,
             remove: dict,
             collection: str
     ) -> dict:
         """
-          Metodo do handler para persistir a instância em memória.
+           Método para remover valores ao array
         """
 
         # adiciona a operação à lista a ser comitada
         return self._db[collection] \
             .find_one_and_update(
             filter={'_id': ObjectId(id)},
-            update={'$pull': remove},
+            update={'$pull': remove, '$set': model.dict(exclude_none=True)},
             return_document=ReturnDocument.AFTER,
             session=session
         )

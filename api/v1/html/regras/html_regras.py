@@ -24,22 +24,6 @@ class HTMLRegras(RegrasInitiallizer):
         """
         use : [admin-1]
         """
-        can_access = False
-        # roles originais
-        roles_siglas = [a.role.sigla for a in self.handler.usuario.a_roles]
-        # sub_roles
-        roles = [a.role for a in self.handler.usuario.a_roles]
-        a_sub_roles = [a_sub_roles for role in roles for a_sub_roles in role.a_sub_roles]
-        all_sub_roles = [a.sub_role.sigla for a in a_sub_roles]
-        # todas as roles
-        all_roles = all_sub_roles + roles_siglas
-        # verifica as roles necessárias para o endpoint
-        for role in ['admin', 'root']:
-            if role in all_roles:
-                can_access = True
-
-        if not can_access:
-            raise RoleException(usuario=self.handler.usuario, request=self.handler.request)
 
     def regra_3(self):
         """

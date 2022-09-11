@@ -3,7 +3,6 @@ import json
 
 from api.v1.artigo.model.artigo_model import ArtigoIn, Artigo, ArtigoInCreate
 from recursos.acoes_initiallizer import AcoesInitiallizer
-from recursos.basic_exceptions.mongo_exceptions import MongoFindException
 
 
 class ArtigoAcoes(AcoesInitiallizer):

@@ -8,6 +8,8 @@ from starlette.responses import HTMLResponse
 
 from api.v1.html.acoes.html_acoes import HTMLAcoes
 from api.v1.html.regras.html_regras import HTMLRegras
+from banco_dados.mongodb.configuracao import MongoConection
+from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from recursos.basic_exceptions.excecao_model import Message
 from recursos.response_handler import ResponseHandler
 from recursos.validations.password_validation import check_password
@@ -56,70 +58,70 @@ class HTMLEndpoints:
 
         return handler.sucesso
 
-    # @staticmethod
-    # @router.get(
-    #     "/",
-    #     response_class=HTMLResponse,
-    #     status_code=200
-    # )
-    # async def articles_template(
-    #         request: Request,
-    #         session: Session = Depends(SQLSincrono.create_session)
-    # ):
-    #     handler = ResponseHandler()
-    #     handler.request = request
-    #     handler.sessao = session
-    #
-    #     # regras aplicáveis ao model
-    #     HTMLRegras(handler=handler, regra='articleAll')
-    #
-    #     # realiza as acoes necessárias no model
-    #     HTMLAcoes(handler=handler, acao='articleAll')
-    #
-    #     return handler.sucesso
-    #
-    # @staticmethod
-    # @router.get(
-    #     "/grupos/{_id}",
-    #     response_class=HTMLResponse,
-    #     status_code=200
-    # )
-    # async def group_article_template(
-    #         request: Request,
-    #         _id: int,
-    #         session: Session = Depends(SQLSincrono.create_session)
-    # ):
-    #     handler = ResponseHandler()
-    #     handler.request = request
-    #     handler.sessao = session
-    #
-    #     # regras aplicáveis ao model
-    #     HTMLRegras(_id=_id, handler=handler, regra='articleGroup')
-    #
-    #     # realiza as acoes necessárias no model
-    #     HTMLAcoes(_id=_id, handler=handler, acao='articleGroup')
-    #
-    #     return handler.sucesso
-    #
-    # @staticmethod
-    # @router.get(
-    #     "/html/{_id}",
-    #     response_class=HTMLResponse,
-    #     status_code=200
-    # )
-    # async def article_template(
-    #         request: Request,
-    #         _id: int,
-    #         session: Session = Depends(SQLSincrono.create_session)
-    # ):
-    #     handler = ResponseHandler()
-    #     handler.request = request
-    #     handler.sessao = session
-    #
-    #     # regras aplicáveis ao model
-    #     HTMLRegras(_id=_id, handler=handler, regra='article')
-    #
-    #     # realiza as acoes necessárias no model
-    #     HTMLAcoes(_id=_id, handler=handler, acao='article')
-    #
-    #     return handler.sucesso
+    @staticmethod
+    @router.get(
+        "/",
+        response_class=HTMLResponse,
+        status_code=200
+    )
+    async def articles_template(
+            request: Request,
+            operacao: Operacoes = Depends(MongoConection.Operacoes)
+    ):
+        handler = ResponseHandler()
+        handler.request = request
+        handler.operacao = operacao
+
+        # regras aplicáveis ao model
+        HTMLRegras(handler=handler, regra='articleAll')
+
+        # realiza as acoes necessárias no model
+        HTMLAcoes(handler=handler, acao='articleAll')
+
+        return handler.sucesso
+
+    @staticmethod
+    @router.get(
+        "/grupos/{_id}",
+        response_class=HTMLResponse,
+        status_code=200
+    )
+    async def group_article_template(
+            request: Request,
+            _id: int,
+            operacao: Operacoes = Depends(MongoConection.Operacoes)
+    ):
+        handler = ResponseHandler()
+        handler.request = request
+        handler.operacao = operacao
+
+        # regras aplicáveis ao model
+        HTMLRegras(_id=_id, handler=handler, regra='articleGroup')
+
+        # realiza as acoes necessárias no model
+        HTMLAcoes(_id=_id, handler=handler, acao='articleGroup')
+
+        return handler.sucesso
+
+    @staticmethod
+    @router.get(
+        "/html/{_id}",
+        response_class=HTMLResponse,
+        status_code=200
+    )
+    async def article_template(
+            request: Request,
+            _id: int,
+            operacao: Operacoes = Depends(MongoConection.Operacoes)
+    ):
+        handler = ResponseHandler()
+        handler.request = request
+        handler.operacao = operacao
+
+        # regras aplicáveis ao model
+        HTMLRegras(_id=_id, handler=handler, regra='article')
+
+        # realiza as acoes necessárias no model
+        HTMLAcoes(_id=_id, handler=handler, acao='article')
+
+        return handler.sucesso

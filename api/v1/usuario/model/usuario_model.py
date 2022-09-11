@@ -5,7 +5,7 @@ from typing import Optional, List, Union, Any
 from bson import ObjectId
 from pydantic import BaseModel, EmailStr, Field
 
-from api.v1.role.model.role_model import RoleUsuarioOut, RoleUsuario
+from api.v1.role.model.role_model import RoleUsuarioOut, RoleUsuario, RoleUsuarioIn
 
 
 class UsuarioIn(BaseModel):
@@ -35,7 +35,17 @@ class UsuarioReduzido(BaseModel):
     nome: str
 
 
-class UsuarioOut(BaseModel):
+class UsuarioRoleIn(BaseModel):
+    role: Optional[RoleUsuarioIn]
+    alterado_em: Optional[datetime.datetime]
+    alterado_por: Optional[UsuarioReduzido]
+
+    class Config:
+        title = 'usuarios'
+        arbitrary_types_allowed = True
+
+
+class UsuarioBlameOut(BaseModel):
     nome: str
 
 
@@ -70,6 +80,15 @@ class UsuarioTokenIn(BaseModel):
         title = 'usuarios'
 
 
+class UsuarioReativar(BaseModel):
+    email: Optional[EmailStr]
+    senha: Optional[str]
+    ativo: Optional[bool]
+
+    class Config:
+        title = 'usuarios'
+
+
 # modelo utilizado no handler, após validação da senha
 class UsuarioHandlerSenha(BaseModel):
     id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
@@ -91,10 +110,20 @@ class UsuarioTokenOut(BaseModel):
         title = 'usuarios'
 
 
-class UsuarioOutFind(BaseModel):
+class UsuarioOut(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: Optional[str]
     roles: Optional[List[RoleUsuarioOut]]
+
+    class Config:
+        title = 'usuarios'
+
+
+class UsuarioSoftDeletedOut(BaseModel):
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
+    nome: Optional[str]
+    deletado_por: Optional[UsuarioReduzido]
+    deletado_em: Optional[datetime.datetime]
 
     class Config:
         title = 'usuarios'

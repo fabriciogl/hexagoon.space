@@ -7,13 +7,12 @@ from starlette.responses import JSONResponse
 from api.v1.autenticacao.acoes.autenticacao_acoes import AutenticacaoAcoes
 from api.v1.autenticacao.model.autenticacao_model import AutenticacaoOut
 from api.v1.autenticacao.regras.autenticacao_regras import AutenticacaoRegras
+from api.v1.usuario.model.usuario_model import UsuarioReativar
+from banco_dados.mongodb.configuracao import MongoConection
+from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 from recursos.basic_exceptions.excecao_model import Message
 from recursos.response_handler import ResponseHandler
 from recursos.validations.password_validation import check_password
-from api.v1.usuario.model.usuario_model import UsuarioTokenIn
-
-from banco_dados.mongodb.configuracao import MongoConection
-from banco_dados.mongodb.configuracao.MongoConection import Operacoes
 
 router = APIRouter(
     prefix="/autenticacao",
@@ -45,7 +44,7 @@ class AutenticacaoEndpoints:
                  status_code=202)
     async def recupera_conta(
             request: Request,
-            model: UsuarioTokenIn,
+            model: UsuarioReativar,
             operacao: Operacoes = Depends(MongoConection.Operacoes)
     ):
         handler = ResponseHandler(operacao=operacao)

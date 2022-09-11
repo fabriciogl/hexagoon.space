@@ -100,6 +100,7 @@ def operacao():
         role_user = SubRoles(**sessao.insert(session, role_user))
         role_admin.sub_roles.append(role_user)
         role_admin = SubRoles(**sessao.insert(session, role_admin))
+        TestUsuarioEndpoint.id_role_admin = role_admin.id
         role_root.sub_roles.append(role_admin)
         role_root = RoleUsuario(**sessao.insert(session, role_root))
         TestRoleEndpoints.id_root = str(role_root.id)

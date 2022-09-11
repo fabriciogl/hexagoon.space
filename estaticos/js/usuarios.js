@@ -120,7 +120,7 @@ async function submeterUsuario(){
     if (create_response.status === 201) {
         const response = await create_response.json();
         const p = document.createElement("p");
-        const alerta = document.createTextNode(`Usuário id ${response['id']} criado com sucesso`);
+        const alerta = document.createTextNode(`Usuário id ${response['_id']} criado com sucesso`);
         p.appendChild(alerta); //adiciona o nó de texto à nova div criada
         document.querySelector('#formCriaUsuario').appendChild(p);
 
@@ -146,15 +146,14 @@ async function adicionarPerfil(){
     const role_id = document.querySelector(`#psa${id}`).selectedOptions[0].value;
     const token = localStorage.getItem("jwt");
 
-    const response = await fetch(`${baseUrl}/as_usuario_role/`, {
-        method: 'POST',
+    const response = await fetch(`${baseUrl}/usuario/${id}/adiciona_role`, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-            "usuario_id": id,
-            "role_id": role_id
+            "role": { "_id": role_id }
         })
     });
 
@@ -162,15 +161,10 @@ async function adicionarPerfil(){
         const message = `Um erro ocorreu ${response.status}`;
         throw new Error(message);
     }
-    if (response.status === 201){
+    if (response.status === 200){
         // adiciona o perfil na lista de perfis
         const perfis = document.querySelector(`#p${id}`);
         perfis.innerText = perfis.innerText + " " + document.querySelector(`#psa${id}`).selectedOptions[0].innerText;
-
-        // alterar o id do perfil na opção para pode ser excluído/adicionado novamente.
-//        const opcaoPerfil = document.querySelector(`select[name=perfisRemover] option[#psr${id}`);
-//        opcaoPerfil.value = response['role_id'];
-//        opcaoPerfil.id = `op${response['role_id']}`;
 
     }
 
@@ -181,12 +175,15 @@ async function excluirPerfil(){
     const role_id = document.querySelector(`#psr${id}`).selectedOptions[0].value;
     const token = localStorage.getItem("jwt");
 
-    const response = await fetch(`${baseUrl}/as_usuario_role/${role_id}`, {
-        method: 'DELETE',
+    const response = await fetch(`${baseUrl}/usuario/${id}/remove_role`, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({
+            "role": { "_id": role_id }
+        })
     });
 
     if (!response.ok) {

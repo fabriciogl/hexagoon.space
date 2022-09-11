@@ -1,7 +1,9 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
+import datetime
 
 from pymongo.errors import OperationFailure
 
+from api.v1.usuario.model.usuario_model import UsuarioReduzido
 from recursos.acoes_initiallizer import AcoesInitiallizer
 from recursos.basic_exceptions.mongo_exceptions import MongoUpdateException
 from api.v1.role.model.role_model import Role, SubRoleIn, SubRoles
@@ -43,11 +45,14 @@ class RoleAcoes(AcoesInitiallizer):
             # mapear a correspondência exata do campo, se for o caso usando dotação
             # Ex. "role.procedencias"
             addition = {"sub_roles": role.dict(exclude={'sub_roles', 'descricao'}, by_alias=True)}
+            self.model.alterado_em = datetime.datetime.now()
+            self.model.alterado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
             try:
                 self.data = Role(
                     **self.handler.sessao.add_to_set(
                         session=session,
                         id=self._id,
+                        model=self.model,
                         add=addition,
                         collection='roles'
                     )
@@ -71,11 +76,14 @@ class RoleAcoes(AcoesInitiallizer):
             # mapear a correspondência exata do campo, se for o caso usando dotação
             # Ex. "role.sub_roles"
             remove = {"sub_roles": role.dict(exclude={'sub_roles'}, by_alias=True)}
+            self.model.alterado_em = datetime.datetime.now()
+            self.model.alterado_por = UsuarioReduzido(_id=self.handler.usuario.id, nome=self.handler.usuario.nome)
 
             self.data = Role(
                 **self.handler.sessao.pull_from_set(
                     session=session,
                     id=self._id,
+                    model=self.model,
                     remove=remove,
                     collection='roles'
                 )

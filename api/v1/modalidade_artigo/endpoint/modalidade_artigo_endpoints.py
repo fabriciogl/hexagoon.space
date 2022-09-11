@@ -43,10 +43,10 @@ class ModalidadeArtigoEndpoints:
     )
     async def create(
             model: ModalidadeArtigoIn,
-            handler: ResponseHandler = Security(valida_role, scopes=["admin"])
+            handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):
         # regras aplicáveis ao model
-        ModalidadeArtigoRegras(model=model, handler=handler, regra='update')
+        ModalidadeArtigoRegras(model=model, handler=handler, regra='create')
 
         # realiza as acoes necessárias no model
         ModalidadeArtigoAcoes(model=model, handler=handler, acao='create')
@@ -62,7 +62,7 @@ class ModalidadeArtigoEndpoints:
     async def update(
             model: ModalidadeArtigoIn,
             _id: str,
-            handler: ResponseHandler = Security(valida_role, scopes=["admin"])
+            handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):
         # regras aplicáveis ao model
         ModalidadeArtigoRegras(_id=_id, model=model, handler=handler, regra='update')

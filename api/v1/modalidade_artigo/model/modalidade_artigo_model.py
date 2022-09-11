@@ -56,6 +56,10 @@ class ModalidadeArtigoOut(BaseModel):
         orm_mode = True
 
 
+class ModalidadeArtigoReduzido(BaseModel):
+    nome: str
+
+
 class ModalidadeArtigoOutCreate(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: str

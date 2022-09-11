@@ -57,15 +57,15 @@
             </tr>
             <tr>
                 <td>Perfis Atuais</td>
-                {% set list_roles = usuario.a_roles|map(attribute='role.sigla')|join(' ') %}
+                {% set list_roles = usuario.roles|map(attribute='sigla')|join(' ') %}
                 <td colspan="2" id="p{{ usuario.id }}">{{ list_roles }}</td>
             </tr>
             <tr>
                 <td>Adicionar Perfis</td>
                 <td>
                     <select name="perfisAdicionar" id="psa{{ usuario.id }}">
-                        {% for perfil in perfis %}
-                        <option value="{{ perfil.id }}" id="op{{ perfil.id }}">{{ perfil.sigla }}</option>
+                        {% for role in roles %}
+                        <option value="{{ role.id }}" id="op{{ role.id }}">{{ role.sigla }}</option>
                         {% endfor %}
                     </select>
                 </td>
@@ -77,9 +77,11 @@
                 <td>Remover Perfis</td>
                 <td>
                     <select name="perfisRemover" id="psr{{ usuario.id }}">
-                        {% for a_role in usuario.a_roles %}
-                        <option value="{{ a_role.id }}">{{ a_role.role.sigla }}</option>
-                        {% endfor %}
+                        {% if usuario.roles %}
+                            {% for role in usuario.roles %}
+                            <option value="{{ role.id }}">{{ role.sigla }}</option>
+                            {% endfor %}
+                        {% endif %}
                     </select>
                 </td>
                 <td>

@@ -6,9 +6,12 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 from starlette.responses import Response
 
+from api.v1.artigo.model.artigo_model import Artigo
 from api.v1.autenticacao.endpoint.autenticacao_endpoints import AutenticacaoEndpoints
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo
+from api.v1.role.model.role_model import Role
 from recursos.acoes_initiallizer import AcoesInitiallizer
-from api.v1.usuario.model.usuario_model import UsuarioHandlerToken
+from api.v1.usuario.model.usuario_model import UsuarioHandlerToken, Usuario
 from templates.Jinja2 import create_templates
 
 templates = create_templates()
@@ -28,33 +31,19 @@ class HTMLAcoes(AcoesInitiallizer):
         )
 
     def acao_2(self):
-        """ use : [admin-1] """
+        """ use : [admin-1]
+        renderiza a tela de administracao de usuarios"""
 
-        # try:
-        #     if data := self.handler \
-        #             .sessao \
-        #             .query(Usuario) \
-        #             .options(
-        #         joinedload(
-        #             Usuario.criado_por
-        #         ),
-        #         joinedload(
-        #             Usuario.alterado_por
-        #         ),
-        #         joinedload(
-        #             Usuario.deletado_por
-        #         ),
-        #         joinedload(
-        #             Usuario.a_roles
-        #         )
-        #     ) \
-        #             .all():
-        #         self.data = data
-        #
-        # except NoResultFound:
-        #     raise SQLException('Não há objetos do tipo usuário.')
-        #
-        # perfis: Role = self.handler.sessao.query(Role).all()
+        usuarios_data = self.handler.operacao.find_all(collection='usuarios')
+        usuarios = []
+        # converte usuarios_data para usuario, populando campos None
+        for usuario in usuarios_data:
+            usuarios.append(Usuario(**usuario))
+
+        roles_data = self.handler.operacao.find_all(collection='roles')
+        roles = []
+        for role in roles_data:
+            roles.append(Role(**role))
 
         self.model: UsuarioHandlerToken = self.data
 
@@ -62,8 +51,8 @@ class HTMLAcoes(AcoesInitiallizer):
             "usuarios.html",
             {
                 "request": self.handler.request,
-                "usuarios": self.data,
-                # "perfis": perfis
+                "usuarios": usuarios,
+                "roles": roles
             }
         )
 
@@ -100,30 +89,29 @@ class HTMLAcoes(AcoesInitiallizer):
     def acao_4(self):
         """ use : [articleAll-1]"""
 
-        # forma de se recuperar somente algumas colunas da tabela
-        # select_query = select(Artigo.id, Artigo.titulo).order_by(desc(Artigo.criado_em))
-        #
-        # if data := self.handler.sessao.execute(select_query).fetchall():
-        #     self.data = [Artigo(id=a[0], titulo=a[1]) for a in data]
-        #
-        # # recupera o artigo 1, que será o artigo exibido na página principal
-        # select_query = select(Artigo).filter_by(id=1)
-        #
-        # artigo: Artigo = self.handler.sessao.execute(select_query).scalar_one()
-        # artigo.corpo = json.loads(artigo.corpo)
-        #
-        # # recupera todas as modalidades de artigo
-        # modalidade_artigo: ModalidadeArtigo = self.handler.sessao.query(ModalidadeArtigo).all()
-        #
-        # self.handler.sucesso = templates.TemplateResponse(
-        #     "artigos/landing_page_artigos.html",
-        #     {
-        #         "request": self.handler.request,
-        #         "artigos": self.data,
-        #         "artigo": artigo,
-        #         "modalidadesArtigo": modalidade_artigo
-        #     }
-        # )
+        artigo = Artigo()
+        lista_modalidade_artigo = [ModalidadeArtigo()]
+        if artigos_data := self.handler.operacao.find_all(collection='artigos'):
+            self.data = [Artigo(**a) for a in artigos_data]
+
+            # artigo a ser exibido na página inicial
+            primeiro_artigo = sorted(artigos_data, key=lambda x: x['criado_em'])[0]
+            artigo: Artigo = Artigo(**primeiro_artigo)
+            artigo.corpo = json.loads(artigo.corpo)
+
+        # recupera todas as modalidades de artigo
+        if modalidades_artigos_data := self.handler.operacao.find_all(collection='modalidadeArtigos'):
+            lista_modalidade_artigo: [ModalidadeArtigo] = [ModalidadeArtigo(**modalidade) for modalidade in modalidades_artigos_data]
+
+        self.handler.sucesso = templates.TemplateResponse(
+            "artigos/landing_page_artigos.html",
+            {
+                "request": self.handler.request,
+                "artigos": self.data,
+                "artigo": artigo,
+                "modalidadesArtigo": lista_modalidade_artigo
+            }
+        )
 
     def acao_5(self):
         """ use : [articleGroup-1]"""

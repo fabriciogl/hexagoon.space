@@ -8,14 +8,13 @@ from config import settings
 
 
 class TestUsuarioEndpoint:
-
     token = None
     id_root = None
     novo_id = None
+    id_role_admin = None
 
     @staticmethod
     def test_find(client: TestClient, operacao):
-
         TestUsuarioEndpoint.token = client.post(
             "/autenticacao",
             json={"email": settings.root_email, "senha": settings.root_pass}
@@ -31,7 +30,6 @@ class TestUsuarioEndpoint:
 
     @staticmethod
     def test_create(client: TestClient, operacao):
-
         response = client.post(
             "usuario",
             json={"nome": "Erick Hobsbawn", "email": "eric@hexsaturn.space", "senha": "extremo"},
@@ -48,7 +46,7 @@ class TestUsuarioEndpoint:
     @staticmethod
     def test_update(client: TestClient, operacao):
         response = client.put(
-            f"usuario/{TestUsuarioEndpoint.id_root}",
+            f"usuario/{str(TestUsuarioEndpoint.id_root)}",
             json={"nome": "João do Pulo"},
             headers={'Authorization': f'Bearer {TestUsuarioEndpoint.token}'}
         )
@@ -57,6 +55,19 @@ class TestUsuarioEndpoint:
 
         assert response.status_code == 200
         assert update_usuario.nome == "João do Pulo"
+
+    @staticmethod
+    def test_add_role(client: TestClient, operacao):
+        response = client.put(
+            f"usuario/{TestUsuarioEndpoint.id_root}/adiciona_role",
+            json={"role": {"_id": str(TestUsuarioEndpoint.id_role_admin)}},
+            headers={'Authorization': f'Bearer {TestUsuarioEndpoint.token}'}
+        )
+
+        update_usuario = Usuario(**operacao.find_one(collection='usuarios', id=TestUsuarioEndpoint.id_root))
+
+        assert response.status_code == 200
+        assert TestUsuarioEndpoint.id_role_admin in [role.id for role in update_usuario.roles]
 
     @staticmethod
     def test_inactivate(client: TestClient, operacao):
@@ -80,7 +91,9 @@ class TestUsuarioEndpoint:
         )
 
         # A query feita pelo teste não executa o listener do orm
-        delete_usuario = Usuario(**operacao.find_one(collection='usuarios', id=TestUsuarioEndpoint.novo_id, soft_deleteds=True))
+        delete_usuario = Usuario(
+            **operacao.find_one(collection='usuarios', id=TestUsuarioEndpoint.novo_id, soft_deleteds=True)
+        )
 
         assert response.status_code == 200
         assert delete_usuario.deletado_em is not None
@@ -110,7 +123,6 @@ class TestUsuarioEndpoint:
 
     @staticmethod
     def test_create_email_utilizado(client: TestClient, operacao):
-
         response = client.post(
             "usuario",
             json={"nome": "Erick Hobsbawn", "email": "eric@hexsaturn.space", "senha": "extremo"},
@@ -118,7 +130,6 @@ class TestUsuarioEndpoint:
         )
 
         assert response.status_code == 422
-
 
     @staticmethod
     def test_delete_again(client: TestClient, operacao):
