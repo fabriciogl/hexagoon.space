@@ -9,9 +9,11 @@ window.onload = async function(e){
         document.querySelector('input[type=email]').style.display = 'none';
         document.querySelector('input[type=password]').style.display = 'none';
         document.querySelector('input[value=Logar]').style.display = 'none';
-        document.querySelector('#aa').style.display = 'block';
-        document.querySelector('#ca').style.display = 'block';
-        document.querySelector('#pa').style.display = 'block';
+        if (document.querySelector('#aa')){
+            document.querySelector('#aa').style.display = 'block';
+            document.querySelector('#ca').style.display = 'block';
+            document.querySelector('#pa').style.display = 'block';
+        }
     }
 
     let data = document.querySelector('#dataLoad').innerText;
