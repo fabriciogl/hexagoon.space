@@ -73,8 +73,8 @@ class Usuario(BaseModel):
 
 # modelo utilizado na criação do token, quando é passado email e senha
 class UsuarioTokenIn(BaseModel):
-    email: Optional[EmailStr]
-    senha: Optional[str]
+    email: EmailStr
+    senha: str
 
     class Config:
         title = 'usuarios'

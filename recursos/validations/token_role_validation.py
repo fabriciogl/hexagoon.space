@@ -5,7 +5,6 @@ import jwt
 from bson import ObjectId
 from fastapi.params import Depends
 from fastapi.security import SecurityScopes
-from sqlalchemy.exc import NoResultFound
 from starlette.requests import Request
 
 from recursos.basic_exceptions.token_exceptions import TokenException, \

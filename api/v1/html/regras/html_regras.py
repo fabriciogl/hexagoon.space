@@ -1,8 +1,5 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 
-from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
-
 from recursos.basic_exceptions.token_exceptions import RoleException
 from recursos.regras_initiallizer import RegrasInitiallizer
 from api.v1.usuario.model.usuario_model import UsuarioIn, Usuario

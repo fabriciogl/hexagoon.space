@@ -18,9 +18,8 @@ class MongoSetupSincrono:
         if not MongoSetupSincrono.client:
             if settings.current_env in ['testing', 'development']:
                 MongoSetupSincrono.client = MongoClient('localhost', 27017)
-            if settings.current_env in ['development']:
-                uri = "mongodb+srv://hexagoon.j6rb8f9.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
-                MongoSetupSincrono.client = MongoClient(uri,
+            if settings.current_env in ['production']:
+                MongoSetupSincrono.client = MongoClient(settings.db_address,
                                                         tls=True,
                                                         tlsCertificateKeyFile='banco_dados/mongodb/configuracao/X509-cert.pem',
                                                         server_api=ServerApi('1'))

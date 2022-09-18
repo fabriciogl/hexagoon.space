@@ -79,6 +79,7 @@ class HTMLAcoes(AcoesInitiallizer):
         # recupera todos os artigos de mesma modalidade
         artigos_data = self.handler.operacao.find_all(
             where={'modalidade_artigo._id': self.data.modalidade_artigo.id},
+            projection=['titulo'],
             collection='artigos'
         )
         artigos = [Artigo(**a) for a in artigos_data]

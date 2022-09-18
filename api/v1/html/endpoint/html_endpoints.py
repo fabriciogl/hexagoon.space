@@ -2,7 +2,6 @@
 
 from fastapi import APIRouter
 from fastapi.params import Depends
-from sqlalchemy.orm import Session
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 

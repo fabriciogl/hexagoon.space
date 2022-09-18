@@ -1,6 +1,5 @@
 #  Copyright (c) 2021. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 from bson import ObjectId
-from sqlalchemy.orm import Session
 from starlette.testclient import TestClient
 
 from api.v1.usuario.model.usuario_model import Usuario

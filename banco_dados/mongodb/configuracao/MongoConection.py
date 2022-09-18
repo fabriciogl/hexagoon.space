@@ -33,11 +33,18 @@ class Operacoes:
             self,
             collection: str,
             where: dict = None,
+            projection: list = None,
             soft_deleteds: bool = False,
             cursor: bool = False
     ) -> list:
         """
           Metodo do handler para bucar todos os documentos da coleção
+          args:
+            collection: str  Nome da collection
+            where: dict Campos pelos quais realiza a busca
+            projection: list Campos que deseja retornar na busca
+            soft_deleteds: bool Deseja incluir soft_deleteds na busca
+            cursor: bool Deseja retornar cursor ou lista com todos os resultados
         """
 
         # mongo considera null campos com valor null ou que não existem
@@ -47,9 +54,9 @@ class Operacoes:
             where['deletado_em'] = None
 
         if cursor:
-            return self._db[collection].find(filter=where)
+            return self._db[collection].find(filter=where, projection=projection)
         # retorna list para consumir o cursor
-        return list(self._db[collection].find(filter=where))
+        return list(self._db[collection].find(filter=where, projection=projection))
 
     def find_one(
             self,
