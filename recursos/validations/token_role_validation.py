@@ -65,7 +65,7 @@ def valida_token(
         ]
         usuario_data: UsuarioTokenOut = UsuarioTokenOut(**operacao.find_with_join(join=left_join, collection='usuarios'))
 
-    except NoResultFound:
+    except Exception as e:
         raise UsuarioFindException(ordem=1, _id=_id, request=request)
 
     return usuario_data, operacao, request

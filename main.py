@@ -4,6 +4,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
+from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
 # from api.V1.Excecoes.ExceptionHandlers import invalid_id, not_found
@@ -44,9 +45,9 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 
-# @app.get("/")
-# async def root():
-#     return {'return': 'Hello World'}
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse('estaticos/images/favicon.ico')
 
 
 if __name__ == "__main__":

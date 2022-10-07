@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi.params import Security
 
 from api.v1.artigo.acoes.artigo_acoes import ArtigoAcoes
-from api.v1.artigo.model.artigo_model import ArtigoOutCreate, ArtigoIn, ArtigoOutDelete, ArtigoOutUpdate, Artigo, \
+from api.v1.artigo.model.artigo_model import ArtigoOutCreate, ArtigoInUpdate, ArtigoOutDelete, ArtigoOutUpdate, Artigo, \
     ArtigoFind, ArtigoInCreate
 from api.v1.artigo.regras.artigo_regras import ArtigoRegras
 from recursos.response_handler import ResponseHandler
@@ -61,7 +61,7 @@ class ArtigoEndpoints:
         response_model=ArtigoOutUpdate
     )
     async def update(
-            model: ArtigoIn,
+            model: ArtigoInUpdate,
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):

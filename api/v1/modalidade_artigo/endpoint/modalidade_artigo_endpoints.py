@@ -5,7 +5,7 @@ from fastapi.params import Security
 
 from api.v1.modalidade_artigo.acoes.modalidade_artigo_acoes import ModalidadeArtigoAcoes
 from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoOut, ModalidadeArtigoIn, \
-    ModalidadeArtigoOutCreate, ModalidadeArtigoOutDelete, ModalidadeArtigoUpdate
+    ModalidadeArtigoOutCreate, ModalidadeArtigoOutDelete, ModalidadeArtigoUpdate, ModalidadeArtigoInCreate
 from api.v1.modalidade_artigo.regras.modalidade_artigo_regras import ModalidadeArtigoRegras
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
@@ -42,7 +42,7 @@ class ModalidadeArtigoEndpoints:
         status_code=201
     )
     async def create(
-            model: ModalidadeArtigoIn,
+            model: ModalidadeArtigoInCreate,
             handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):
         # regras aplicáveis ao model

@@ -2,14 +2,13 @@
 import datetime
 from typing import Optional, List, Union, Any
 
-from bson import ObjectId
 from pydantic import BaseModel, EmailStr, Field
 
 from api.v1.role.model.role_model import RoleUsuarioOut, RoleUsuario, RoleUsuarioIn
 
 
 class UsuarioIn(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: Optional[str]
     email: Optional[EmailStr]
     senha: Optional[str]
@@ -50,7 +49,7 @@ class UsuarioBlameOut(BaseModel):
 
 
 class Usuario(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: Optional[str]
     email: Optional[EmailStr]
     senha: Optional[str]
@@ -91,7 +90,7 @@ class UsuarioReativar(BaseModel):
 
 # modelo utilizado no handler, após validação da senha
 class UsuarioHandlerSenha(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: Optional[str]
     roles: Optional[list[RoleUsuarioOut]]
 

@@ -128,6 +128,7 @@ class HTMLAcoes(AcoesInitiallizer):
         # recupera todos os artigos de mesma modalidade
         artigos_data = self.handler.operacao.find_all(
             where={'modalidade_artigo._id': ObjectId(self._id)},
+            projection=['titulo'],
             collection='artigos'
         )
         artigos = [Artigo(**a) for a in artigos_data]
@@ -137,7 +138,10 @@ class HTMLAcoes(AcoesInitiallizer):
         modalidades_artigo: [ModalidadeArtigoIn] = [ModalidadeArtigoIn(**ma) for ma in modalidades_artigo_data]
         # recupera o primeiro para ser exibido, se não existir gera um dinamicamente.
         if len(artigos) != 0:
-            artigo: Artigo = artigos[0]
+            artigo: Artigo = Artigo(**self.handler.operacao.find_one(
+            id=artigos[0].id,
+            collection='artigos'
+        ))
             modalidades_ordenadas = [artigo.modalidade_artigo]
             modalidades_artigo.remove(artigo.modalidade_artigo)
             modalidades_ordenadas.extend(modalidades_artigo)

@@ -2,7 +2,6 @@
 import datetime
 from typing import Optional, Union, Any
 
-from bson import ObjectId
 from pydantic import BaseModel, Field
 
 
@@ -54,7 +53,7 @@ class RoleOutDelete(BaseModel):
 
 
 class RoleIn(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     sigla: Optional[str]
     descricao: Optional[str]
 
@@ -68,7 +67,7 @@ class RoleUsuarioOut(BaseModel):
 
 
 class RoleUsuarioIn(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
 
     class Config:
         title = 'roles'
@@ -77,7 +76,7 @@ class RoleUsuarioIn(BaseModel):
 
 class RoleUsuario(BaseModel):
     """ Role gerada para ser inserida como role no Usuario """
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     sigla: Optional[str]
 
     class Config:
@@ -86,7 +85,7 @@ class RoleUsuario(BaseModel):
 
 class SubRoles(BaseModel):
     """ Role gerada para ser inserida como sub_role em outra Role """
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     sigla: Optional[str]
 
     class Config:
@@ -94,7 +93,7 @@ class SubRoles(BaseModel):
 
 
 class Role(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     sigla: Optional[str]
     descricao: Optional[str]
 

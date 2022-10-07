@@ -2,7 +2,6 @@
 import datetime
 from typing import Optional, Union, Any
 
-from bson import ObjectId
 from pydantic import BaseModel, Field
 from pydantic.types import Json
 
@@ -11,7 +10,7 @@ from api.v1.usuario.model.usuario_model import UsuarioReduzido, UsuarioBlameOut
 
 
 class Artigo(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
     modalidade_artigo: Optional[ModalidadeArtigoIn]
@@ -30,13 +29,14 @@ class Artigo(BaseModel):
         arbitrary_types_allowed = True
 
 
-class ArtigoIn(BaseModel):
+class ArtigoInUpdate(BaseModel):
     titulo: Optional[str]
     corpo: Optional[Json]
     modalidade_artigo_id: Optional[str]
 
     class Config:
         title = 'artigos'
+        arbitrary_types_allowed: True
 
 
 class ArtigoInCreate(BaseModel):
@@ -51,6 +51,7 @@ class ArtigoFind(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
+    modalidade_artigo: Optional[ModalidadeArtigoReduzido]
 
     # accountability
     criado_em: Optional[datetime.datetime]
@@ -79,6 +80,7 @@ class ArtigoOutUpdate(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
+    modalidade_artigo: Optional[ModalidadeArtigoReduzido]
     alterado_em: Optional[datetime.datetime]
     alterado_por: Optional[UsuarioReduzido]
 

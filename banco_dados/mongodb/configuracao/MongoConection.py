@@ -86,7 +86,6 @@ class Operacoes:
         """
           Metodo do handler para bucar documento no banco realizando $lookup
         """
-        # adiciona a operação à lista a ser comitada
         return self._db[collection].aggregate(join).next()
 
     def insert(self, model: BaseModel) -> Dict:

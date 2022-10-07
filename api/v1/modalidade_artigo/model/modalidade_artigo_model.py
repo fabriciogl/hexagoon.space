@@ -2,14 +2,13 @@
 import datetime
 from typing import Optional, Union, Any
 
-from bson import ObjectId
 from pydantic import BaseModel, Field
 
 from api.v1.usuario.model.usuario_model import UsuarioReduzido
 
 
 class ModalidadeArtigo(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: Optional[str]
 
     # accountability
@@ -22,28 +21,26 @@ class ModalidadeArtigo(BaseModel):
     deletado_por: Optional[UsuarioReduzido]
 
     class Config:
-        title = 'modalidadeArtigos'
+        title = 'modalidade_artigos'
         arbitrary_types_allowed = True
 
 
 class ModalidadeArtigoIn(BaseModel):
-    id: Optional[Union[str, ObjectId]] = Field(None, alias='_id')
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: str
 
     class Config:
-        title = 'modalidadeArtigos'
+        title = 'modalidade_artigos'
         orm_mode = True
         arbitrary_types_allowed = True
 
 
 class ModalidadeArtigoInCreate(BaseModel):
     nome: str
-    criado_em: Optional[datetime.datetime]
-    criado_por: Optional[UsuarioReduzido]
 
     class Config:
         orm_mode = True
-        title = "modalidadeArtigos"
+        title = "modalidade_artigos"
 
 
 class ModalidadeArtigoOut(BaseModel):
@@ -78,7 +75,7 @@ class ModalidadeArtigoUpdate(BaseModel):
 
     class Config:
         orm_mode = True
-        title = "modalidadeArtigos"
+        title = "modalidade_artigos"
 
 
 class ModalidadeArtigoOutDelete(BaseModel):
@@ -89,4 +86,4 @@ class ModalidadeArtigoOutDelete(BaseModel):
 
     class Config:
         orm_mode = True
-        title = "modalidadeArtigos"
+        title = "modalidade_artigos"

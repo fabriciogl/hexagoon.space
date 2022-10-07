@@ -1,5 +1,5 @@
 {% extends "base_artigos.html" %}
-{% block title %}{{ artigo.modalidade_artigo.modalidade|safe }}{% endblock %}
+{% block title %}{{ artigo.modalidade_artigo.nome|safe }}{% endblock %}
 {% block dataJson %}{{ artigo.corpo|tojson }}{% endblock %}
 {% block artigoGrupos %}
 <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="modalidadeArtigos" id="ma"
