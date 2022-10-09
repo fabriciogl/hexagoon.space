@@ -6,7 +6,7 @@ from starlette.responses import Response
 
 from api.v1.artigo.model.artigo_model import Artigo
 from api.v1.autenticacao.endpoint.autenticacao_endpoints import AutenticacaoEndpoints
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoIn
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoInUpdate
 from api.v1.role.model.role_model import Role
 from api.v1.usuario.model.usuario_model import UsuarioHandlerToken, Usuario
 from recursos.acoes_initiallizer import AcoesInitiallizer
@@ -65,13 +65,13 @@ class HTMLAcoes(AcoesInitiallizer):
         """ use : [article-1] """
 
         # recupera o artigo que será exibido
-        artigo_data = self.handler.operacao.find_one(id=self._id, collection='artigos')
+        artigo_data = self.handler.operacao.find_one(id=self._id, collection=Artigo.Config.title)
         self.data: Artigo = Artigo(**artigo_data)
         self.data.corpo = json.loads(self.data.corpo)
 
         # recupera todas as modalidades de artigo ordenando pela escolhida
-        modalidades_artigo_data = self.handler.operacao.find_all(collection='modalidadeArtigos')
-        modalidades_artigo: [ModalidadeArtigoIn] = [ModalidadeArtigoIn(**ma) for ma in modalidades_artigo_data]
+        modalidades_artigo_data = self.handler.operacao.find_all(collection=ModalidadeArtigo.Config.title)
+        modalidades_artigo: [ModalidadeArtigoInUpdate] = [ModalidadeArtigoInUpdate(**ma) for ma in modalidades_artigo_data]
         modalidades_ordenadas = [self.data.modalidade_artigo]
         modalidades_artigo.remove(self.data.modalidade_artigo)
         modalidades_ordenadas.extend(modalidades_artigo)
@@ -90,7 +90,7 @@ class HTMLAcoes(AcoesInitiallizer):
                 "request": self.handler.request,
                 "artigo": self.data,
                 "artigos": artigos,
-                "modalidadesArtigo": modalidades_ordenadas
+                "modalidades_artigo": modalidades_ordenadas
             }
         )
 
@@ -100,15 +100,18 @@ class HTMLAcoes(AcoesInitiallizer):
         artigo = Artigo()
         lista_modalidade_artigo = [ModalidadeArtigo()]
         if artigos_data := self.handler.operacao.find_all(collection='artigos'):
-            self.data = [Artigo(**a) for a in artigos_data]
 
             # artigo a ser exibido na página inicial
-            primeiro_artigo = sorted(artigos_data, key=lambda x: x['criado_em'])[0]
+            artigos_ordenados = sorted(artigos_data, key=lambda x: x['criado_em'], reverse=True)
+            primeiro_artigo = artigos_ordenados[-1]
             artigo: Artigo = Artigo(**primeiro_artigo)
             artigo.corpo = json.loads(artigo.corpo)
 
+            # seleciona os últimos cinco artigos para serem apresetandos na tela inicial
+            self.data = [Artigo(**a) for a in artigos_ordenados[:5]]
+
         # recupera todas as modalidades de artigo
-        if modalidades_artigos_data := self.handler.operacao.find_all(collection='modalidadeArtigos'):
+        if modalidades_artigos_data := self.handler.operacao.find_all(collection=ModalidadeArtigo.Config.title):
             lista_modalidade_artigo: [ModalidadeArtigo] = [ModalidadeArtigo(**modalidade) for modalidade in
                                                            modalidades_artigos_data]
 
@@ -118,7 +121,7 @@ class HTMLAcoes(AcoesInitiallizer):
                 "request": self.handler.request,
                 "artigos": self.data,
                 "artigo": artigo,
-                "modalidadesArtigo": lista_modalidade_artigo
+                "modalidades_artigo": lista_modalidade_artigo
             }
         )
 
@@ -134,8 +137,8 @@ class HTMLAcoes(AcoesInitiallizer):
         artigos = [Artigo(**a) for a in artigos_data]
 
         # recupera todas as modalidades de artigo ordenando pela escolhida
-        modalidades_artigo_data = self.handler.operacao.find_all(collection='modalidadeArtigos')
-        modalidades_artigo: [ModalidadeArtigoIn] = [ModalidadeArtigoIn(**ma) for ma in modalidades_artigo_data]
+        modalidades_artigo_data = self.handler.operacao.find_all(collection=ModalidadeArtigo.Config.title)
+        modalidades_artigo: [ModalidadeArtigoInUpdate] = [ModalidadeArtigoInUpdate(**ma) for ma in modalidades_artigo_data]
         # recupera o primeiro para ser exibido, se não existir gera um dinamicamente.
         if len(artigos) != 0:
             artigo: Artigo = Artigo(**self.handler.operacao.find_one(
@@ -163,6 +166,6 @@ class HTMLAcoes(AcoesInitiallizer):
                 "request": self.handler.request,
                 "artigos": artigos,
                 "artigo": artigo,
-                "modalidadesArtigo": modalidades_ordenadas
+                "modalidades_artigo": modalidades_ordenadas
             }
         )

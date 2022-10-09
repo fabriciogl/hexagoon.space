@@ -6,7 +6,7 @@ from fastapi.params import Security
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
 from api.v1.role.acoes.role_acoes import RoleAcoes
-from api.v1.role.model.role_model import RoleOut, RoleIn, SubRoleIn, RoleOutDelete
+from api.v1.role.model.role_model import RoleOut, RoleInCreate, SubRoleIn, RoleOutDelete, RoleInUpdate
 from api.v1.role.regras.role_regras import RoleRegras
 from banco_dados.mongodb.configuracao.MongoConection import Sessao
 
@@ -42,7 +42,7 @@ class RoleEndpoints:
         status_code=201
     )
     async def create(
-            model: RoleIn,
+            model: RoleInCreate,
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):
         # valida as regras necessárias no model
@@ -59,7 +59,7 @@ class RoleEndpoints:
         response_model=RoleOut
     )
     async def update(
-            model: RoleIn,
+            model: RoleInUpdate,
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["root", "admin"])
     ):

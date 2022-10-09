@@ -1,13 +1,13 @@
 #  Copyright (c) 2022. Hexagoon. Criador: Fabricio Gatto Lourençone. Todos os direitos reservados.
 
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoIn, \
-    ModalidadeArtigoUpdate
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoInUpdate, \
+    ModalidadeArtigoOutUpdate
 from recursos.acoes_initiallizer import AcoesInitiallizer
 
 
 class ModalidadeArtigoAcoes(AcoesInitiallizer):
     # declara o tipo do model
-    model: ModalidadeArtigoIn
+    model: ModalidadeArtigoInUpdate
     data: ModalidadeArtigo
 
     def acao_1(self):
@@ -25,7 +25,7 @@ class ModalidadeArtigoAcoes(AcoesInitiallizer):
 
     def acao_3(self):
         """ use : [update-1] """
-        self.model: ModalidadeArtigoUpdate = ModalidadeArtigoUpdate(**self.model.dict())
+        self.model: ModalidadeArtigoOutUpdate = ModalidadeArtigoOutUpdate(**self.model.dict())
 
     def acao_4(self):
         """ use : [soft_delete-1] """

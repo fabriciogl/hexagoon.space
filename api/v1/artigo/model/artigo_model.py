@@ -5,7 +5,7 @@ from typing import Optional, Union, Any
 from pydantic import BaseModel, Field
 from pydantic.types import Json
 
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoIn, ModalidadeArtigoReduzido
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoInUpdate, ModalidadeArtigoNome
 from api.v1.usuario.model.usuario_model import UsuarioReduzido, UsuarioBlameOut
 
 
@@ -13,7 +13,7 @@ class Artigo(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
-    modalidade_artigo: Optional[ModalidadeArtigoIn]
+    modalidade_artigo: Optional[ModalidadeArtigoInUpdate]
 
     # accountability
     criado_em: Optional[datetime.datetime]
@@ -29,29 +29,11 @@ class Artigo(BaseModel):
         arbitrary_types_allowed = True
 
 
-class ArtigoInUpdate(BaseModel):
-    titulo: Optional[str]
-    corpo: Optional[Json]
-    modalidade_artigo_id: Optional[str]
-
-    class Config:
-        title = 'artigos'
-        arbitrary_types_allowed: True
-
-
-class ArtigoInCreate(BaseModel):
-    corpo: Json
-    modalidade_artigo_id: str
-
-    class Config:
-        title = 'artigos'
-
-
 class ArtigoFind(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
-    modalidade_artigo: Optional[ModalidadeArtigoReduzido]
+    modalidade_artigo: Optional[ModalidadeArtigoNome]
 
     # accountability
     criado_em: Optional[datetime.datetime]
@@ -67,20 +49,37 @@ class ArtigoFind(BaseModel):
         arbitrary_types_allowed = True
 
 
+class ArtigoInCreate(BaseModel):
+    corpo: Json
+    modalidade_artigo_id: str
+
+    class Config:
+        title = 'artigos'
+
+
 class ArtigoOutCreate(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
-    modalidade_artigo: Optional[ModalidadeArtigoReduzido]
+    modalidade_artigo: Optional[ModalidadeArtigoNome]
     criado_em: Optional[datetime.datetime]
     criado_por: Optional[UsuarioReduzido]
+
+
+class ArtigoInUpdate(BaseModel):
+    corpo: Optional[Json]
+    modalidade_artigo_id: Optional[str]
+
+    class Config:
+        title = 'artigos'
+        arbitrary_types_allowed: True
 
 
 class ArtigoOutUpdate(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     titulo: Optional[str]
     corpo: Optional[Union[dict, str]]
-    modalidade_artigo: Optional[ModalidadeArtigoReduzido]
+    modalidade_artigo: Optional[ModalidadeArtigoNome]
     alterado_em: Optional[datetime.datetime]
     alterado_por: Optional[UsuarioReduzido]
 

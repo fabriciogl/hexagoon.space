@@ -6,7 +6,7 @@ from bson import ObjectId
 from passlib.hash import bcrypt
 
 from api.v1.artigo.model.artigo_model import Artigo
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoIn
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoInUpdate
 from api.v1.role.model.role_model import Role, SubRoles, RoleUsuario
 from api.v1.usuario.model.usuario_model import Usuario, UsuarioReduzido
 from banco_dados.mongodb.configuracao.MongoConection import Operacoes, Sessao
@@ -148,7 +148,7 @@ def load_data():
                     }
                 }
             )
-            modalidade_artigo = ModalidadeArtigoIn(**sessao.insert(session, ModalidadeArtigo(nome='Hexagoon Base')))
+            modalidade_artigo = ModalidadeArtigoInUpdate(**sessao.insert(session, ModalidadeArtigo(nome='Hexagoon Base')))
 
             # cria a collection artigos com validação de esquema
             sessao.get_db().drop_collection(name_or_collection=Artigo.Config.title, session=session)

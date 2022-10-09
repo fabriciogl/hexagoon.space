@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from fastapi.params import Security
 
 from api.v1.modalidade_artigo.acoes.modalidade_artigo_acoes import ModalidadeArtigoAcoes
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoOut, ModalidadeArtigoIn, \
-    ModalidadeArtigoOutCreate, ModalidadeArtigoOutDelete, ModalidadeArtigoUpdate, ModalidadeArtigoInCreate
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigoFind, ModalidadeArtigoInUpdate, \
+    ModalidadeArtigoOutCreate, ModalidadeArtigoOutDelete, ModalidadeArtigoOutUpdate, ModalidadeArtigoInCreate
 from api.v1.modalidade_artigo.regras.modalidade_artigo_regras import ModalidadeArtigoRegras
 from recursos.response_handler import ResponseHandler
 from recursos.validations.token_role_validation import valida_role
@@ -21,7 +21,7 @@ class ModalidadeArtigoEndpoints:
     @staticmethod
     @router.get(
         "/{_id}",
-        response_model=ModalidadeArtigoOut
+        response_model=ModalidadeArtigoFind
     )
     def find(
             _id: str,
@@ -57,10 +57,10 @@ class ModalidadeArtigoEndpoints:
     @router.put(
         "/{_id}",
         status_code=200,
-        response_model=ModalidadeArtigoUpdate
+        response_model=ModalidadeArtigoOutUpdate
     )
     async def update(
-            model: ModalidadeArtigoIn,
+            model: ModalidadeArtigoInUpdate,
             _id: str,
             handler: ResponseHandler = Security(valida_role, scopes=["user"])
     ):

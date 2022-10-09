@@ -2,7 +2,8 @@
 import json
 
 from api.v1.artigo.model.artigo_model import ArtigoInUpdate, Artigo, ArtigoInCreate
-from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoIn
+from api.v1.modalidade_artigo.model.modalidade_artigo_model import ModalidadeArtigo, ModalidadeArtigoInUpdate, \
+    ModalidadeArtigoReduzido
 from recursos.acoes_initiallizer import AcoesInitiallizer
 
 
@@ -20,10 +21,10 @@ class ArtigoAcoes(AcoesInitiallizer):
     def acao_2(self):
         """ use : [create-1] """
         self.model: ArtigoInCreate
-        modalidade_artigo = self.handler.operacao.find_one(
+        modalidade_artigo = ModalidadeArtigoReduzido(**self.handler.operacao.find_one(
             id=self.model.modalidade_artigo_id,
             collection=ModalidadeArtigo.Config.title
-        )
+        ))
         self.model: Artigo = Artigo(**self.model.dict())
         self.model.modalidade_artigo = modalidade_artigo
         self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
@@ -39,7 +40,7 @@ class ArtigoAcoes(AcoesInitiallizer):
 
         # verifica se a alteração envolve o campo modalidade de artigo
         if self.model.modalidade_artigo_id:
-            modalidade_artigo = ModalidadeArtigoIn(
+            modalidade_artigo = ModalidadeArtigoInUpdate(
                 **self.handler.operacao.find_one(
                 ModalidadeArtigo.Config.title,
                 id=self.model.modalidade_artigo_id
@@ -49,7 +50,7 @@ class ArtigoAcoes(AcoesInitiallizer):
 
         # verifica se a alteração altera o corpo do artigo
         if self.model.corpo:
-            self.model.titulo = self.model.corpo['blocks'][0]['data']['text']
+            pre_data_artigo.titulo = self.model.corpo['blocks'][0]['data']['text']
             pre_data_artigo.corpo = json.dumps(self.model.corpo)
 
         self.model: Artigo = pre_data_artigo

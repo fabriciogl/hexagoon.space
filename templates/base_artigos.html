@@ -23,10 +23,10 @@
     <script async src="/estaticos/js/artigo.js"></script>
     <title>Hexagoon</title>
 </head>
-<body>
+<body class="bg-secondary">
 <div class="container">
     <div class="row">
-        <div class="col-2">{% block artigoGrupos %}{% endblock %}</div>
+        <div class="col-2">{% block artigo_grupos %}{% endblock %}</div>
         <div class="col-8 mp-auto">
             <img
                     src="/estaticos/images/titulo_hexagoon.jpeg"
@@ -45,9 +45,9 @@
         </div>
     </div>
 </div>
-<p hidden id="aid">{% block artigoId %}{% endblock %}</p>
-<p hidden id="maid">{% block modalidadeArtigoId %}{% endblock %}</p>
-<p hidden id="dataLoad">{% block dataJson %}{% endblock %}</p>
+<p hidden id="aid">{% block artigo_id %}{% endblock %}</p>
+<p hidden id="maid">{% block modalidade_artigo_id %}{% endblock %}</p>
+<p hidden id="dataLoad">{% block data_json %}{% endblock %}</p>
 
 <div class="container">
     <div class="row">
@@ -69,16 +69,16 @@
 
     <div id="navigation" class="container">
         <div class="row">
-            <div class="col-2 px-2">
-                {% block pushArtigo %} {% endblock %}
-                <input class="col-12 btn-outline-secondary" type="button" value="Desproteger Artigo"
+            <div class="col-2 px-2 d-none d-sm-block">
+                {% block push_artigo %} {% endblock %}
+                <input class="col-12 btn-outline-light" type="button" value="Desproteger Artigo"
                        onclick="readOnlyArtigo()"
                        style="display: none" id="pa" data-protected="false">
-                <div>{% block listaArtigos %}{% endblock %}</div>
+                <div>{% block lista_artigos %}{% endblock %}</div>
             </div>
-            <div class="card col-9 px-2">
+            <div class="card px-2 col-12 col-sm-9">
                 <div class="card-text">
-                    <div id="editorjs"></div>
+                    <div class="bg-info" id="editorjs"></div>
                 </div>
             </div>
             <div class="col-1 px-2">

@@ -25,25 +25,7 @@ class ModalidadeArtigo(BaseModel):
         arbitrary_types_allowed = True
 
 
-class ModalidadeArtigoIn(BaseModel):
-    id: Optional[Union[str, Any]] = Field(None, alias='_id')
-    nome: str
-
-    class Config:
-        title = 'modalidade_artigos'
-        orm_mode = True
-        arbitrary_types_allowed = True
-
-
-class ModalidadeArtigoInCreate(BaseModel):
-    nome: str
-
-    class Config:
-        orm_mode = True
-        title = "modalidade_artigos"
-
-
-class ModalidadeArtigoOut(BaseModel):
+class ModalidadeArtigoFind(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: str
     criado_em: Optional[datetime.datetime]
@@ -53,8 +35,16 @@ class ModalidadeArtigoOut(BaseModel):
         orm_mode = True
 
 
-class ModalidadeArtigoReduzido(BaseModel):
+class ModalidadeArtigoNome(BaseModel):
     nome: str
+
+
+class ModalidadeArtigoInCreate(BaseModel):
+    nome: str
+
+    class Config:
+        orm_mode = True
+        title = "modalidade_artigos"
 
 
 class ModalidadeArtigoOutCreate(BaseModel):
@@ -67,14 +57,22 @@ class ModalidadeArtigoOutCreate(BaseModel):
         orm_mode = True
 
 
-class ModalidadeArtigoUpdate(BaseModel):
+class ModalidadeArtigoInUpdate(BaseModel):
+    id: Optional[Union[str, Any]] = Field(None, alias='_id')
+    nome: str
+
+    class Config:
+        title = 'modalidade_artigos'
+        arbitrary_types_allowed = True
+
+
+class ModalidadeArtigoOutUpdate(BaseModel):
     id: Optional[Union[str, Any]] = Field(None, alias='_id')
     nome: str
     alterado_em: Optional[datetime.datetime]
     alterado_por: Optional[UsuarioReduzido]
 
     class Config:
-        orm_mode = True
         title = "modalidade_artigos"
 
 
@@ -85,5 +83,13 @@ class ModalidadeArtigoOutDelete(BaseModel):
     deletado_por: Optional[UsuarioReduzido]
 
     class Config:
-        orm_mode = True
         title = "modalidade_artigos"
+
+
+class ModalidadeArtigoReduzido(BaseModel):
+    id: Union[str, Any] = Field(alias='_id')
+    nome: str
+
+    class Config:
+        title = 'modalidade_artigos'
+        arbitrary_types_allowed = True

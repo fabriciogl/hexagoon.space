@@ -52,8 +52,17 @@ class RoleOutDelete(BaseModel):
         arbitrary_types_allowed = True
 
 
-class RoleIn(BaseModel):
-    id: Optional[Union[str, Any]] = Field(None, alias='_id')
+class RoleInCreate(BaseModel):
+    sigla: Optional[str]
+    descricao: Optional[str]
+
+    class Config:
+        title = 'roles'
+        arbitrary_types_allowed = True
+
+
+class RoleInUpdate(BaseModel):
+    id: Union[str, Any] = Field(None, alias='_id')
     sigla: Optional[str]
     descricao: Optional[str]
 

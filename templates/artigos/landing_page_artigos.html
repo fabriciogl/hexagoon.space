@@ -1,21 +1,21 @@
 {% extends "base_artigos.html" %}
 {% block title %}Bem Vindo ao Hexagoon 🪐{% endblock %}
-{% block dataJson %}{{ artigo.corpo|tojson }}{% endblock %}
-{% block artigoGrupos %}
+{% block data_json %}{{ artigo.corpo|tojson }}{% endblock %}
+{% block artigo_grupos %}
 <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="modalidadeArtigos" id="ma"
         onchange="selecionaGrupo()">
     <option value="paginaInicial">Página Inicial</option>
-    {% for modalidade in modalidadesArtigo %}
+    {% for modalidade in modalidades_artigo %}
     <option value="{{ modalidade.id }}" id="ma{{ modalidade.id }}">{{ modalidade.nome }}</option>
     {% endfor %}
 </select>
 {% endblock %}
-{% block listaArtigos %}
+{% block lista_artigos %}
 <ul class="list-group">
     <li class="list-group-item">Artigos mais recentes</li>
     {% if artigos %}
     {% for artigo in artigos %}
-    <li class="list-group-item"><a href="/html/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
+    <li class="list-group-item text-break"><a href="/html/{{ artigo.id }}">{{ artigo.titulo|safe }}</a></li>
     {% endfor %}
     {% endif %}
 </ul>
